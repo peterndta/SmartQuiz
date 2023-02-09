@@ -6,5 +6,6 @@ namespace SmartQuizApi.Data.IRepositories
     {
         Task<User?> GetUserByEmailAsync(string email);
         void CreateUser(User user);
+        User? GetUserById(int id);
     }
 }

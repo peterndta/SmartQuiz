@@ -19,5 +19,10 @@ namespace SmartQuizApi.Data.Repositories
         {
             return await GetByCondition(x => x.Email.Equals(email)).FirstOrDefaultAsync();
         }
+
+        public User? GetUserById(int id)
+        {
+            return GetByCondition(x =>x.Id == id).FirstOrDefault();
+        }
     }
 }

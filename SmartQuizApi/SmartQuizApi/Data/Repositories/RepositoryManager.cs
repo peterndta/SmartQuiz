@@ -14,9 +14,22 @@ namespace SmartQuizApi.Data.Repositories
         private ISubjectRepository _subjectRepository;
         private IQuestionRepository _questionRepository;
         private IAnnswerRepository _annswerRepository;
+        private IBookMarkRepository _bookMarkRepository;
         public RepositoryManager(SmartquizContext context)
         {
             _context= context;
+        }
+
+        public IBookMarkRepository BookMark
+        {
+            get
+            {
+                if (_bookMarkRepository == null)
+                {
+                    _bookMarkRepository = new BookMarkRepository(_context);
+                }
+                return _bookMarkRepository;
+            }
         }
 
         public IUserRepository User

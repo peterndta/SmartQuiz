@@ -40,4 +40,5 @@ public partial class StudySet
     public virtual User User { get; set; } = null!;
 
     public virtual ICollection<User> Users { get; } = new List<User>();
+    public virtual ICollection<BookMark> BookMarks { get; set; }
 }
