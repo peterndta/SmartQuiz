@@ -29,5 +29,10 @@ namespace SmartQuizApi.Data.Repositories
         {
             Delete(question);
         }
+
+        public int GetTotalQuestionByStudySetId(string studySetId)
+        {
+            return GetByCondition(x => x.StudySetId.Equals(studySetId)).Count();
+        }
     }
 }

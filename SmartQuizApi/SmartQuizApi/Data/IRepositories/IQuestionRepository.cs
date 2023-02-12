@@ -8,5 +8,6 @@ namespace SmartQuizApi.Data.IRepositories
         void CreateQuestion(Question question);
         void DeleteQuestion(Question question);
         Question? GetQuestionById(string id);
+        int GetTotalQuestionByStudySetId(string studySetId);
     }
 }

@@ -18,6 +18,8 @@
 
         public string SubjectName { get; set; }
 
+        public int TotalQuestions { get; set; }
+
         public int? ClassId { get; set; }
 
         public bool IsPublic { get; set; }

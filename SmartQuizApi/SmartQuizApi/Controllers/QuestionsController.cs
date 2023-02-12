@@ -37,7 +37,10 @@ namespace SmartQuizApi.Controllers
                 var newQuestion = _mapper.Map<Question>(updateQuestionDTO);
                 _repositoryManager.Question.CreateQuestion(newQuestion);
                 await _repositoryManager.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Update successfully"));
+
+                question = _repositoryManager.Question.GetQuestionById(newQuestion.Id);
+                var result = _mapper.Map<GetQuestionDTO>(question);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, result, "Update successfully"));
             }
             catch (Exception ex)
             {

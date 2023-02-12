@@ -16,14 +16,20 @@ namespace SmartQuizApi.Data.Repositories
             Create(studySet);
         }
 
+        public void DeleteStudySet(StudySet studySet)
+        {
+            Delete(studySet);
+        }
+
         public async Task<List<StudySet>> FilterStudySetAsync(string? name, int? gradeId, int? subjectId, string sortType)
         {
             var result = GetByCondition(x => (name == null || x.Name.Contains(name))
                                                 && (gradeId == null || x.GradeId == gradeId)
-                                                && (subjectId == null || x.SubjectId == subjectId)).Include(x => x.User)
-                                                                                                    .Include(x => x.Grade)
-                                                                                                    .Include(x => x.Subject)
-                                                                                                    .Include(x => x.Class);
+                                                && (subjectId == null || x.SubjectId == subjectId)
+                                                && (x.IsPublic == true)).Include(x => x.User)
+                                                                        .Include(x => x.Grade)
+                                                                        .Include(x => x.Subject)
+                                                                        .Include(x => x.Class);
             if (sortType.Equals(SortTypes.Oldest))
             {
                 return await result.OrderBy(x => x.CreateAt).ToListAsync();
@@ -48,6 +54,14 @@ namespace SmartQuizApi.Data.Repositories
                                                     .Include(x => x.Grade)
                                                     .Include(x => x.Subject)
                                                     .Include(x => x.Class).FirstOrDefault();
+        }
+
+        public async Task<List<StudySet>> GetStudySetByUserId(int userId)
+        {
+            return await GetByCondition(x => x.UserId == userId).Include(x => x.User)
+                                                        .Include(x => x.Grade)
+                                                        .Include(x => x.Subject)
+                                                        .Include(x => x.Class).ToListAsync();
         }
 
         public void UpdateStudySet(StudySet studySet)
