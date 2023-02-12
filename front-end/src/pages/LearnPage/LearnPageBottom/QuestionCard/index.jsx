@@ -5,14 +5,14 @@ import Answer from './Answer'
 
 import { choices } from '~/Mock'
 
-const QuestionCard = ({ question, index }) => {
-    const CardLayoutStyle = {
-        mb: 2,
-        borderRadius: 3,
-        p: 1,
-        height: 'none',
-    }
+const CardLayoutStyle = {
+    mb: 2,
+    borderRadius: 3,
+    p: 1,
+    height: 'none',
+}
 
+const QuestionCard = ({ question, index, handleSelectedChoices }) => {
     return (
         <CardLayout style={CardLayoutStyle}>
             <CardContent>
@@ -20,8 +20,14 @@ const QuestionCard = ({ question, index }) => {
                     {index + 1}. {question.name}
                 </Typography>
                 <Typography sx={{ mb: 2, fontWeight: 500 }}>Câu trả lời</Typography>
-                {question?.answers?.map((question, index) => (
-                    <Answer key={question.id} choice={choices[index]} answer={question.name} />
+                {question.answers.map((answer, index) => (
+                    <Answer
+                        key={answer.id}
+                        choice={choices[index]}
+                        answer={answer}
+                        handleSelectedChoices={handleSelectedChoices}
+                        answerIndex={index}
+                    />
                 ))}
             </CardContent>
         </CardLayout>

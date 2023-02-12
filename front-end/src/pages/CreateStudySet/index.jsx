@@ -14,18 +14,16 @@ import ModalUpdate from './ModalUpdate'
 import NewStudySet from './NewStudySet'
 import Questions from './Questions'
 
-import { initialValue, level, levelSchool } from '~/Mock'
+import { initialValue } from '~/Mock'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 import LocalStorageUtils from '~/utils/LocalStorageUtils'
 
 const CreateStudySet = () => {
+    const grades = useAppSelector((state) => state.grades)
     const { state } = useLocation()
-    const [schoolLevel, setSchoolLevel] = useState(state ? state.schoolLevel : levelSchool[0])
-    const [isUniversity, setIsUniversity] = useState(state ? state.isUniversity : false)
-    const [universityName, setUniversityName] = useState(state ? state.universityName : initialValue)
-    const [classLevel, setClassLevel] = useState(state ? state.classLevel : initialValue)
+    const [classLevel, setClassLevel] = useState(state ? state.classLevel : grades[0])
     const [subject, setSubject] = useState(state ? state.subject : initialValue)
     const [title, setTitle] = useState(state ? state.title : '')
     const [questions, setQuestions] = useState(state ? state.questions : [])
@@ -65,10 +63,6 @@ const CreateStudySet = () => {
 
     const titleChangeHandler = ({ target: { value } }) => setTitle(value)
 
-    const levelChangeHandler = (name, value) => setSchoolLevel(() => ({ label: name, value: value }))
-
-    const universityNameChangeHandler = (name, value) => setUniversityName(() => ({ label: name, value: value }))
-
     const classChangeHandler = (name, value) => setClassLevel(() => ({ label: name, value: value }))
 
     const subjectChangeHandler = (name, value) => setSubject(() => ({ label: name, value: value }))
@@ -85,16 +79,11 @@ const CreateStudySet = () => {
 
     const infoStudySetHandler = {
         titleChangeHandler,
-        levelChangeHandler,
-        universityNameChangeHandler,
         classChangeHandler,
         subjectChangeHandler,
     }
 
     const infoStudySet = {
-        schoolLevel,
-        isUniversity,
-        universityName,
         classLevel,
         subject,
         title,
@@ -119,9 +108,8 @@ const CreateStudySet = () => {
         const studySet = {
             name: title,
             userId: +userId,
-            schoolId: isUniversity ? universityName.value : null,
-            gradeId: isUniversity ? null : classLevel.value,
-            subjectId: isUniversity ? null : subject.value,
+            gradeId: classLevel.value,
+            subjectId: subject.value,
             classId: null,
             isPublic: true,
             questions: formatQuestions,
@@ -144,12 +132,9 @@ const CreateStudySet = () => {
         const draft = {
             id: uuid(),
             title,
-            isUniversity,
             classLevel,
             subject,
-            universityName,
             questions,
-            schoolLevel,
         }
         if (state) {
             const draftIndex = drafts.studySet.findIndex((draft) => draft.id === state.id)
@@ -169,17 +154,10 @@ const CreateStudySet = () => {
     }
 
     useEffect(() => {
-        if (schoolLevel.label === level.university) {
-            setIsUniversity(true)
-        } else {
-            setIsUniversity(false)
-            if (classLevel.value < 3 && subject.label === 'Hóa') setSubject(initialValue)
-        }
-        setClassLevel(initialValue)
-        setSubject(initialValue)
-
+        if (classLevel.value < 3 && subject.label === 'Hóa học') setSubject(initialValue)
+        else if (classLevel.value <= 7 && subject.value > 7) setSubject(initialValue)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [schoolLevel.value])
+    }, [classLevel.value])
 
     useEffect(() => {
         return () => {
@@ -188,7 +166,7 @@ const CreateStudySet = () => {
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [schoolLevel.value, title, subject.value, JSON.stringify(questions), universityName.value])
+    }, [title, subject.value, JSON.stringify(questions)])
 
     return (
         <Box component="form" onSubmit={submitStudySetHandler}>

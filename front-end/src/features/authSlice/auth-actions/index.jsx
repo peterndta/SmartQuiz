@@ -53,7 +53,7 @@ const useAuthAction = () => {
                     })
                 )
             } else {
-                logout()
+                logoutHandler()
             }
         } else {
             dispatch(

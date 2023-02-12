@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     secondarySubjects: [],
     highSchoolSubjects: [],
+    universitySubjects: [],
 }
 
 const subjectSlice = createSlice({
@@ -13,8 +14,12 @@ const subjectSlice = createSlice({
             const subjects = [...action.payload]
             subjects.forEach((subject) => {
                 const formatSubject = { ...subject, value: subject.id, label: subject.name }
-                state.highSchoolSubjects.push(formatSubject)
-                state.secondarySubjects.push(formatSubject)
+                if (formatSubject.value <= 7) {
+                    state.highSchoolSubjects.push(formatSubject)
+                    state.secondarySubjects.push(formatSubject)
+                } else if (formatSubject.value > 7) {
+                    state.universitySubjects.push(formatSubject)
+                }
             })
             state.secondarySubjects.pop()
         },

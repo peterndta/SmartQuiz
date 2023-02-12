@@ -1,9 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = {
-    secondarySchool: [],
-    highSchool: [],
-}
+const initialState = []
 
 const gradeSlice = createSlice({
     name: 'grade',
@@ -13,11 +10,7 @@ const gradeSlice = createSlice({
             const grades = [...action.payload]
             grades.forEach((grade) => {
                 const formatGrade = { ...grade, value: grade.id, label: grade.name }
-                if (formatGrade.value < 5) {
-                    state.secondarySchool.push(formatGrade)
-                } else {
-                    state.highSchool.push(formatGrade)
-                }
+                state.push(formatGrade)
             })
         },
     },
