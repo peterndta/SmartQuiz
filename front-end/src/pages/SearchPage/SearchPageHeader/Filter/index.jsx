@@ -1,15 +1,50 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 
-import { FormControl, MenuItem, Select, Typography } from '@mui/material'
+import queryString from 'query-string'
+import { useHistory, useLocation } from 'react-router-dom'
+
+import { Typography } from '@mui/material'
+import SelectCompo from '~/components/SelectCompo'
 
 import { AppStyles } from '~/constants/styles'
 
-const Filter = ({ data, title }) => {
-    const [filter, setFilter] = useState(5)
+const selectStyle = {
+    border: 'none',
+    backgroundColor: AppStyles.colors['#EEF2FF'],
+}
 
-    const handleChange = (event) => {
-        setFilter(event.target.value)
+const FormControlStyle = {
+    mt: 1.5,
+    minWidth: 260,
+}
+const Filter = ({ title, isRequired, onChange, value, data, isDisable, typeFilter }) => {
+    const history = useHistory()
+    const { search: query, pathname } = useLocation()
+    const { studysetname, sorttype, pageNumber, gradeid, subjectid } = queryString.parse(query)
+
+    const filterHandler = () => {
+        let route = pathname + '?'
+        if (studysetname && studysetname.trim() !== '') route += '&studysetname=' + studysetname
+
+        if (typeFilter === 'subject') {
+            if (value?.value) route += `&subjectid=${value?.value}`
+            if (gradeid) route += `&gradeid=${gradeid}`
+        } else if (typeFilter === 'grade') {
+            if (subjectid) route += `&subjectid=${subjectid}`
+            if (value?.value) route += `&gradeid=${value?.value}`
+        }
+
+        if (pageNumber) route += `&pageNumber=${pageNumber}`
+
+        if (sorttype) route += `&sorttype=${sorttype}`
+
+        history.push(route)
     }
+
+    useEffect(() => {
+        filterHandler()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value?.value])
     return (
         <React.Fragment>
             <Typography
@@ -26,20 +61,15 @@ const Filter = ({ data, title }) => {
                 {title}
             </Typography>
 
-            <FormControl sx={{ height: 48, width: 260 }}>
-                <Select
-                    value={filter}
-                    onChange={handleChange}
-                    variant="outlined"
-                    sx={{ pl: 1, bgcolor: AppStyles.colors['#EEF2FF'], borderRadius: 3 }}
-                >
-                    {data?.map((option, index) => (
-                        <MenuItem key={index} value={option.id}>
-                            {option.name}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+            <SelectCompo
+                selectStyle={selectStyle}
+                formControlStyle={FormControlStyle}
+                onChange={onChange}
+                value={value}
+                isRequire={isRequired}
+                data={data}
+                isDisable={isDisable}
+            />
         </React.Fragment>
     )
 }
