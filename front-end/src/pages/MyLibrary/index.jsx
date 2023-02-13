@@ -23,7 +23,7 @@ const MyLibrary = () => {
     const changeIndexHandler = (_, value) => {
         setIndex(value)
     }
-    const { getStudySetList } = useStudySet()
+    const { getMyStudySets } = useStudySet()
     return (
         <FullWidthHeaderWhite maxWidthContent={1670}>
             <Box display="flex" flexDirection="column" width={700}>
@@ -112,10 +112,10 @@ const MyLibrary = () => {
                             <MyClass />
                         </TabPanel>
                         <TabPanel value={'1'} sx={{ p: 0 }}>
-                            <StudySets getStudySetList={getStudySetList} />
+                            <StudySets getMyStudySets={getMyStudySets} />
                         </TabPanel>
                         <TabPanel value={'2'} sx={{ p: 0 }}>
-                            <StudySets getStudySetList={getStudySetList} />
+                            <StudySets getMyStudySets={getMyStudySets} />
                         </TabPanel>
                         <TabPanel value={'3'} sx={{ p: 0 }}>
                             <Draft />
