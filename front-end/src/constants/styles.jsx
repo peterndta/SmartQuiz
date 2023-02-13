@@ -17,5 +17,7 @@ export const AppStyles = {
         ['#DCE6FF']: '#DCE6FF',
         ['#EEF2FF']: '#EEF2FF',
         ['#130F26']: '#130F26',
+        ['#7EFF8B']: '#7EFF8B',
+        ['#FF9797']: ['#FF9797'],
     },
 }

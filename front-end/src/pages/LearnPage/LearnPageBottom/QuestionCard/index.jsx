@@ -12,7 +12,7 @@ const CardLayoutStyle = {
     height: 'none',
 }
 
-const QuestionCard = ({ question, index, handleSelectedChoices }) => {
+const QuestionCard = ({ question, index, handleSelectedChoices, correctAnswers, selectedChoices }) => {
     return (
         <CardLayout style={CardLayoutStyle}>
             <CardContent>
@@ -26,7 +26,8 @@ const QuestionCard = ({ question, index, handleSelectedChoices }) => {
                         choice={choices[index]}
                         answer={answer}
                         handleSelectedChoices={handleSelectedChoices}
-                        answerIndex={index}
+                        correctAnswers={correctAnswers}
+                        selectedChoices={selectedChoices}
                     />
                 ))}
             </CardContent>

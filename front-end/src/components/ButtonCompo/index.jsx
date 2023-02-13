@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
 
-const ButtonCompo = ({ style, children, variant, onClick, type = 'button', disable = false }) => {
+const ButtonCompo = ({ style, children, variant, onClick, type = 'button', disable = false, fullWidth = false }) => {
     return (
         <Button
             variant={variant}
@@ -8,6 +8,7 @@ const ButtonCompo = ({ style, children, variant, onClick, type = 'button', disab
             onClick={onClick}
             type={type}
             disabled={disable}
+            fullWidth={fullWidth}
         >
             {children}
         </Button>

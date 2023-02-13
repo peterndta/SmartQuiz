@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import SwipeableViews from 'react-swipeable-views'
 
-import { ArrowCircleLeft, ArrowCircleRight, Settings } from '@mui/icons-material'
+import { ArrowCircleRight, Settings } from '@mui/icons-material'
 import { Box, IconButton, Skeleton, Tooltip, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 
@@ -43,6 +43,7 @@ const LearnPageBottom = () => {
     const { getStudySet } = useStudySet()
     const showSnackbar = useSnackbar()
     const [selectedChoices, setSelectedChoices] = useState([])
+    const [correctAnswers, setCorrectAnswers] = useState({ isSubmit: false, ans: [] })
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [open, setOpen] = useState(false)
@@ -51,12 +52,62 @@ const LearnPageBottom = () => {
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
 
-    const checkAnswer = () => {}
+    const checkAnswer = () => {
+        const getAnswers = [...studySetDetail.questions[index].answers]
+        const correctAnswers = getAnswers.filter((ans) => ans.isCorrectAnswer === true)
+        setCorrectAnswers({ isSubmit: true, ans: [...correctAnswers] })
+
+        if (selectedChoices.length !== correctAnswers.length) {
+            showSnackbar({
+                severity: 'error',
+                children: 'Bạn đã lựa chọn đáp án sai!',
+            })
+            setTimeout(() => {
+                setCorrectAnswers({ isSubmit: false, ans: [] })
+                setSelectedChoices([])
+                setIndex((prev) => prev + 1)
+            }, 2000)
+        } else if (selectedChoices.length === correctAnswers.length) {
+            const isCorrect = correctAnswers.every((correctAns) =>
+                selectedChoices.some((choice) => choice.id === correctAns.id)
+            )
+            if (isCorrect) {
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Chúc mừng bạn đã vượt qua!',
+                })
+                setTimeout(() => {
+                    setCorrectAnswers({ isSubmit: false, ans: [] })
+                    setSelectedChoices([])
+                    setIndex((prev) => prev + 1)
+                }, 2000)
+            } else {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Bạn đã lựa chọn đáp án sai!',
+                })
+                setTimeout(() => {
+                    setCorrectAnswers({ isSubmit: false, ans: [] })
+                    setSelectedChoices([])
+                    setIndex((prev) => prev + 1)
+                }, 2000)
+            }
+        }
+    }
 
     const handleSelectedChoices = (answer) => {
-        console.log(answer)
-        const cloneQuestion = JSON.parse(JSON.stringify(studySetDetail.questions))[index]
-        console.log(cloneQuestion)
+        const newSelected = [...selectedChoices]
+        if (newSelected.length === 0) {
+            newSelected.push(answer)
+        } else {
+            const position = newSelected.findIndex((ans) => ans.id === answer.id)
+            if (position === -1) {
+                newSelected.push(answer)
+            } else {
+                newSelected.splice(position, 1)
+            }
+        }
+        setSelectedChoices(newSelected)
     }
 
     useEffect(() => {
@@ -65,6 +116,7 @@ const LearnPageBottom = () => {
         getStudySet(id, signal)
             .then((response) => {
                 const data = response.data.data
+
                 setStudySetDetail(data)
                 setIsFirstRender(false)
             })
@@ -80,6 +132,8 @@ const LearnPageBottom = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const disableButton = correctAnswers.isSubmit ? true : false
 
     return (
         <Box maxWidth={850} sx={{ m: '0 auto', mt: 3, mb: 5 }}>
@@ -113,6 +167,8 @@ const LearnPageBottom = () => {
                             index={index}
                             key={index}
                             handleSelectedChoices={handleSelectedChoices}
+                            correctAnswers={correctAnswers}
+                            selectedChoices={selectedChoices}
                         />
                     ))}
                 </SwipeableViews>
@@ -123,19 +179,7 @@ const LearnPageBottom = () => {
                         <Skeleton sx={{ height: 56, width: 413 }} animation="wave" variant="rounded" />
                     </React.Fragment>
                 ) : (
-                    <ButtonCompo style={ButtonStyle} onClick={() => setIndex((prev) => prev - 1)} disable={index === 0}>
-                        <ArrowCircleLeft fontSize="medium" />
-                        <Typography ml={1.5} sx={{ fontSize: 16, fontWeight: 500 }}>
-                            Trở lại
-                        </Typography>
-                    </ButtonCompo>
-                )}
-                {isFirstRender ? (
-                    <React.Fragment>
-                        <Skeleton sx={{ height: 56, width: 413 }} animation="wave" variant="rounded" />
-                    </React.Fragment>
-                ) : (
-                    <ButtonCompo style={ButtonStyle} onClick={() => setIndex((prev) => prev + 1)}>
+                    <ButtonCompo style={ButtonStyle} onClick={checkAnswer} fullWidth={true} disable={disableButton}>
                         <Typography mr={1.5} sx={{ fontSize: 16, fontWeight: 500 }}>
                             Tiếp tục
                         </Typography>
