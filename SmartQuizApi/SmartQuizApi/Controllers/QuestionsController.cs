@@ -47,5 +47,48 @@ namespace SmartQuizApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
             }
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteQuestion(string id)
+        {
+            try
+            {
+                var question = _repositoryManager.Question.GetQuestionById(id);
+                if (question == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Question id does not exist"));
+                }
+
+                _repositoryManager.Question.DeleteQuestion(question);
+                await _repositoryManager.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Delete successfully"));
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateQuestion(CreateQuestionDTO createQuestionDTO)
+        {
+            try
+            {
+                var question = _mapper.Map<Question>(createQuestionDTO);
+                question.Id = Guid.NewGuid().ToString();
+                foreach (var answer in question.Answers)
+                {
+                    answer.QuestionId = question.Id;
+                }
+
+                _repositoryManager.Question.CreateQuestion(question);
+                await _repositoryManager.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Delete successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
     }
 }

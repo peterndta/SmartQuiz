@@ -14,6 +14,8 @@ namespace SmartQuizApi.Data.Repositories
         private IQuestionRepository _questionRepository;
         private IAnnswerRepository _annswerRepository;
         private IBookMarkRepository _bookMarkRepository;
+        private ISubjectsOfGradeRepository _subjectsOfGradeRepository;
+        private IHistoryRepository _historyRepository;
         public RepositoryManager(SmartquizContext context)
         {
             _context= context;
@@ -79,7 +81,7 @@ namespace SmartQuizApi.Data.Repositories
             }
         }
 
-        public IAnnswerRepository Annswer
+        public IAnnswerRepository Answer
         {
             get
             {
@@ -102,6 +104,31 @@ namespace SmartQuizApi.Data.Repositories
                 return _bookMarkRepository;
             }
         }
+
+        public ISubjectsOfGradeRepository SubjectsOfGrade
+        {
+            get
+            {
+                if (_subjectsOfGradeRepository == null)
+                {
+                    _subjectsOfGradeRepository = new SubjectsOfGradeRepository(_context);
+                }
+                return _subjectsOfGradeRepository;
+            }
+        }
+
+        public IHistoryRepository History
+        {
+            get
+            {
+                if (_historyRepository == null)
+                {
+                    _historyRepository = new HistoryRepository(_context);
+                }
+                return _historyRepository;
+            }
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

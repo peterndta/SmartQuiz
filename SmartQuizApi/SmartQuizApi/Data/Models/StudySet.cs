@@ -11,10 +11,6 @@ public partial class StudySet
 
     public int UserId { get; set; }
 
-    public int GradeId { get; set; }
-
-    public int SubjectId { get; set; }
-
     public int? ClassId { get; set; }
 
     public bool IsPublic { get; set; }
@@ -23,15 +19,17 @@ public partial class StudySet
 
     public DateTime UpdateAt { get; set; }
 
+    public int SubjectsOfGradeId { get; set; }
+
     public virtual ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
 
     public virtual Class? Class { get; set; }
 
-    public virtual Grade Grade { get; set; } = null!;
+    public virtual ICollection<History> Histories { get; } = new List<History>();
 
     public virtual ICollection<Question> Questions { get; } = new List<Question>();
 
-    public virtual Subject Subject { get; set; } = null!;
+    public virtual SubjectsOfGrade SubjectsOfGrade { get; set; } = null!;
 
     public virtual ICollection<TestResult> TestResults { get; } = new List<TestResult>();
 

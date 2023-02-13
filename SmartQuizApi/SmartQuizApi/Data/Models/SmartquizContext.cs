@@ -27,6 +27,8 @@ public partial class SmartquizContext : DbContext
 
     public virtual DbSet<Grade> Grades { get; set; }
 
+    public virtual DbSet<History> Histories { get; set; }
+
     public virtual DbSet<Method> Methods { get; set; }
 
     public virtual DbSet<Question> Questions { get; set; }
@@ -34,6 +36,8 @@ public partial class SmartquizContext : DbContext
     public virtual DbSet<StudySet> StudySets { get; set; }
 
     public virtual DbSet<Subject> Subjects { get; set; }
+
+    public virtual DbSet<SubjectsOfGrade> SubjectsOfGrades { get; set; }
 
     public virtual DbSet<TestResult> TestResults { get; set; }
 
@@ -154,6 +158,29 @@ public partial class SmartquizContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
+        modelBuilder.Entity<History>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.StudySetId });
+
+            entity.Property(e => e.UserId).HasColumnName("User_id");
+            entity.Property(e => e.StudySetId)
+                .HasMaxLength(50)
+                .HasColumnName("Study_set_id");
+            entity.Property(e => e.CreateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("Create_at");
+
+            entity.HasOne(d => d.StudySet).WithMany(p => p.Histories)
+                .HasForeignKey(d => d.StudySetId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Histories_StudySets");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Histories)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Histories_Users");
+        });
+
         modelBuilder.Entity<Method>(entity =>
         {
             entity.Property(e => e.AmountPerMonth).HasColumnName("Amount_per_month");
@@ -180,9 +207,8 @@ public partial class SmartquizContext : DbContext
             entity.Property(e => e.CreateAt)
                 .HasColumnType("date")
                 .HasColumnName("Create_at");
-            entity.Property(e => e.GradeId).HasColumnName("Grade_id");
             entity.Property(e => e.IsPublic).HasColumnName("Is_public");
-            entity.Property(e => e.SubjectId).HasColumnName("Subject_id");
+            entity.Property(e => e.SubjectsOfGradeId).HasColumnName("SubjectsOfGrade_id");
             entity.Property(e => e.UpdateAt)
                 .HasColumnType("date")
                 .HasColumnName("Update_at");
@@ -192,15 +218,10 @@ public partial class SmartquizContext : DbContext
                 .HasForeignKey(d => d.ClassId)
                 .HasConstraintName("FK_StudySets_Classes");
 
-            entity.HasOne(d => d.Grade).WithMany(p => p.StudySets)
-                .HasForeignKey(d => d.GradeId)
+            entity.HasOne(d => d.SubjectsOfGrade).WithMany(p => p.StudySets)
+                .HasForeignKey(d => d.SubjectsOfGradeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StudySets_Grades");
-
-            entity.HasOne(d => d.Subject).WithMany(p => p.StudySets)
-                .HasForeignKey(d => d.SubjectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StudySets_Subjects");
+                .HasConstraintName("FK_StudySets_SubjectsOfGrade");
 
             entity.HasOne(d => d.User).WithMany(p => p.StudySets)
                 .HasForeignKey(d => d.UserId)
@@ -211,6 +232,26 @@ public partial class SmartquizContext : DbContext
         modelBuilder.Entity<Subject>(entity =>
         {
             entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<SubjectsOfGrade>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_SubjectsOfGrade_1");
+
+            entity.ToTable("SubjectsOfGrade");
+
+            entity.Property(e => e.GradeId).HasColumnName("Grade_id");
+            entity.Property(e => e.SubjectId).HasColumnName("Subject_id");
+
+            entity.HasOne(d => d.Grade).WithMany(p => p.SubjectsOfGrades)
+                .HasForeignKey(d => d.GradeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SubjectsOfGrade_Grades");
+
+            entity.HasOne(d => d.Subject).WithMany(p => p.SubjectsOfGrades)
+                .HasForeignKey(d => d.SubjectId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SubjectsOfGrade_Subjects");
         });
 
         modelBuilder.Entity<TestResult>(entity =>

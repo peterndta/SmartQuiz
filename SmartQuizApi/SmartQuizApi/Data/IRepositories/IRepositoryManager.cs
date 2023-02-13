@@ -7,8 +7,10 @@
         IGradeRepository Grade { get; }
         ISubjectRepository Subject { get; }
         IQuestionRepository Question { get; }
-        IAnnswerRepository Annswer { get; }
+        IAnnswerRepository Answer { get; }
         IBookMarkRepository BookMark { get; }
+        ISubjectsOfGradeRepository SubjectsOfGrade { get; }
+        IHistoryRepository History { get; }
         Task SaveChangesAsync();
     }
 }

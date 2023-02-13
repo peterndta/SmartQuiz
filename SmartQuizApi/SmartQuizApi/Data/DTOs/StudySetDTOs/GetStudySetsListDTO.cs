@@ -1,4 +1,6 @@
-﻿namespace SmartQuizApi.Data.DTOs.StudySetDTOs
+﻿using System.Text.Json.Serialization;
+
+namespace SmartQuizApi.Data.DTOs.StudySetDTOs
 {
     public class GetStudySetsListDTO
     {
@@ -27,5 +29,8 @@
         public DateTime CreateAt { get; set; }
 
         public DateTime UpdateAt { get; set; }
+
+        [JsonIgnore]
+        public int SubjectsOfGradeId { get; set; }
     }
 }
