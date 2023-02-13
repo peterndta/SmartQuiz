@@ -13,7 +13,9 @@ import { useSnackbar } from '~/HOC/SnackbarContext'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
 
-const LearnPageBottom = () => {
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const LearnPageBottom = ({ start, setStart }) => {
     const { id } = useParams()
     const { getStudySet } = useStudySet()
     const showSnackbar = useSnackbar()
@@ -22,14 +24,14 @@ const LearnPageBottom = () => {
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [open, setOpen] = useState(false)
-    const [index, setIndex] = useState(0)
+    const [index, setIndex] = useState(start)
     const timeout = useRef(1)
 
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
 
-    const checkAnswer = () => {
-        const getQuestion = JSON.parse(JSON.stringify(studySetDetail.questions[index]))
+    const checkAnswer = async () => {
+        const getQuestion = { ...studySetDetail.questions[index] }
         const getAnswers = [...getQuestion.answers]
         const correctAnswers = getAnswers.filter((ans) => ans.isCorrectAnswer === true)
 
@@ -56,28 +58,13 @@ const LearnPageBottom = () => {
             const isCorrect = correctAnswers.every((correctAns) =>
                 selectedChoices.some((choice) => choice.id === correctAns.id)
             )
-            if (isCorrect) {
-                showSnackbar({
-                    severity: 'success',
-                    children: 'Chúc mừng bạn đã vượt qua!',
-                })
-                timeout.current = setTimeout(() => {
-                    setSelectedChoices([])
-                    setCorrectAnswers({ isSubmit: false, ans: [] })
-                    setIndex((prev) => prev + 1)
-                }, 2000)
-            } else {
-                updateStudySetQuestion(getQuestion)
-                showSnackbar({
-                    severity: 'error',
-                    children: 'Bạn đã lựa chọn đáp án sai!',
-                })
-                timeout.current = setTimeout(() => {
-                    setSelectedChoices([])
-                    setCorrectAnswers({ isSubmit: false, ans: [] })
-                    setIndex((prev) => prev + 1)
-                }, 2000)
-            }
+            const severity = isCorrect ? 'success' : 'error'
+            const children = isCorrect ? 'Chúc mừng bạn đã vượt qua!' : 'Bạn đã lựa chọn đáp án sai!'
+            showSnackbar({ severity, children })
+            await delay(2000)
+            setSelectedChoices([])
+            setCorrectAnswers({ isSubmit: false, ans: [] })
+            setIndex((prevIndex) => prevIndex + 1)
         }
     }
 
@@ -88,18 +75,16 @@ const LearnPageBottom = () => {
     }
 
     const handleSelectedChoices = (answer) => {
-        const newSelected = [...selectedChoices]
-        if (newSelected.length === 0) {
-            newSelected.push(answer)
+        if (selectedChoices.length === 0) {
+            setSelectedChoices([answer])
         } else {
-            const position = newSelected.findIndex((ans) => ans.id === answer.id)
+            const position = selectedChoices.findIndex((ans) => ans.id === answer.id)
             if (position === -1) {
-                newSelected.push(answer)
+                setSelectedChoices([...selectedChoices, answer])
             } else {
-                newSelected.splice(position, 1)
+                setSelectedChoices(selectedChoices.filter((ans) => ans.id !== answer.id))
             }
         }
-        setSelectedChoices(newSelected)
     }
 
     useEffect(() => {
@@ -126,11 +111,12 @@ const LearnPageBottom = () => {
     }, [])
 
     useEffect(() => {
+        setIndex(start - 1)
         return () => {
             clearTimeout(timeout.current)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [index])
+    }, [start])
 
     const disableButton = correctAnswers.isSubmit ? true : false
 
@@ -140,6 +126,7 @@ const LearnPageBottom = () => {
                 open={open}
                 handleClose={handleClose}
                 numberOfQuestion={studySetDetail?.questions?.length}
+                setStart={setStart}
             />
             <Box display="flex" justifyContent="right" mb={2}>
                 <Tooltip title="Tùy chọn" placement="bottom">
