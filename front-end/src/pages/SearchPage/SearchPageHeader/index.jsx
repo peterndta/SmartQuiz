@@ -1,14 +1,37 @@
+import { useState } from 'react'
+
+import { useLocation } from 'react-router-dom'
+
 import { Grid } from '@mui/material'
 import FullWidthHeaderWhite from '~/components/FullWidthHeaderWhite'
 import PageTitle from '~/components/PageTitle'
-import Search from '~/components/Search'
 
 import logo from '../../../assets/images/Logo.png'
 import Filter from './Filter'
+import Search from './Search'
 
-import { Mock_Data } from '~/Mock'
+import { initialValue } from '~/Mock'
+import { useAppSelector } from '~/hooks/redux-hooks'
 
 const SearchPageHeader = () => {
+    const grades = useAppSelector((state) => state.grades)
+    const { state } = useLocation()
+    const [classLevel, setClassLevel] = useState(state ? state.classLevel : grades[7])
+    const [subject, setSubject] = useState(state ? state.subject : initialValue)
+    const [typeFilter, setTypeFilter] = useState('')
+    function classChangeHandler(name, value) {
+        setClassLevel(() => ({ label: name, value: value }))
+        setTypeFilter('grade')
+    }
+    function subjectChangeHandler(name, value) {
+        setSubject(() => ({ label: name, value: value }))
+        setTypeFilter('subject')
+    }
+    // const classChangeHandler = (name, value) => setClassLevel(() => ({ label: name, value: value }))
+
+    // const subjectChangeHandler = (name, value) => setSubject(() => ({ label: name, value: value }))
+
+    const subjects = useAppSelector((state) => state.subjects)
     return (
         <FullWidthHeaderWhite maxWidthContent={1112}>
             <Grid item xs={12}>
@@ -26,10 +49,32 @@ const SearchPageHeader = () => {
                     <Grid item xs={12}>
                         <Grid container display="flex" alignItems="center" justifyContent="left" spacing={3}>
                             <Grid item md={3}>
-                                <Filter data={Mock_Data.dropdown1} title="Cấp học" />
+                                <Filter
+                                    isRequired={true}
+                                    isDisable={false}
+                                    value={classLevel}
+                                    onChange={classChangeHandler}
+                                    data={grades}
+                                    title="Cấp học"
+                                    typeFilter={typeFilter}
+                                />
                             </Grid>
                             <Grid item md={3}>
-                                <Filter data={Mock_Data.dropdown2} title="Lĩnh vực" />
+                                <Filter
+                                    isRequired={true}
+                                    isDisable={false}
+                                    value={subject}
+                                    onChange={subjectChangeHandler}
+                                    data={
+                                        classLevel.value < 3
+                                            ? subjects.secondarySubjects
+                                            : classLevel.value >= 3 && classLevel.value <= 7
+                                            ? subjects.highSchoolSubjects
+                                            : subjects.universitySubjects
+                                    }
+                                    title="Lĩnh vực"
+                                    typeFilter={typeFilter}
+                                />
                             </Grid>
                             {/* <Grid item md={3}>
                                 <Filter data={Mock_Data.dropdown3} title="Lớp" />

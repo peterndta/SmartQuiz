@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { useHistory } from 'react-router-dom'
+import queryString from 'query-string'
+import { useHistory, useLocation } from 'react-router-dom'
 
 // import { useHistory } from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search'
@@ -52,22 +53,36 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }))
 
 const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight }) => {
-    const [value, setValue] = useState('')
-    const history = useHistory()
     searchHeightValue = searchHeight
     searchWidthValue = searchWidth
 
     inputWidthValue = inputWidth
     inputHeight ? (inputHeightValue = inputHeight) : (inputHeightValue = 1)
 
-    const changeHandler = (event) => setValue(event.target.value)
+    const { search: query, pathname } = useLocation()
+    const history = useHistory()
+    const { studysetname, sorttype, pageNumber, gradeid, subjectid } = queryString.parse(query)
+    const [searchValue, setSearchValue] = useState(studysetname ? studysetname : '')
 
-    const searchHandler = (event) => {
+    const searchChangeHandler = (event) => {
+        const searchText = event.target.value
+        setSearchValue(searchText)
+    }
+
+    const searchSubmitHandler = (event) => {
         if (event.key === 'Enter') {
-            if (value.trim().length !== 0) {
-                history.push(`/study-sets?studysetname=${value}`)
-                setValue('')
-            }
+            let route = pathname + '?'
+            if (searchValue && searchValue.trim() !== '') route += '&studysetname=' + searchValue
+
+            if (subjectid) route += `&subjectid=${subjectid}`
+
+            if (gradeid) route += `&gradeid=${gradeid}`
+
+            if (pageNumber) route += `&pageNumber=${pageNumber}`
+
+            if (sorttype) route += `&sorttype=${sorttype}`
+
+            history.push(route)
         }
     }
 
@@ -76,9 +91,8 @@ const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight }) => {
             <StyledInputBase
                 placeholder="Tìm kiếm"
                 inputProps={{ 'aria-label': 'search' }}
-                value={value}
-                onChange={changeHandler}
-                onKeyDown={searchHandler}
+                onChange={searchChangeHandler}
+                onKeyDown={searchSubmitHandler}
             />
             <SearchIconWrapper>
                 <SearchIcon sx={{ color: AppStyles.colors['#185CFF'] }} />
