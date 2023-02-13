@@ -1,35 +1,43 @@
-import React from 'react'
+/* eslint-disable no-extra-boolean-cast */
+import React, { useEffect } from 'react'
 
+import queryString from 'query-string'
 // import queryString from 'query-string'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import { FormControl, MenuItem, Select } from '@mui/material'
 
 import { AppStyles } from '~/constants/styles'
 
 const Sort = () => {
-    // const history = useHistory()
+    const history = useHistory()
     const { search: query, pathname } = useLocation()
-    // const { sort } = queryString.parse(query)
-    // const [type, setType] = React.useState(sort ? sort : 'Newest')
-    const [type, setType] = React.useState('Newest')
+    const { studysetname, sorttype, pageNumber, gradeid, subjectid } = queryString.parse(query)
+    const [type, setType] = React.useState(sorttype ? sorttype : 'Newest')
 
     const handleChange = (event) => {
         setType(event.target.value)
     }
 
-    // const filterHandler = () => {
-    //     let route = pathname + '?'
+    const filterHandler = () => {
+        let route = pathname + '?'
+        if (studysetname && studysetname.trim() !== '') route += '&studysetname=' + studysetname
 
-    //     if (!!type) route += `&sort=${type}`
+        if (subjectid) route += `&subjectid=${subjectid}`
 
-    //     history.push(route)
-    // }
+        if (gradeid) route += `&gradeid=${gradeid}`
 
-    // useEffect(() => {
-    //     filterHandler()
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [type])
+        if (pageNumber) route += `&pageNumber=${pageNumber}`
+
+        if (!!type) route += `&sorttype=${type}`
+
+        history.push(route)
+    }
+
+    useEffect(() => {
+        filterHandler()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [type])
 
     return (
         <FormControl sx={{ minWidth: 260 }}>
@@ -45,7 +53,7 @@ const Sort = () => {
                 }}
             >
                 <MenuItem value={'Newest'}>Gần nhất</MenuItem>
-                <MenuItem value={'Oldest'}>Xem nhiều nhất</MenuItem>
+                <MenuItem value={'Oldest'}>Cũ nhất</MenuItem>
             </Select>
         </FormControl>
     )
