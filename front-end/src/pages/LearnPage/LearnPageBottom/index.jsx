@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { useParams } from 'react-router-dom'
 import SwipeableViews from 'react-swipeable-views'
 
-import { ArrowCircleRight, Settings } from '@mui/icons-material'
-import { Box, IconButton, Skeleton, Tooltip, Typography } from '@mui/material'
-import ButtonCompo from '~/components/ButtonCompo'
+import { Settings } from '@mui/icons-material'
+import { Box, IconButton, Skeleton, Tooltip } from '@mui/material'
 
 import NumberQuestionModal from './NumberQuestionModal'
 import QuestionCard from './QuestionCard'
@@ -13,30 +12,6 @@ import QuestionCard from './QuestionCard'
 import { useSnackbar } from '~/HOC/SnackbarContext'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
-
-const ButtonStyle = {
-    color: AppStyles.colors['#000F33'],
-    textTransform: 'none',
-    height: 56,
-    minWidth: 413,
-    backgroundColor: AppStyles.colors['#CCDBFF'],
-    ':hover': {
-        bgcolor: AppStyles.colors['#004DFF'],
-        color: 'white',
-    },
-}
-const EndButton = {
-    mt: 4,
-    width: '100%',
-    backgroundColor: AppStyles.colors['#004DFF'],
-    textTransform: 'none',
-    fontSize: 16,
-    fontWeight: 500,
-    ':hover': {
-        bgcolor: AppStyles.colors['#0045e5'],
-        color: 'white',
-    },
-}
 
 const LearnPageBottom = () => {
     const { id } = useParams()
@@ -48,26 +23,36 @@ const LearnPageBottom = () => {
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [open, setOpen] = useState(false)
     const [index, setIndex] = useState(0)
+    const timeout = useRef(1)
 
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
 
     const checkAnswer = () => {
-        const getAnswers = [...studySetDetail.questions[index].answers]
+        const getQuestion = JSON.parse(JSON.stringify(studySetDetail.questions[index]))
+        const getAnswers = [...getQuestion.answers]
         const correctAnswers = getAnswers.filter((ans) => ans.isCorrectAnswer === true)
-        setCorrectAnswers({ isSubmit: true, ans: [...correctAnswers] })
 
-        if (selectedChoices.length !== correctAnswers.length) {
+        if (selectedChoices.length === 0) {
+            updateStudySetQuestion(getQuestion)
+            showSnackbar({
+                severity: 'error',
+                children: 'Bạn chưa lựa chọn đáp án nào!',
+            })
+        } else if (selectedChoices.length !== correctAnswers.length) {
+            setCorrectAnswers({ isSubmit: true, ans: [...correctAnswers] })
+            updateStudySetQuestion(getQuestion)
             showSnackbar({
                 severity: 'error',
                 children: 'Bạn đã lựa chọn đáp án sai!',
             })
-            setTimeout(() => {
-                setCorrectAnswers({ isSubmit: false, ans: [] })
+            timeout.current = setTimeout(() => {
                 setSelectedChoices([])
+                setCorrectAnswers({ isSubmit: false, ans: [] })
                 setIndex((prev) => prev + 1)
             }, 2000)
         } else if (selectedChoices.length === correctAnswers.length) {
+            setCorrectAnswers({ isSubmit: true, ans: [...correctAnswers] })
             const isCorrect = correctAnswers.every((correctAns) =>
                 selectedChoices.some((choice) => choice.id === correctAns.id)
             )
@@ -76,23 +61,30 @@ const LearnPageBottom = () => {
                     severity: 'success',
                     children: 'Chúc mừng bạn đã vượt qua!',
                 })
-                setTimeout(() => {
-                    setCorrectAnswers({ isSubmit: false, ans: [] })
+                timeout.current = setTimeout(() => {
                     setSelectedChoices([])
+                    setCorrectAnswers({ isSubmit: false, ans: [] })
                     setIndex((prev) => prev + 1)
                 }, 2000)
             } else {
+                updateStudySetQuestion(getQuestion)
                 showSnackbar({
                     severity: 'error',
                     children: 'Bạn đã lựa chọn đáp án sai!',
                 })
-                setTimeout(() => {
-                    setCorrectAnswers({ isSubmit: false, ans: [] })
+                timeout.current = setTimeout(() => {
                     setSelectedChoices([])
+                    setCorrectAnswers({ isSubmit: false, ans: [] })
                     setIndex((prev) => prev + 1)
                 }, 2000)
             }
         }
+    }
+
+    const updateStudySetQuestion = (question) => {
+        const updatedStudySet = JSON.parse(JSON.stringify(studySetDetail))
+        updatedStudySet.questions.push(question)
+        setStudySetDetail(updatedStudySet)
     }
 
     const handleSelectedChoices = (answer) => {
@@ -116,7 +108,7 @@ const LearnPageBottom = () => {
         getStudySet(id, signal)
             .then((response) => {
                 const data = response.data.data
-
+                data.questions.forEach((question, index) => (question.index = index))
                 setStudySetDetail(data)
                 setIsFirstRender(false)
             })
@@ -132,6 +124,13 @@ const LearnPageBottom = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        return () => {
+            clearTimeout(timeout.current)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [index])
 
     const disableButton = correctAnswers.isSubmit ? true : false
 
@@ -159,42 +158,20 @@ const LearnPageBottom = () => {
                     <Skeleton sx={{ height: 425, mb: 2, mt: 6 }} animation="wave" variant="rounded" />
                 </React.Fragment>
             ) : (
-                // <QuestionCard index={0} question={studySetDetail?.questions[0]} />
                 <SwipeableViews index={index} style={{ height: 'auto' }}>
                     {studySetDetail.questions.map((question, index) => (
                         <QuestionCard
                             question={question}
-                            index={index}
                             key={index}
                             handleSelectedChoices={handleSelectedChoices}
                             correctAnswers={correctAnswers}
                             selectedChoices={selectedChoices}
+                            checkAnswer={checkAnswer}
+                            disableButton={disableButton}
+                            id={id}
                         />
                     ))}
                 </SwipeableViews>
-            )}
-            <Box display="flex" alignItems="center" justifyContent="space-between" mt={3}>
-                {isFirstRender ? (
-                    <React.Fragment>
-                        <Skeleton sx={{ height: 56, width: 413 }} animation="wave" variant="rounded" />
-                    </React.Fragment>
-                ) : (
-                    <ButtonCompo style={ButtonStyle} onClick={checkAnswer} fullWidth={true} disable={disableButton}>
-                        <Typography mr={1.5} sx={{ fontSize: 16, fontWeight: 500 }}>
-                            Tiếp tục
-                        </Typography>
-                        <ArrowCircleRight fontSize="medium" />
-                    </ButtonCompo>
-                )}
-            </Box>
-            {isFirstRender ? (
-                <React.Fragment>
-                    <Skeleton sx={{ height: 60, width: 850, mt: 4 }} animation="wave" variant="rounded" />
-                </React.Fragment>
-            ) : (
-                <ButtonCompo variant="contained" style={EndButton} onClick={() => history.push(`/study-sets/${id}`)}>
-                    Kết thúc
-                </ButtonCompo>
             )}
         </Box>
     )
