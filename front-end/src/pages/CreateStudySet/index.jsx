@@ -35,7 +35,7 @@ const CreateStudySet = () => {
     const { createStudySet } = useStudySet()
 
     const mutateQuestionHandler = (question) => {
-        if (modalMode === 'create') setQuestions((prev) => [...prev, question])
+        if (modalMode === 'create') setQuestions((prev) => [...prev, { id: uuid(), ...question }])
         else if (modalMode === 'edit') {
             const questionIndex = questions.findIndex((quest) => quest.id === question.id)
             const updatedQuestions = JSON.parse(JSON.stringify(questions))
@@ -71,10 +71,11 @@ const CreateStudySet = () => {
         (id) => {
             const cloneQuestions = JSON.parse(JSON.stringify(questions))
             const updatedQuestion = cloneQuestions.filter((question) => question.id !== id)
+            console.log(id)
             setQuestions(updatedQuestion)
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [JSON.stringify(questions)]
+        [JSON.stringify(questions.length)]
     )
 
     const infoStudySetHandler = {
