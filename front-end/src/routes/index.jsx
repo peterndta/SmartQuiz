@@ -32,12 +32,6 @@ const hyBridRoutes = [
         name: 'detail',
         layout: 'common',
     },
-    {
-        component: lazy(() => import('~/pages/LearnPage')),
-        path: '/study-sets/:id/learn',
-        name: 'learn',
-        layout: 'common',
-    },
 ]
 
 const privateRoutes = [
@@ -76,6 +70,12 @@ const privateRoutes = [
         component: lazy(() => import('~/pages/TestPage')),
         path: '/study-sets/:id/test',
         name: 'test',
+        layout: 'common',
+    },
+    {
+        component: lazy(() => import('~/pages/LearnPage')),
+        path: '/study-sets/:id/learn',
+        name: 'learn',
         layout: 'common',
     },
 ]
