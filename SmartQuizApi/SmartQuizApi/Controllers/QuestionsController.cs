@@ -70,11 +70,11 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuestion(CreateQuestionDTO createQuestionDTO)
+        public async Task<IActionResult> CreateQuestion(CreateAQuesitonDTO createAQuestionDTO)
         {
             try
             {
-                var question = _mapper.Map<Question>(createQuestionDTO);
+                var question = _mapper.Map<Question>(createAQuestionDTO);
                 question.Id = Guid.NewGuid().ToString();
                 foreach (var answer in question.Answers)
                 {
