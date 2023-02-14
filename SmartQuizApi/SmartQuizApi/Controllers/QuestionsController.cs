@@ -70,7 +70,7 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuestion(CreateAQuesitonDTO createAQuestionDTO)
+        public async Task<IActionResult> CreateQuestion(CreateAQuestionDTO createAQuestionDTO)
         {
             try
             {
