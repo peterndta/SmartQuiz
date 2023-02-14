@@ -61,7 +61,11 @@ const Modal = ({ open, onClose, submitQuestionHandler }) => {
     }
 
     const handleReset = () => {
-        setAnswers(initialValue)
+        setAnswers([
+            { name: '', isCorrect: false, id: uuid() },
+            { name: '', isCorrect: false, id: uuid() },
+        ])
+        setQuestionName('')
     }
 
     return (

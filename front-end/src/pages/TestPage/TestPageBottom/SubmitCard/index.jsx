@@ -1,4 +1,6 @@
-import React from 'react'
+import { useMemo, useRef, useState } from 'react'
+
+import Countdown, { zeroPad } from 'react-countdown'
 
 import { Box, CardContent, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
@@ -6,37 +8,71 @@ import CardLayout from '~/components/CardLayout'
 
 import { AppStyles } from '~/constants/styles'
 
+const CardLayoutStyle = {
+    borderRadius: 3,
+    p: 1,
+    backgroundColor: AppStyles.colors['#004DFF'],
+    height: 266,
+}
+const ButtonStyle1 = {
+    color: 'white',
+    borderColor: 'white',
+    ':hover': {
+        bgcolor: '#d6d9e5',
+    },
+    height: 64,
+    minWidth: 235,
+}
+const ButtonStyle2 = {
+    color: AppStyles.colors['#004DFF'],
+    backgroundColor: AppStyles.colors['#EEF2FF'],
+    ':hover': {
+        bgcolor: '#d6d9e5',
+    },
+    height: 64,
+    minWidth: 235,
+}
+
 const SubmitCard = ({ questions }) => {
-    const CardLayoutStyle = {
-        borderRadius: 3,
-        p: 1,
-        backgroundColor: AppStyles.colors['#004DFF'],
-        height: 266,
+    const [isPaused, setIsPaused] = useState(false)
+    const countdownRef = useRef(null)
+
+    const now = useMemo(() => Date.now(), [])
+
+    const [countDown, _] = useState(now + 3600000)
+
+    const setRef = (countdown) => {
+        if (countdown) {
+            countdownRef.current = countdown.getApi()
+        }
     }
-    const ButtonStyle1 = {
-        color: 'white',
-        borderColor: 'white',
-        ':hover': {
-            borderColor: 'white',
-        },
-        height: 64,
-        minWidth: 235,
+
+    const handleStartClick = () => {
+        setIsPaused(false)
+        countdownRef.current && countdownRef.current.start()
     }
-    const ButtonStyle2 = {
-        color: AppStyles.colors['#004DFF'],
-        backgroundColor: AppStyles.colors['#EEF2FF'],
-        ':hover': {
-            bgcolor: '#d6d9e5',
-        },
-        height: 64,
-        minWidth: 235,
+
+    const handlePauseClick = () => {
+        setIsPaused(true)
+        countdownRef.current && countdownRef.current.pause()
     }
+
     return (
         <CardLayout style={CardLayoutStyle}>
             <CardContent>
                 <Box display="flex" alignItems="center">
                     <Typography sx={{ color: 'white', fontSize: 20 }}>Thời gian</Typography>
-                    <Typography sx={{ ml: 2, color: AppStyles.colors['#FFAF00'], fontSize: 36 }}>24:55</Typography>
+                    <Countdown
+                        date={countDown}
+                        intervalDelay={0}
+                        precision={3}
+                        renderer={(props) => (
+                            <Typography sx={{ ml: 2, color: AppStyles.colors['#FFAF00'], fontSize: 36 }}>
+                                {zeroPad(props.minutes)}:{zeroPad(props.seconds)}
+                            </Typography>
+                        )}
+                        ref={setRef}
+                    />
                 </Box>
                 <Box display="flex" alignItems="center" mt={1}>
                     <Typography sx={{ color: 'white', fontSize: 20 }}>Đã trả lời</Typography>
@@ -46,9 +82,15 @@ const SubmitCard = ({ questions }) => {
                     </Box>
                 </Box>
                 <Box display="flex" justifyContent="space-between" mt={3.5}>
-                    <ButtonCompo variant="outlined" style={ButtonStyle1}>
-                        Tạm dừng
-                    </ButtonCompo>
+                    {isPaused ? (
+                        <ButtonCompo variant="outlined" style={ButtonStyle1} onClick={handleStartClick}>
+                            Tiếp tục
+                        </ButtonCompo>
+                    ) : (
+                        <ButtonCompo variant="outlined" style={ButtonStyle1} onClick={handlePauseClick}>
+                            Tạm dừng
+                        </ButtonCompo>
+                    )}
                     <ButtonCompo variant="contained" style={ButtonStyle2}>
                         Nộp bài
                     </ButtonCompo>
