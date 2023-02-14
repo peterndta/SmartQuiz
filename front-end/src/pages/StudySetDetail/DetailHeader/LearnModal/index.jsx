@@ -64,7 +64,7 @@ const LearnModal = ({ open, handleClose, id }) => {
                 <ButtonCompo
                     variant="contained"
                     style={EndButton}
-                    onClick={() => history.push(`/study-sets/${id}/learn`)}
+                    onClick={() => history.push(`/study-sets/${id}/learn`, { mode: value })}
                 >
                     Tiến hành học
                 </ButtonCompo>
