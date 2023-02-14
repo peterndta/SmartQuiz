@@ -15,8 +15,8 @@ import { AppStyles } from '~/constants/styles'
 import Loading from '~/pages/Loading'
 
 const filterStringGenerator = ({ studysetname, sorttype, pageNumber, gradeid, subjectid }) => {
-    let filterString = ''
-    if (studysetname && studysetname.trim() !== '') filterString += '?StudySetName=' + studysetname
+    let filterString = '?'
+    if (studysetname && studysetname.trim() !== '') filterString += 'StudySetName=' + studysetname
 
     if (subjectid !== undefined) filterString += `&SubjectId=${subjectid}`
 
@@ -24,7 +24,7 @@ const filterStringGenerator = ({ studysetname, sorttype, pageNumber, gradeid, su
 
     if (pageNumber !== undefined) filterString += `&pageNumber=${pageNumber}`
 
-    filterString += `&pageSize=${8}`
+    filterString += `&pageSize=${12}`
 
     if (sorttype !== undefined) filterString += `&sorttype=${sorttype}`
 
@@ -90,7 +90,7 @@ const SearchPageBottom = () => {
                             <React.Fragment>
                                 <ListStudySets studySets={studySet.list} md={3} />{' '}
                                 {studySet.pageCount !== 1 ? (
-                                    <Box display="flex" justifyContent="center">
+                                    <Box display="flex" justifyContent="center" mt={6}>
                                         <Paging size={studySet.pageCount} />
                                     </Box>
                                 ) : (
