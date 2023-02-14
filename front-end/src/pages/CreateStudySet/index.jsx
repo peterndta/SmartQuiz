@@ -192,20 +192,24 @@ const CreateStudySet = () => {
                     switch (modalMode) {
                         case 'create':
                             return (
-                                <Modal
-                                    onClose={closeModalHandler}
-                                    submitQuestionHandler={mutateQuestionHandler}
-                                    open={openModal}
-                                />
+                                open && (
+                                    <Modal
+                                        onClose={closeModalHandler}
+                                        submitQuestionHandler={mutateQuestionHandler}
+                                        open={openModal}
+                                    />
+                                )
                             )
                         case 'edit':
                             return (
-                                <ModalUpdate
-                                    onClose={closeModalHandler}
-                                    submitQuestionHandler={mutateQuestionHandler}
-                                    open={openModal}
-                                    question={question}
-                                />
+                                open && (
+                                    <ModalUpdate
+                                        onClose={closeModalHandler}
+                                        submitQuestionHandler={mutateQuestionHandler}
+                                        open={openModal}
+                                        question={question}
+                                    />
+                                )
                             )
                     }
                 })()}

@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import FullWidthHeaderWhite from '~/components/FullWidthHeaderWhite'
 import PageTitle from '~/components/PageTitle'
 
@@ -14,4 +16,4 @@ const TestPageHeader = () => {
     )
 }
 
-export default TestPageHeader
+export default memo(TestPageHeader)
