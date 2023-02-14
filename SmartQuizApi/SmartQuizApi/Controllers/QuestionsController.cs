@@ -31,10 +31,11 @@ namespace SmartQuizApi.Controllers
                 {
                     return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Question id does not exist"));
                 }
-
+                var studySetId = question.StudySetId;
                 _repositoryManager.Question.DeleteQuestion(question);
 
                 var newQuestion = _mapper.Map<Question>(updateQuestionDTO);
+                newQuestion.StudySetId= studySetId;
                 _repositoryManager.Question.CreateQuestion(newQuestion);
                 await _repositoryManager.SaveChangesAsync();
 
