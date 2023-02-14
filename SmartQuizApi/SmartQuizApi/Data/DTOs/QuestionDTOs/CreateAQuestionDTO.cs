@@ -2,7 +2,7 @@
 
 namespace SmartQuizApi.Data.DTOs.QuestionDTOs
 {
-    public class CreateAQuesitonDTO
+    public class CreateAQuestionDTO
     {
         public string Name { get; set; }
 

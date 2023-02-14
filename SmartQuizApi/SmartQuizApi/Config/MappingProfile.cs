@@ -21,7 +21,7 @@ namespace SmartQuizApi.Config
             CreateMap<Answer, GetAnswerDTO>();
             CreateMap<StudySet, GetStudySetsListDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name));
             CreateMap<CreateQuestionDTO, Question>();
-            CreateMap<CreateAQuesitonDTO, Question>();
+            CreateMap<CreateAQuestionDTO, Question>();
             CreateMap<CreateAnwserDTO, Answer>();
             CreateMap<UpdateStudySetDTO, StudySet>().ForMember(des => des.Id, opt => opt.Ignore());
             CreateMap<UpdateQuestionDTO, Question>();
