@@ -1,4 +1,4 @@
-import { get, post } from '~/utils/ApiCaller'
+import { get, post, remove } from '~/utils/ApiCaller'
 
 const useStudySet = () => {
     const getStudySetList = (filters, signal) => get({ endpoint: `/api/StudySets/filter${filters}`, signal })
@@ -14,8 +14,12 @@ const useStudySet = () => {
             signal: signal,
             params: { userId: userId, pageNumber: pageNumber, pageSize: 8 },
         })
+    const deleteStudySet = (studySetId) =>
+        remove({
+            endpoint: `/api/StudySets/${studySetId}`,
+        })
     const createStudySet = (studySet) => post({ endpoint: '/api/studySets', body: studySet })
-    return { getStudySetList, getStudySet, getMyStudySets, createStudySet }
+    return { getStudySetList, getStudySet, getMyStudySets, createStudySet, deleteStudySet }
 }
 
 export default useStudySet
