@@ -172,7 +172,6 @@ public partial class SmartquizContext : DbContext
 
             entity.HasOne(d => d.StudySet).WithMany(p => p.Histories)
                 .HasForeignKey(d => d.StudySetId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Histories_StudySets");
 
             entity.HasOne(d => d.User).WithMany(p => p.Histories)
@@ -269,7 +268,6 @@ public partial class SmartquizContext : DbContext
 
             entity.HasOne(d => d.StudySet).WithMany(p => p.TestResults)
                 .HasForeignKey(d => d.StudySetId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TestResults_StudySets");
 
             entity.HasOne(d => d.User).WithMany(p => p.TestResults)
