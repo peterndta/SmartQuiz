@@ -73,7 +73,7 @@ const StudyCard = ({ studySet, md }) => {
                             color="text.secondary"
                             sx={{ fontSize: 14, userSelect: 'none' }}
                         >
-                            100 câu
+                            {studySet.totalQuestions} câu
                         </Typography>
                     </Box>
                     <Box display="flex" mt={3} textAlign={'left'}>

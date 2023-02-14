@@ -29,7 +29,7 @@ const StudySets = ({ getMyStudySets }) => {
             color: 'white',
         },
     }
-    const { getStudySet } = useStudySet()
+    const { getStudySet, deleteStudySet } = useStudySet()
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [studySet, setStudySet] = useState({})
     const [studySetDetail, setStudySetDetail] = useState({})
@@ -65,6 +65,26 @@ const StudySets = ({ getMyStudySets }) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [Id])
+
+    const deleteStudySetHandler = (studySetId) => {
+        setIsFirstRender(true)
+        deleteStudySet(studySetId)
+            .then(() => {
+                const cloneStudySet = studySet
+
+                const newStudySet = cloneStudySet.filter((studySet) => studySet.id !== studySetId)
+
+                setIsFirstRender(false)
+                setStudySet(newStudySet)
+            })
+            .catch(() => {
+                setIsFirstRender(false)
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+    }
     return (
         <Grid
             container
@@ -105,6 +125,7 @@ const StudySets = ({ getMyStudySets }) => {
                                 setId={setId}
                                 setClickIndex={setClickIndex}
                                 clickIndex={clickIndex}
+                                deleteStudySetHandler={deleteStudySetHandler}
                             />
                         )}
                     </Grid>

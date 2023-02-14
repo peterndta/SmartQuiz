@@ -2,18 +2,22 @@ import React, { useRef, useState } from 'react'
 
 import { Link as RouterLink } from 'react-router-dom'
 
-import { BookmarkAdd, BorderColor, MoreVert } from '@mui/icons-material'
+import { BookmarkAdd, BorderColor, Delete, MoreVert } from '@mui/icons-material'
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
 
 import { AppStyles } from '~/constants/styles'
 
-const MoreMenu = ({ studySetId, saveButtonOn, color }) => {
+const MoreMenu = ({ studySetId, saveButtonOn, color, deleteButtonOn, deleteStudySetHandler }) => {
     const ref = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
 
+    const deleteHandler = () => {
+        deleteStudySetHandler(studySetId)
+    }
+
     return (
         <React.Fragment>
-            <IconButton size="small" sx={{ ml: 1 }} ref={ref} onClick={() => setIsOpen(true)}>
+            <IconButton size="small" ref={ref} onClick={() => setIsOpen(true)}>
                 <MoreVert size="small" sx={{ color: color }} />
             </IconButton>
 
@@ -46,6 +50,14 @@ const MoreMenu = ({ studySetId, saveButtonOn, color }) => {
                     </ListItemIcon>
                     <ListItemText primary="Sửa" primaryTypographyProps={{ variant: 'body2' }} />
                 </MenuItem>
+                {deleteButtonOn && (
+                    <MenuItem sx={{ color: 'text.secondary' }} onClick={deleteHandler}>
+                        <ListItemIcon>
+                            <Delete fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Xóa" primaryTypographyProps={{ variant: 'body2' }} />
+                    </MenuItem>
+                )}
             </Menu>
         </React.Fragment>
     )

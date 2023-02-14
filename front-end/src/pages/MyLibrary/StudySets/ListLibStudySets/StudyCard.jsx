@@ -1,4 +1,4 @@
-import { GppGood } from '@mui/icons-material'
+// import { GppGood } from '@mui/icons-material'
 import { Avatar, Box, CardContent, Grid, Typography } from '@mui/material'
 import CardLayout from '~/components/CardLayout'
 import MoreMenu from '~/components/MoreMenu'
@@ -6,7 +6,7 @@ import MoreMenu from '~/components/MoreMenu'
 import logo from '~/assets/images/User 5.png'
 import { AppStyles } from '~/constants/styles'
 
-const StudyCard = ({ studySet, setId, studySets, setClickIndex, clickIndex, index }) => {
+const StudyCard = ({ studySet, setId, studySets, setClickIndex, clickIndex, index, deleteStudySetHandler }) => {
     const CardLayoutStyle = {
         borderRadius: 3,
         boxShadow: '0px 1px 2px rgba(0, 46, 153, 0.3), 0px 1px 3px 1px rgba(0, 46, 153, 0.15)',
@@ -44,16 +44,19 @@ const StudyCard = ({ studySet, setId, studySets, setClickIndex, clickIndex, inde
                             >
                                 {studySet.name}
                             </Typography>
-                            {Math.random() < 0.5 && (
+                            {/* {Math.random() < 0.5 && (
                                 <GppGood
                                     fontSize="small"
                                     sx={{ ml: 1, mt: -0.5, color: AppStyles.colors['#004DFF'] }}
                                 />
-                            )}
+                            )} */}
                         </Box>
+
                         <MoreMenu
                             studySetId={studySet.id}
                             color={clickIndex === index && AppStyles.colors['#767680']}
+                            deleteButtonOn={true}
+                            deleteStudySetHandler={deleteStudySetHandler}
                         />
                     </Box>
                     <Box display="flex">
@@ -72,6 +75,7 @@ const StudyCard = ({ studySet, setId, studySets, setClickIndex, clickIndex, inde
                                 color: clickIndex === index ? AppStyles.colors['#FFFFFF'] : AppStyles.colors['#333333'],
                             }}
                         >
+                            {studySet.gradeName !== 'Đại học' ? 'Lớp' : ''} {studySet.gradeName} -{' '}
                             {!studySet.subjectName ? studySet.schoolName : studySet.subjectName} |
                         </Typography>
                         <Typography
@@ -84,7 +88,7 @@ const StudyCard = ({ studySet, setId, studySets, setClickIndex, clickIndex, inde
                                 color: clickIndex === index ? AppStyles.colors['#FFFFFF'] : AppStyles.colors['#333333'],
                             }}
                         >
-                            100 câu
+                            {studySet.totalQuestions} câu
                         </Typography>
                     </Box>
                     <Box display="flex" mt={3} textAlign={'left'}>

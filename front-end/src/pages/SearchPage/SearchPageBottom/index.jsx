@@ -37,6 +37,7 @@ const SearchPageBottom = () => {
     const { getStudySetList } = useStudySet()
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [studySet, setStudySet] = useState({ list: [], pageCount: 1 })
+    const [studySetLength, setStudySetLength] = useState()
     const showSnackbar = useSnackbar()
     // console.log(filterStringGenerator({ studysetname, sorttype, pageNumber, gradeid, subjectid }))
     useEffect(() => {
@@ -48,7 +49,13 @@ const SearchPageBottom = () => {
         getStudySetList(params, signal)
             .then((response) => {
                 const listStudySet = response.data.data
-                const { totalPages } = response.data.meta
+                setStudySetLength(response.data.data.length)
+                let totalPages
+                if (response.data.meta) {
+                    totalPages = response.data.meta.totalPages
+                } else {
+                    totalPages = 1
+                }
                 setStudySet({ list: listStudySet, pageCount: totalPages })
                 setIsFirstRender(false)
             })
@@ -86,7 +93,7 @@ const SearchPageBottom = () => {
                     <Loading />
                 ) : (
                     <React.Fragment>
-                        {studySet.list.length ? (
+                        {studySetLength > 0 ? (
                             <React.Fragment>
                                 <ListStudySets studySets={studySet.list} md={3} />{' '}
                                 {studySet.pageCount !== 1 ? (
