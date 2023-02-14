@@ -32,15 +32,14 @@ namespace SmartQuizApi.Controllers
             return Challenge(props, "Google");
         }
 
-        [HttpGet]
-        [Route("~/sigin-google")]
+        [HttpGet("signin-google")]
         public async Task<IActionResult> ExternalLoginCallBack()
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             var userLogin = _authService.GetUser(result);
             if (userLogin == null)
             {
-                return Redirect($"abc");
+                return Redirect($"https://smart-quiz.vercel.app/error");
             }
 
             var user = await _repositoryManager.User.GetUserByEmailAsync(userLogin.Email);
@@ -58,7 +57,7 @@ namespace SmartQuizApi.Controllers
             {
                 HttpOnly = true
             });
-            return Redirect($"{accessToken}");
+            return Redirect($"https://smart-quiz.vercel.app/login?token={accessToken}");
         }
 
         [HttpPost]

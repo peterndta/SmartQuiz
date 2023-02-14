@@ -5,7 +5,7 @@ import ButtonCompo from '~/components/ButtonCompo'
 
 import { AppStyles } from '~/constants/styles'
 
-const NumberQuestionModal = ({ open, handleClose, numberOfQuestion }) => {
+const NumberQuestionModal = ({ open, handleClose, numberOfQuestion, setStart }) => {
     const [num, setNum] = useState(1)
 
     const handleChange = (e) => {
@@ -14,6 +14,12 @@ const NumberQuestionModal = ({ open, handleClose, numberOfQuestion }) => {
             setNum(e.target.value)
         }
     }
+
+    const handleSubmit = () => {
+        setStart(+num)
+        handleClose()
+    }
+
     const EndButton = {
         mt: 5,
         width: '100%',
@@ -60,7 +66,7 @@ const NumberQuestionModal = ({ open, handleClose, numberOfQuestion }) => {
                         /{numberOfQuestion} câu hỏi
                     </Typography>
                 </Box>
-                <ButtonCompo variant="contained" style={EndButton}>
+                <ButtonCompo variant="contained" style={EndButton} onClick={handleSubmit}>
                     Tiến hành học
                 </ButtonCompo>
             </Box>

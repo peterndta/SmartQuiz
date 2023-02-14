@@ -58,7 +58,7 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetStudySetDetail(string id, int userId)
+        public async Task<IActionResult> GetStudySetDetail(string id, int? userId)
         {
             try
             {
@@ -79,7 +79,12 @@ namespace SmartQuizApi.Controllers
                     question.MultipleChoice = question.Answers.Where(x => x.IsCorrectAnswer == true).Count() > 1;
                 }
 
-                var history = _repositoryManager.History.GetHistory(userId, id);
+                if (userId == null)
+                {
+                    return StatusCode(StatusCodes.Status200OK, new Response(200, studySetDTO));
+                }
+
+                var history = _repositoryManager.History.GetHistory(userId.Value, id);
                 if (history != null)
                 {
                     history.CreateAt = DateTime.Now;
@@ -89,7 +94,7 @@ namespace SmartQuizApi.Controllers
                 {
                     _repositoryManager.History.CreateHistory(new History
                     {
-                        UserId = userId,
+                        UserId = userId.Value,
                         StudySetId = id,
                         CreateAt = DateTime.Now,
                     });
@@ -172,13 +177,13 @@ namespace SmartQuizApi.Controllers
                 var listSubjectsOfGradeId = _repositoryManager.SubjectsOfGrade.GetListSubjectsOfGradesId(filter.GradeId, filter.SubjectId);
                 if ((filter.SubjectId == null && filter.GradeId == null && filter.StudySetName == null) || listSubjectsOfGradeId == null)
                 {
-                    return StatusCode(StatusCodes.Status200OK, new Response(200, "", ""));
+                    return StatusCode(StatusCodes.Status200OK, new Response(200, new List<GetStudySetsListDTO>(), ""));
                 }            
                 
                 var studySetsList = await _repositoryManager.StudySet.FilterStudySetAsync(filter.StudySetName, listSubjectsOfGradeId, sorttype);
                 if (studySetsList.Count == 0)
                 {
-                    return StatusCode(StatusCodes.Status200OK, new Response(200, "", ""));
+                    return StatusCode(StatusCodes.Status200OK, new Response(200, new List<GetStudySetsListDTO>(), ""));
                 }
 
                 var studySetsListDTO = _mapper.Map<List<GetStudySetsListDTO>>(studySetsList);
