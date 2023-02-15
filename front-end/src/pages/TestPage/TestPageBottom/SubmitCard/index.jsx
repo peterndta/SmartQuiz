@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { memo, useMemo, useRef, useState } from 'react'
 
 import Countdown, { zeroPad } from 'react-countdown'
 
@@ -33,13 +33,13 @@ const ButtonStyle2 = {
     minWidth: 235,
 }
 
-const SubmitCard = ({ questions }) => {
+const SubmitCard = ({ questionLength, selectedLength, handleSubmit }) => {
     const [isPaused, setIsPaused] = useState(false)
     const countdownRef = useRef(null)
 
     const now = useMemo(() => Date.now(), [])
 
-    const [countDown, _] = useState(now + 3600000)
+    const countDown = useRef(now + 3600000)
 
     const setRef = (countdown) => {
         if (countdown) {
@@ -63,7 +63,7 @@ const SubmitCard = ({ questions }) => {
                 <Box display="flex" alignItems="center">
                     <Typography sx={{ color: 'white', fontSize: 20 }}>Thời gian</Typography>
                     <Countdown
-                        date={countDown}
+                        date={countDown.current}
                         intervalDelay={0}
                         precision={3}
                         renderer={(props) => (
@@ -77,8 +77,10 @@ const SubmitCard = ({ questions }) => {
                 <Box display="flex" alignItems="center" mt={1}>
                     <Typography sx={{ color: 'white', fontSize: 20 }}>Đã trả lời</Typography>
                     <Box display="flex" alignItems="center">
-                        <Typography sx={{ ml: 2, color: AppStyles.colors['#FFAF00'], fontSize: 36 }}>3</Typography>
-                        <Typography sx={{ color: 'white', fontSize: 36 }}>/{questions.length}</Typography>
+                        <Typography sx={{ ml: 2, color: AppStyles.colors['#FFAF00'], fontSize: 36 }}>
+                            {selectedLength}
+                        </Typography>
+                        <Typography sx={{ color: 'white', fontSize: 36 }}>/{questionLength}</Typography>
                     </Box>
                 </Box>
                 <Box display="flex" justifyContent="space-between" mt={3.5}>
@@ -91,7 +93,7 @@ const SubmitCard = ({ questions }) => {
                             Tạm dừng
                         </ButtonCompo>
                     )}
-                    <ButtonCompo variant="contained" style={ButtonStyle2}>
+                    <ButtonCompo variant="contained" style={ButtonStyle2} onClick={handleSubmit}>
                         Nộp bài
                     </ButtonCompo>
                 </Box>
@@ -100,4 +102,4 @@ const SubmitCard = ({ questions }) => {
     )
 }
 
-export default SubmitCard
+export default memo(SubmitCard)
