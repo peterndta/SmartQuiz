@@ -56,6 +56,7 @@ const CreateStudySet = () => {
 
     const openEditModal = (id) => {
         const questionSelected = questions.find((quest) => quest.id === id)
+        console.log(questionSelected)
         setQuestion(questionSelected)
         setModalMode('edit')
         setOpenModal(true)
@@ -71,7 +72,6 @@ const CreateStudySet = () => {
         (id) => {
             const cloneQuestions = JSON.parse(JSON.stringify(questions))
             const updatedQuestion = cloneQuestions.filter((question) => question.id !== id)
-            console.log(id)
             setQuestions(updatedQuestion)
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -173,17 +173,15 @@ const CreateStudySet = () => {
         <Box component="form" onSubmit={submitStudySetHandler}>
             <Container maxWidth="xl">
                 <NewStudySet infoStudySetHandler={infoStudySetHandler} infoStudySet={infoStudySet} />
-                <Box
-                    display="flex"
-                    justifyContent="flex-end"
-                    mt={2}
-                    component="a"
-                    href={template}
-                    download="Template.xlsx"
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    <Tooltip title="Tải template">
+                <Box display="flex" justifyContent="flex-end" mt={2}>
+                    <Tooltip
+                        title="Tải template"
+                        component="a"
+                        href={template}
+                        download="Template.xlsx"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
                         <Button variant="contained" sx={{ px: 5, py: 2 }}>
                             <FileDownload />
                         </Button>

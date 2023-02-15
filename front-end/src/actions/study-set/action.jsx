@@ -5,7 +5,7 @@ const useStudySet = () => {
 
     const getStudySet = (id, signal) =>
         get({
-            endpoint: `/api/StudySets/${id}?userId=1`,
+            endpoint: `/api/StudySets/${id}`,
             signal: signal,
         })
     const getMyStudySets = (userId, pageNumber, signal) =>
