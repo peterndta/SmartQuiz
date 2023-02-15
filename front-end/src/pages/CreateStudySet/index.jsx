@@ -35,7 +35,7 @@ const CreateStudySet = () => {
     const { createStudySet } = useStudySet()
 
     const mutateQuestionHandler = (question) => {
-        if (modalMode === 'create') setQuestions((prev) => [...prev, { id: uuid(), ...question }])
+        if (modalMode === 'create') setQuestions((prev) => [...prev, { ...question }])
         else if (modalMode === 'edit') {
             const questionIndex = questions.findIndex((quest) => quest.id === question.id)
             const updatedQuestions = JSON.parse(JSON.stringify(questions))
@@ -71,7 +71,6 @@ const CreateStudySet = () => {
         (id) => {
             const cloneQuestions = JSON.parse(JSON.stringify(questions))
             const updatedQuestion = cloneQuestions.filter((question) => question.id !== id)
-            console.log(id)
             setQuestions(updatedQuestion)
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -173,17 +172,15 @@ const CreateStudySet = () => {
         <Box component="form" onSubmit={submitStudySetHandler}>
             <Container maxWidth="xl">
                 <NewStudySet infoStudySetHandler={infoStudySetHandler} infoStudySet={infoStudySet} />
-                <Box
-                    display="flex"
-                    justifyContent="flex-end"
-                    mt={2}
-                    component="a"
-                    href={template}
-                    download="Template.xlsx"
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    <Tooltip title="Tải template">
+                <Box display="flex" justifyContent="flex-end" mt={2}>
+                    <Tooltip
+                        title="Tải template"
+                        component="a"
+                        href={template}
+                        download="Template.xlsx"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
                         <Button variant="contained" sx={{ px: 5, py: 2 }}>
                             <FileDownload />
                         </Button>
@@ -193,7 +190,7 @@ const CreateStudySet = () => {
                     switch (modalMode) {
                         case 'create':
                             return (
-                                open && (
+                                openModal && (
                                     <Modal
                                         onClose={closeModalHandler}
                                         submitQuestionHandler={mutateQuestionHandler}
@@ -203,7 +200,7 @@ const CreateStudySet = () => {
                             )
                         case 'edit':
                             return (
-                                open && (
+                                openModal && (
                                     <ModalUpdate
                                         onClose={closeModalHandler}
                                         submitQuestionHandler={mutateQuestionHandler}

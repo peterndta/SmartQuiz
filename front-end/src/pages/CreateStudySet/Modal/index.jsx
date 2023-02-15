@@ -55,10 +55,14 @@ const Modal = ({ open, onClose, submitQuestionHandler }) => {
     }
 
     const handleSubmit = () => {
-        const question = { quest: questionName, ans: answers }
+        const question = { quest: questionName, ans: answers, id: uuid() }
         submitQuestionHandler(question)
         handleReset()
     }
+
+    const isChecked = answers.some((ans) => ans.isCorrect === true)
+
+    const disable = !questionName || !isChecked
 
     const handleReset = () => {
         setAnswers([
@@ -138,7 +142,7 @@ const Modal = ({ open, onClose, submitQuestionHandler }) => {
                 <Button onClick={handleReset} variant="contained" color="warning">
                     Thiết lập ban đầu
                 </Button>
-                <Button onClick={handleSubmit} variant="contained">
+                <Button onClick={handleSubmit} variant="contained" disabled={disable}>
                     Lưu
                 </Button>
             </DialogActions>

@@ -51,18 +51,3 @@ export const put = ({ endpoint, body = {}, params = {}, headers = {} }) => {
 export const remove = ({ endpoint, body = {}, params = {}, headers = {} }) => {
     return mutate(endpoint, 'DELETE', headers, params, body)
 }
-
-// {id: 1, value: 1}
-// ;[
-//     {
-//         id: 1,
-//         value: 1,
-//     },
-//     {
-//         id: 2,value: 2
-//     }
-// ]
-
-// [{
-//     id: 1,value: 1
-// }]

@@ -49,7 +49,7 @@ const useAuthAction = () => {
                         image: user.image,
                         role: user.role,
                         exp: user.exp,
-                        userId: user.userId,
+                        userId: +user.userId,
                     })
                 )
             } else {

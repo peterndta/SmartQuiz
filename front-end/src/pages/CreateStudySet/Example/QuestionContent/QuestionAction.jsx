@@ -1,4 +1,4 @@
-import { Delete, Edit, Image, Lock } from '@mui/icons-material'
+import { Image, Lock } from '@mui/icons-material'
 import { Badge, Box, IconButton, Stack, Typography } from '@mui/material'
 
 import { AppStyles } from './../../../../constants/styles'
@@ -21,14 +21,7 @@ const QuestionAction = ({ index }) => {
                     </Badge>
                 </IconButton>
             </Stack>
-            <Box display="flex">
-                <IconButton>
-                    <Edit color="primary" />
-                </IconButton>
-                <IconButton>
-                    <Delete />
-                </IconButton>
-            </Box>
+            <Box display="flex"></Box>
         </Box>
     )
 }

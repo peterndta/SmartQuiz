@@ -1,45 +1,85 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 
 import { AddBox } from '@mui/icons-material'
 import { Box, Container, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 
 import Loading from '../Loading'
-import QuestionsExample from './Example'
 import Modal from './Modal'
 import ModalUpdate from './ModalUpdate'
 import NewStudySet from './NewStudySet'
 import Questions from './Questions'
 
-import { initialValue, level, levelSchool } from '~/Mock'
+import { useSnackbar } from '~/HOC/SnackbarContext'
+import { initialValue } from '~/Mock'
+import { useQuestion } from '~/actions/question'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
 
 const UpdateStudySet = () => {
     const { id } = useParams()
-    const { getStudySet } = useStudySet()
-    const [loading, setIsLoading] = useState(true)
-    const [schoolLevel, setSchoolLevel] = useState(initialValue)
-    const [isUniversity, setIsUniversity] = useState(false)
-    const [universityName, setUniversityName] = useState(initialValue)
     const [classLevel, setClassLevel] = useState(initialValue)
     const [subject, setSubject] = useState(initialValue)
     const [title, setTitle] = useState('')
     const [questions, setQuestions] = useState([])
     const [openModal, setOpenModal] = useState(false)
-    // const { userId } = useAppSelector((state) => state.auth)
     const [modalMode, setModalMode] = useState('create')
     const [question, setQuestion] = useState({})
+    const history = useHistory()
+    const [isLoading, setIsLoading] = useState(true)
+    const { getStudySet, updateStudySet } = useStudySet()
+    const { updateQuestion, createQuestion } = useQuestion()
+    const showSnackbar = useSnackbar()
 
     const mutateQuestionHandler = (question) => {
-        if (modalMode === 'create') setQuestions((prev) => [...prev, question])
-        else if (modalMode === 'edit') {
-            const questionIndex = questions.findIndex((quest) => quest.id === question.id)
-            const updatedQuestions = JSON.parse(JSON.stringify(questions))
-            updatedQuestions.splice(questionIndex, 1, question)
-            setQuestions(updatedQuestions)
+        const { id: questId, quest } = question
+        const formatAnswers = question.ans.map((answer) => ({
+            name: answer.name,
+            isCorrectAnswer: answer.isCorrect,
+        }))
+        if (modalMode === 'create') {
+            const formatQuestion = { name: quest, answer: formatAnswers, studySetId: questId }
+            createQuestion(formatQuestion)
+                .then((res) => {
+                    const newQuestion = res.data.data
+                })
+                .catch(() => {
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Học phần này có thể đã bị xóa, vui lòng tải lại trang!',
+                    })
+                })
+        } else if (modalMode === 'edit') {
+            const formatQuestion = { id: questId, name: quest, answers: formatAnswers }
+            updateQuestion(formatQuestion)
+                .then((res) => {
+                    const updatedQuestion = res.data.data
+                    const questionIndex = questions.findIndex((quest) => quest.id === question.id)
+                    const updatedQuestions = JSON.parse(JSON.stringify(questions))
+                    const formattedAnswers = updatedQuestion.answers.map((answer) => {
+                        return {
+                            name: answer.name,
+                            isCorrect: answer.isCorrectAnswer,
+                            id: answer.id,
+                        }
+                    })
+                    const formattedQuestion = {
+                        quest: updatedQuestion.name,
+                        id: updatedQuestion.id,
+                        ans: formattedAnswers,
+                    }
+                    updatedQuestions.splice(questionIndex, 1, formattedQuestion)
+                    setQuestions(updatedQuestions)
+                })
+                .catch(() => {
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Học phần này có thể đã bị xóa, vui lòng tải lại trang!',
+                    })
+                })
+            setQuestion({})
             closeModalHandler()
         }
     }
@@ -62,10 +102,6 @@ const UpdateStudySet = () => {
 
     const titleChangeHandler = ({ target: { value } }) => setTitle(value)
 
-    const levelChangeHandler = (name, value) => setSchoolLevel(() => ({ label: name, value: value }))
-
-    const universityNameChangeHandler = (name, value) => setUniversityName(() => ({ label: name, value: value }))
-
     const classChangeHandler = (name, value) => setClassLevel(() => ({ label: name, value: value }))
 
     const subjectChangeHandler = (name, value) => setSubject(() => ({ label: name, value: value }))
@@ -77,133 +113,147 @@ const UpdateStudySet = () => {
             setQuestions(updatedQuestion)
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [JSON.stringify(questions)]
+        [JSON.stringify(questions.length)]
     )
 
     const infoStudySetHandler = {
         titleChangeHandler,
-        levelChangeHandler,
-        universityNameChangeHandler,
         classChangeHandler,
         subjectChangeHandler,
     }
 
     const infoStudySet = {
-        schoolLevel,
-        isUniversity,
-        universityName,
         classLevel,
         subject,
         title,
         questions,
     }
 
-    useEffect(() => {
-        if (schoolLevel.label === level.university) {
-            setIsUniversity(true)
-        } else {
-            setIsUniversity(false)
-            if (classLevel.value < 3 && subject.label === 'Hóa') setSubject(initialValue)
+    const submitStudySetHandler = (event) => {
+        event.preventDefault()
+        const studySet = {
+            id: id,
+            name: title,
+            subjectId: subject.value,
+            gradeId: classLevel.value,
+            classId: null,
+            isPublic: true,
         }
-        setClassLevel(initialValue)
-        setSubject(initialValue)
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [schoolLevel.value])
+        updateStudySet(studySet)
+            .then(() => {
+                history.push(`/study-sets/${id}`)
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Học phần này có thể đã bị xóa, vui lòng tải lại trang!',
+                })
+            })
+    }
 
     useEffect(() => {
         const controller = new AbortController()
         const signal = controller.signal
-        getStudySet(id, signal).then((res) => {
-            const studySet = res.data.data
-            setTitle(studySet.name)
-            if (studySet.schoolId) {
-                setIsUniversity(true)
-                setSchoolLevel(levelSchool[2])
-                setUniversityName({ value: studySet.schoolId, label: studySet.schoolName })
-            } else {
-                setIsUniversity(false)
-                if (studySet.gradeId > 5) {
-                    setSchoolLevel(levelSchool[1])
-                } else {
-                    setSchoolLevel(levelSchool[0])
-                }
-                setClassLevel({ value: studySet.gradeId, label: studySet.gradeName })
-                setSubject({ value: studySet.subjectId, label: studySet.subjectName })
-            }
-            setIsLoading(false)
-        })
+        getStudySet(id, signal)
+            .then((res) => {
+                const studySet = res.data.data
+                const formatQuestions = studySet.questions.map((question) => {
+                    return {
+                        quest: question.name,
+                        id: question.id,
+                        ans: question.answers.map((answer) => {
+                            return {
+                                name: answer.name,
+                                isCorrect: answer.isCorrectAnswer,
+                                id: answer.id,
+                            }
+                        }),
+                    }
+                })
+                setTitle(studySet.name)
+                setClassLevel({ label: studySet.gradeName, value: studySet.gradeId })
+                setSubject({ label: studySet.subjectName, value: studySet.subjectId })
+                setQuestions(formatQuestions)
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
         return () => {
             controller.abort()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    return loading ? (
+    useEffect(() => {
+        if (classLevel.value < 3 && subject.label === 'Hóa học') setSubject(initialValue)
+        else if (classLevel.value <= 7 && subject.value > 7) setSubject(initialValue)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [classLevel.value])
+
+    return isLoading ? (
         <Loading />
     ) : (
-        <Box component="form">
+        <Box component="form" onSubmit={submitStudySetHandler}>
             <Container maxWidth="xl">
                 <NewStudySet infoStudySetHandler={infoStudySetHandler} infoStudySet={infoStudySet} />
                 {(() => {
                     switch (modalMode) {
                         case 'create':
                             return (
-                                <Modal
-                                    onClose={closeModalHandler}
-                                    submitQuestionHandler={mutateQuestionHandler}
-                                    open={openModal}
-                                />
+                                openModal && (
+                                    <Modal
+                                        onClose={closeModalHandler}
+                                        submitQuestionHandler={mutateQuestionHandler}
+                                        open={openModal}
+                                    />
+                                )
                             )
                         case 'edit':
                             return (
-                                <ModalUpdate
-                                    onClose={closeModalHandler}
-                                    submitQuestionHandler={mutateQuestionHandler}
-                                    open={openModal}
-                                    question={question}
-                                />
+                                openModal && (
+                                    <ModalUpdate
+                                        onClose={closeModalHandler}
+                                        submitQuestionHandler={mutateQuestionHandler}
+                                        open={openModal}
+                                        question={question}
+                                    />
+                                )
                             )
                     }
                 })()}
-                {questions.length > 0 ? (
-                    <Questions
-                        quest={JSON.stringify(questions)}
-                        deleteQuestionDraft={deleteQuestionDraft}
-                        openEditModal={openEditModal}
-                    />
-                ) : (
-                    <QuestionsExample />
-                )}
-                <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    mt={3}
-                    py={4}
-                    sx={{
-                        borderRadius: 4,
-                        backgroundColor: AppStyles.colors['#CCDBFF'],
-                        transition: 'all 0.3s linear',
-                        cursor: 'pointer',
-                        '&:hover': {
-                            opacity: 0.75,
-                        },
-                    }}
-                    onClick={openModalHandler}
-                >
-                    <AddBox sx={{ color: AppStyles.colors['#000F33'] }} />
-                    <Typography fontWeight={600} variant="h6" sx={{ color: AppStyles.colors['#000F33'], ml: 1 }}>
-                        Thêm thẻ mới
-                    </Typography>
+                <Questions
+                    quest={JSON.stringify(questions)}
+                    deleteQuestionDraft={deleteQuestionDraft}
+                    openEditModal={openEditModal}
+                />
+                <Box display="flex">
+                    <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        mt={3}
+                        py={4}
+                        sx={{
+                            borderRadius: 4,
+                            backgroundColor: AppStyles.colors['#185CFF'],
+                            transition: 'all 0.3s linear',
+                            cursor: 'pointer',
+                            '&:hover': {
+                                opacity: 0.75,
+                            },
+                            flex: 1,
+                            mr: 2,
+                        }}
+                        onClick={openModalHandler}
+                    >
+                        <AddBox sx={{ color: AppStyles.colors['#FFFFFF'] }} />
+                        <Typography fontWeight={600} variant="h6" sx={{ ml: 1, color: AppStyles.colors['#FFFFFF'] }}>
+                            Thêm thẻ mới
+                        </Typography>
+                    </Box>
                 </Box>
             </Container>
-            <Box
-                sx={{
-                    backgroundColor: AppStyles.colors['#FAFBFF'],
-                    mt: 3,
-                }}
-            >
+            <Box sx={{ backgroundColor: AppStyles.colors['#FAFBFF'], mt: 3 }}>
                 <Container maxWidth="xl">
                     <Box display="flex" justifyContent="space-between" py={3} alignItems="center">
                         <Box display="flex" alignItems="baseline">
@@ -219,8 +269,9 @@ const UpdateStudySet = () => {
                                 variant="contained"
                                 style={{ backgroundColor: AppStyles.colors['#004DFF'] }}
                                 type="submit"
+                                disable={questions.length === 0}
                             >
-                                Tạo học phần
+                                Lưu học phần
                             </ButtonCompo>
                         </Box>
                     </Box>
