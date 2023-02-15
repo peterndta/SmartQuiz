@@ -20,11 +20,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
-const initialValue = [
-    { name: '', isCorrect: false, id: uuid() },
-    { name: '', isCorrect: false, id: uuid() },
-]
-
 const ModalUpdate = ({ open, onClose, submitQuestionHandler, question }) => {
     const [answers, setAnswers] = useState(question.ans)
     const [questionName, setQuestionName] = useState(question.quest)
@@ -55,14 +50,23 @@ const ModalUpdate = ({ open, onClose, submitQuestionHandler, question }) => {
     }
 
     const handleSubmit = () => {
-        const question = { quest: questionName, ans: answers }
-        submitQuestionHandler(question)
+        const quest = { quest: questionName, ans: answers, id: question.id }
+        submitQuestionHandler(quest)
         handleReset()
     }
 
     const handleReset = () => {
-        setAnswers(initialValue)
+        setAnswers([
+            { name: '', isCorrect: false, id: uuid() },
+            { name: '', isCorrect: false, id: uuid() },
+        ])
+        setQuestionName('')
     }
+
+    const isChecked = answers.some((ans) => ans.isCorrect === true)
+
+    const disable = !questionName || !isChecked
+
     return (
         <Dialog
             open={open}
@@ -133,7 +137,7 @@ const ModalUpdate = ({ open, onClose, submitQuestionHandler, question }) => {
                 <Button onClick={handleReset} variant="contained" color="warning">
                     Thiết lập ban đầu
                 </Button>
-                <Button onClick={handleSubmit} variant="contained">
+                <Button onClick={handleSubmit} variant="contained" disabled={disable}>
                     Lưu
                 </Button>
             </DialogActions>

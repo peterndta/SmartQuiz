@@ -50,8 +50,8 @@ const ModalUpdate = ({ open, onClose, submitQuestionHandler, question }) => {
     }
 
     const handleSubmit = () => {
-        const question = { quest: questionName, ans: answers }
-        submitQuestionHandler(question)
+        const quest = { quest: questionName, ans: answers, id: question.id }
+        submitQuestionHandler(quest)
         handleReset()
     }
 

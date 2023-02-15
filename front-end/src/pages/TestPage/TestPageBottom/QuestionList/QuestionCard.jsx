@@ -6,12 +6,21 @@ import Answer from './Answer'
 import { choices } from '~/Mock'
 import { AppStyles } from '~/constants/styles'
 
-const QuestionCard = ({ question, index, handleSelectQuestion, questionId, selectQuestionAnswers }) => {
+const QuestionCard = ({ question, index, handleSelectQuestion, questionId, selectQuestionAnswers, checkAnswers }) => {
     let bgc = AppStyles.colors['#FAFBFF']
 
-    if (selectQuestionAnswers.length > 0) {
-        const position = selectQuestionAnswers.findIndex((quest) => quest.id === question.id)
-        if (position !== -1) bgc = AppStyles.colors['#CCDBFF']
+    if (!checkAnswers.isSubmit) {
+        if (selectQuestionAnswers.length > 0) {
+            const position = selectQuestionAnswers.findIndex((quest) => quest.id === question.id)
+            if (position !== -1) bgc = AppStyles.colors['#CCDBFF']
+        }
+    } else {
+        const quest = checkAnswers.questions.find((item) => item.id === question.id)
+        if (quest.isCorrect) {
+            bgc = AppStyles.colors['#7EFF8B']
+        } else {
+            bgc = AppStyles.colors['#FF9797']
+        }
     }
 
     const CardLayoutStyle = {

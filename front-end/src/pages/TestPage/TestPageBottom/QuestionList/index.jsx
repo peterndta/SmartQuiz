@@ -2,7 +2,7 @@ import React from 'react'
 
 import QuestionCard from './QuestionCard'
 
-const QuestionList = ({ questions, handleSelectQuestion, selectQuestionAnswers }) => {
+const QuestionList = ({ questions, handleSelectQuestion, selectQuestionAnswers, checkAnswers }) => {
     return (
         <React.Fragment>
             {questions.map((question, index) => (
@@ -13,6 +13,7 @@ const QuestionList = ({ questions, handleSelectQuestion, selectQuestionAnswers }
                     questionId={question.id}
                     handleSelectQuestion={handleSelectQuestion}
                     selectQuestionAnswers={selectQuestionAnswers}
+                    checkAnswers={checkAnswers}
                 />
             ))}
         </React.Fragment>

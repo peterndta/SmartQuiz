@@ -18,7 +18,7 @@ const TestPageBottom = () => {
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [selectQuestionAnswers, setSelectQuestionAnswers] = useState([])
-    const [checkAnswers, setCheckAnswers] = useState({ isSubmit: false, questions: [] })
+    const [checkAnswers, setCheckAnswers] = useState({ isSubmit: false, questions: [], correctCount: 0, wrongCount: 0 })
 
     const handleSelectQuestion = (question) => {
         if (selectQuestionAnswers.length === 0) {
@@ -54,24 +54,30 @@ const TestPageBottom = () => {
 
     const handleSubmit = () => {
         const result = []
+        let correctAns = 0
+        let wrongAns = 0
         studySetDetail.questions.forEach((item) => {
-            const exists = selectQuestionAnswers.find((quest) => quest.id === item.id)
-            if (!exists) result.push({ ...item, isCorrect: false })
-            else {
+            const existsQuest = selectQuestionAnswers.find((quest) => quest.id === item.id)
+            if (!existsQuest) {
+                result.push({ ...item, isCorrect: false })
+                wrongAns += 1
+            } else {
                 const correctAnswers = item.answers.filter((ans) => ans.isCorrectAnswer === true)
 
-                if (correctAnswers.length !== selectQuestionAnswers.ans.length) {
+                if (correctAnswers.length !== existsQuest.ans.length) {
                     result.push({ ...item, isCorrect: false })
+                    wrongAns += 1
                 } else {
                     const isCorrect = correctAnswers.every((correctAns) =>
-                        selectQuestionAnswers.ans.some((choice) => choice.id === correctAns.id)
+                        existsQuest.ans.some((choice) => choice.id === correctAns.id)
                     )
+                    if (isCorrect) correctAns += 1
+                    else wrongAns += 1
                     result.push({ ...item, isCorrect: isCorrect })
                 }
             }
         })
-
-        console.log(result)
+        setCheckAnswers({ isSubmit: true, questions: result, correctCount: correctAns, wrongCount: wrongAns })
     }
 
     useEffect(() => {
@@ -106,6 +112,7 @@ const TestPageBottom = () => {
                     questions={studySetDetail.questions}
                     handleSelectQuestion={handleSelectQuestion}
                     selectQuestionAnswers={selectQuestionAnswers}
+                    checkAnswers={checkAnswers}
                 />
             </Grid>
             <Grid item xs={5} md={5} lg={5}>
@@ -120,94 +127,3 @@ const TestPageBottom = () => {
 }
 
 export default TestPageBottom
-
-// [
-//     {
-//         id: 1,
-//         value: 1,
-//         ans: [
-//             {
-//                 id:1,
-//                 isCorrect: false
-//             },
-//             {
-//                 id:2,
-//                 isCorrect: true
-//             }
-//         ]
-//     }
-//     {
-//         id: 2,
-//         value: 2,
-//         ans: [
-//             {
-//                 id:1,
-//                 isCorrect: true
-//             },
-//             {
-//                 id:2,
-//                 isCorrect: false
-//             },
-//             {
-//                 id:3,
-//                 isCorrect: false
-//             }
-//         ]
-//     }
-// ]
-
-// [
-//     {
-//         id: 1,
-//         value: 1,
-//         ans: [
-//             {
-//                 id:1,
-//                 isCorrect: false
-//             },
-//             {
-//                 id:2,
-//                 isCorrect: true
-//             },
-//             {
-//                 id:3,
-//                 isCorrect: false
-//             }
-//         ]
-//     }
-//     {
-//         id: 2,
-//         value: 2,
-//         ans: [
-//             {
-//                 id:1,
-//                 isCorrect: true
-//             },
-//             {
-//                 id:2,
-//                 isCorrect: false
-//             },
-//             {
-//                 id:3,
-//                 isCorrect: false
-//             }
-//         ]
-//     }
-// ]
-
-// [
-//     {
-//         id: 1,
-//         value: 1,
-//         ans: [
-//             {
-//                 id:1,
-//                 isCorrect: false
-//             },
-//             {
-//                 id:2,
-//                 isCorrect: true
-//             }
-//         ]
-//     }
-// ]

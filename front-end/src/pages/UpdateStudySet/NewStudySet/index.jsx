@@ -5,21 +5,13 @@ import { Box, InputBase } from '@mui/material'
 
 import SelectField from './SelectField/index'
 
-import { levelSchool } from '~/Mock'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
 const NewStudySet = ({ infoStudySetHandler, infoStudySet }) => {
-    const {
-        titleChangeHandler,
-        levelChangeHandler,
-        universityNameChangeHandler,
-        classChangeHandler,
-        subjectChangeHandler,
-    } = infoStudySetHandler
+    const { titleChangeHandler, classChangeHandler, subjectChangeHandler } = infoStudySetHandler
 
-    const { schoolLevel, isUniversity, universityName, classLevel, subject, title } = infoStudySet
-    const universitiesName = useAppSelector((state) => state.schools)
+    const { classLevel, subject, title } = infoStudySet
     const grades = useAppSelector((state) => state.grades)
     const subjects = useAppSelector((state) => state.subjects)
     return (
@@ -49,36 +41,26 @@ const NewStudySet = ({ infoStudySetHandler, infoStudySet }) => {
             </Box>
             <Box sx={{ mt: 3 }} display="flex">
                 <SelectField
-                    onChange={levelChangeHandler}
                     label="Cấp học"
                     isRequired={true}
-                    value={schoolLevel}
                     isDisable={false}
-                    data={levelSchool}
-                />
-                <SelectField
-                    label="Tên trường"
-                    isRequired={true}
-                    isDisable={isUniversity ? false : true}
-                    value={universityName}
-                    onChange={universityNameChangeHandler}
-                    data={universitiesName}
-                />
-                <SelectField
-                    label="Lớp"
-                    isRequired={true}
-                    isDisable={isUniversity ? true : false}
                     value={classLevel}
                     onChange={classChangeHandler}
-                    data={schoolLevel.value === 2 ? grades.secondarySchool : grades.highSchool}
+                    data={grades}
                 />
                 <SelectField
-                    label="Môn học"
+                    label="Lĩnh vực"
                     isRequired={true}
-                    isDisable={isUniversity ? true : !classLevel.value ? true : false}
+                    isDisable={false}
                     value={subject}
                     onChange={subjectChangeHandler}
-                    data={schoolLevel.value === 2 ? subjects.secondarySubjects : subjects.highSchoolSubjects}
+                    data={
+                        classLevel.value < 3
+                            ? subjects.secondarySubjects
+                            : classLevel.value >= 3 && classLevel.value <= 7
+                            ? subjects.highSchoolSubjects
+                            : subjects.universitySubjects
+                    }
                 />
             </Box>
         </Box>

@@ -35,7 +35,7 @@ const CreateStudySet = () => {
     const { createStudySet } = useStudySet()
 
     const mutateQuestionHandler = (question) => {
-        if (modalMode === 'create') setQuestions((prev) => [...prev, { id: uuid(), ...question }])
+        if (modalMode === 'create') setQuestions((prev) => [...prev, { ...question }])
         else if (modalMode === 'edit') {
             const questionIndex = questions.findIndex((quest) => quest.id === question.id)
             const updatedQuestions = JSON.parse(JSON.stringify(questions))
@@ -56,7 +56,6 @@ const CreateStudySet = () => {
 
     const openEditModal = (id) => {
         const questionSelected = questions.find((quest) => quest.id === id)
-        console.log(questionSelected)
         setQuestion(questionSelected)
         setModalMode('edit')
         setOpenModal(true)
@@ -191,7 +190,7 @@ const CreateStudySet = () => {
                     switch (modalMode) {
                         case 'create':
                             return (
-                                open && (
+                                openModal && (
                                     <Modal
                                         onClose={closeModalHandler}
                                         submitQuestionHandler={mutateQuestionHandler}
@@ -201,7 +200,7 @@ const CreateStudySet = () => {
                             )
                         case 'edit':
                             return (
-                                open && (
+                                openModal && (
                                     <ModalUpdate
                                         onClose={closeModalHandler}
                                         submitQuestionHandler={mutateQuestionHandler}

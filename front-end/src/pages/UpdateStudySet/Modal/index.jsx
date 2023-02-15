@@ -55,13 +55,21 @@ const Modal = ({ open, onClose, submitQuestionHandler }) => {
     }
 
     const handleSubmit = () => {
-        const question = { quest: questionName, ans: answers }
+        const question = { quest: questionName, ans: answers, id: uuid() }
         submitQuestionHandler(question)
         handleReset()
     }
 
+    const isChecked = answers.some((ans) => ans.isCorrect === true)
+
+    const disable = !questionName || !isChecked
+
     const handleReset = () => {
-        setAnswers(initialValue)
+        setAnswers([
+            { name: '', isCorrect: false, id: uuid() },
+            { name: '', isCorrect: false, id: uuid() },
+        ])
+        setQuestionName('')
     }
 
     return (
@@ -118,6 +126,7 @@ const Modal = ({ open, onClose, submitQuestionHandler }) => {
                         variant="contained"
                         sx={{ borderRadius: 2, py: 2, px: 5, mt: 1 }}
                         color="primary"
+                        z
                         onClick={addMoreAnswer}
                         fullWidth
                         disabled={answers.length === 8}
@@ -133,7 +142,7 @@ const Modal = ({ open, onClose, submitQuestionHandler }) => {
                 <Button onClick={handleReset} variant="contained" color="warning">
                     Thiết lập ban đầu
                 </Button>
-                <Button onClick={handleSubmit} variant="contained">
+                <Button onClick={handleSubmit} variant="contained" disabled={disable}>
                     Lưu
                 </Button>
             </DialogActions>
