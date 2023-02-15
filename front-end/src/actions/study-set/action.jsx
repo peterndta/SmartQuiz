@@ -1,3 +1,4 @@
+import authMiddleware from '~/middleware/auth-middleware'
 import { get, post, put, remove } from '~/utils/ApiCaller'
 
 const useStudySet = () => {
@@ -9,21 +10,41 @@ const useStudySet = () => {
             signal: signal,
         })
 
-    const getMyStudySets = (userId, pageNumber, signal) =>
-        get({
-            endpoint: `/api/StudySets/my-studyset`,
-            signal: signal,
-            params: { userId: userId, pageNumber: pageNumber, pageSize: 8 },
-        })
+    const getMyStudySets = (userId, pageNumber, signal) => {
+        const isAuth = authMiddleware()
 
-    const deleteStudySet = (studySetId) =>
-        remove({
-            endpoint: `/api/StudySets/${studySetId}`,
-        })
+        if (isAuth)
+            return get({
+                endpoint: `/api/StudySets/my-studyset`,
+                signal: signal,
+                params: { userId: userId, pageNumber: pageNumber, pageSize: 8 },
+            })
+        else window.location.reload(false)
+    }
 
-    const createStudySet = (studySet) => post({ endpoint: '/api/studySets', body: studySet })
+    const deleteStudySet = (studySetId) => {
+        const isAuth = authMiddleware()
 
-    const updateStudySet = (studySet) => put({ endpoint: '/api/studySets', body: studySet })
+        if (isAuth)
+            return remove({
+                endpoint: `/api/StudySets/${studySetId}`,
+            })
+        else window.location.reload(false)
+    }
+
+    const createStudySet = (studySet) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth) return post({ endpoint: '/api/studySets', body: studySet })
+        else window.location.reload(false)
+    }
+
+    const updateStudySet = (studySet) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth) return put({ endpoint: '/api/studySets', body: studySet })
+        else window.location.reload(false)
+    }
 
     return { getStudySetList, getStudySet, getMyStudySets, createStudySet, deleteStudySet, updateStudySet }
 }
