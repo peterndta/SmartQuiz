@@ -33,7 +33,7 @@ const filterStringGenerator = ({ studysetname, sorttype, pageNumber, gradeid, su
 
 const SearchPageBottom = () => {
     const { search: query } = useLocation()
-    const { studysetname, sorttype = 'Newest', pageNumber, gradeid = 9, subjectid } = queryString.parse(query)
+    const { studysetname, sorttype = 'Newest', pageNumber, gradeid, subjectid } = queryString.parse(query)
     const { getStudySetList } = useStudySet()
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [studySet, setStudySet] = useState({ list: [], pageCount: 1 })
@@ -97,7 +97,7 @@ const SearchPageBottom = () => {
                             <React.Fragment>
                                 <ListStudySets studySets={studySet.list} md={3} />{' '}
                                 {studySet.pageCount !== 1 ? (
-                                    <Box display="flex" justifyContent="center" mt={6}>
+                                    <Box display="flex" justifyContent="center" mt={6} mb={10}>
                                         <Paging size={studySet.pageCount} />
                                     </Box>
                                 ) : (

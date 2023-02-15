@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import { GppGood } from '@mui/icons-material'
+// import { GppGood } from '@mui/icons-material'
 import { Avatar, Box, CardContent, Grid, Typography } from '@mui/material'
 
 import CardLayout from '../CardLayout'
@@ -12,6 +12,9 @@ import { AppStyles } from '~/constants/styles'
 const CardLayoutStyle = {
     borderRadius: 3,
     boxShadow: '0px 1px 2px rgba(0, 46, 153, 0.3), 0px 1px 3px 1px rgba(0, 46, 153, 0.15)',
+    '&:hover': {
+        backgroundColor: AppStyles.colors['#E6EDFF'],
+    },
 }
 
 const StudyCard = ({ studySet, md }) => {
@@ -30,7 +33,6 @@ const StudyCard = ({ studySet, md }) => {
                                     WebkitBoxOrient: 'vertical',
                                     WebkitLineClamp: '1',
                                     textOverflow: 'ellipsis',
-                                    userSelect: 'none',
                                     cursor: 'pointer',
                                     color: 'black',
                                     textDecoration: 'none',
@@ -38,15 +40,14 @@ const StudyCard = ({ studySet, md }) => {
                                 component={Link}
                                 to={`/study-sets/${studySet.id}`}
                             >
-                                {/* {studySet?.StudySetName} */}
                                 {studySet.name}
                             </Typography>
-                            {Math.random() < 0.5 && (
+                            {/* {Math.random() < 0.5 && (
                                 <GppGood
                                     fontSize="small"
                                     sx={{ ml: 1, mt: -0.5, color: AppStyles.colors['#004DFF'] }}
                                 />
-                            )}
+                            )} */}
                         </Box>
                         <MoreMenu saveButtonOn={true} />
                     </Box>
@@ -54,7 +55,6 @@ const StudyCard = ({ studySet, md }) => {
                         <Typography
                             textAlign={'left'}
                             variant="body1"
-                            color="text.secondary"
                             sx={{
                                 overflow: 'hidden',
                                 display: '-webkit-box',
@@ -63,16 +63,13 @@ const StudyCard = ({ studySet, md }) => {
                                 textOverflow: 'ellipsis',
                                 fontSize: 14,
                                 userSelect: 'none',
+                                opacity: '50%',
                             }}
                         >
-                            ĐẠI HỌC |
+                            {studySet.gradeName !== 'Đại học' ? 'Lớp ' + studySet.gradeName + ' - ' : ''}
+                            {!studySet.subjectName ? studySet.schoolName : studySet.subjectName} |
                         </Typography>
-                        <Typography
-                            ml={0.5}
-                            variant="body1"
-                            color="text.secondary"
-                            sx={{ fontSize: 14, userSelect: 'none' }}
-                        >
+                        <Typography ml={0.5} variant="body1" sx={{ fontSize: 14, userSelect: 'none', opacity: '50%' }}>
                             {studySet.totalQuestions} câu
                         </Typography>
                     </Box>

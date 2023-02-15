@@ -16,17 +16,29 @@ const Paging = ({ size }) => {
     const [num, setNum] = useState(1)
 
     const handleChange = (e) => {
-        const regex = /^[1-9\b]+$/
+        const regex = /^[0-9\b]+$/
         if (e.target.value === '' || regex.test(e.target.value)) {
-            setNum(e.target.value)
+            if (e.target.value > size) {
+                setNum(size)
+            } else {
+                setNum(e.target.value)
+            }
         }
     }
 
     const pageSubmitHandler = () => {
-        setPageNumber(num)
+        if (num === '' || num < 1) {
+            setNum(1)
+            setPageNumber(1)
+        } else {
+            setPageNumber(parseInt(num))
+        }
     }
 
-    const pagingHandler = (__, value) => setPageNumber(value)
+    const pagingHandler = (__, value) => {
+        setPageNumber(value)
+        setNum(value)
+    }
 
     const filterHandler = () => {
         let route = pathname + '?'
@@ -72,7 +84,7 @@ const Paging = ({ size }) => {
                 justifyContent="space-between"
             >
                 <Box component="form" noValidate autoComplete="off" sx={{ width: 30, pl: 1 }}>
-                    <TextField variant="standard" type="text" onChange={(e) => handleChange(e)} value={num} />
+                    <TextField variant="standard" required type="text" onChange={(e) => handleChange(e)} value={num} />
                 </Box>
 
                 <Tooltip title="Đi đến" followCursor>
