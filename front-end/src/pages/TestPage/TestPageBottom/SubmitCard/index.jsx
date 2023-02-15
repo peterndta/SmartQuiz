@@ -39,7 +39,7 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit }) => {
 
     const now = useMemo(() => Date.now(), [])
 
-    const countDown = useRef(now + 3600000)
+    const [countDown, setCountDown] = useState(now + 6000)
 
     const setRef = (countdown) => {
         if (countdown) {
@@ -57,13 +57,18 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit }) => {
         countdownRef.current && countdownRef.current.pause()
     }
 
+    const handleComplete = () => {
+        setCountDown(0)
+        handleSubmit()
+    }
+
     return (
         <CardLayout style={CardLayoutStyle}>
             <CardContent>
                 <Box display="flex" alignItems="center">
                     <Typography sx={{ color: 'white', fontSize: 20 }}>Thời gian</Typography>
                     <Countdown
-                        date={countDown.current}
+                        date={countDown}
                         intervalDelay={0}
                         precision={3}
                         renderer={(props) => (
@@ -72,6 +77,7 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit }) => {
                             </Typography>
                         )}
                         ref={setRef}
+                        onComplete={handleComplete}
                     />
                 </Box>
                 <Box display="flex" alignItems="center" mt={1}>
@@ -84,16 +90,23 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit }) => {
                     </Box>
                 </Box>
                 <Box display="flex" justifyContent="space-between" mt={3.5}>
-                    {isPaused ? (
-                        <ButtonCompo variant="outlined" style={ButtonStyle1} onClick={handleStartClick}>
-                            Tiếp tục
-                        </ButtonCompo>
-                    ) : (
-                        <ButtonCompo variant="outlined" style={ButtonStyle1} onClick={handlePauseClick}>
-                            Tạm dừng
-                        </ButtonCompo>
-                    )}
-                    <ButtonCompo variant="contained" style={ButtonStyle2} onClick={handleSubmit}>
+                    {isPaused
+                        ? countDown !== 0 && (
+                              <ButtonCompo variant="outlined" style={ButtonStyle1} onClick={handleStartClick}>
+                                  Tiếp tục
+                              </ButtonCompo>
+                          )
+                        : countDown !== 0 && (
+                              <ButtonCompo variant="outlined" style={ButtonStyle1} onClick={handlePauseClick}>
+                                  Tạm dừng
+                              </ButtonCompo>
+                          )}
+                    <ButtonCompo
+                        variant="contained"
+                        style={ButtonStyle2}
+                        onClick={handleSubmit}
+                        fullWidth={countDown === 0}
+                    >
                         Nộp bài
                     </ButtonCompo>
                 </Box>

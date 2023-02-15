@@ -12,9 +12,12 @@ import TestModal from './TestModal'
 
 import logo from '~/assets/images/User 5.png'
 import { AppStyles } from '~/constants/styles'
+import { useAppSelector } from '~/hooks/redux-hooks'
 
-const DetailHeader = ({ info, id, questions }) => {
+const DetailHeader = ({ info, id, questions, userId }) => {
     const [openLearn, setOpenLearn] = useState(false)
+    const { userId: idUser } = useAppSelector((state) => state.auth)
+
     const handleOpenLearn = () => setOpenLearn(true)
     const handleCloseLearn = () => setOpenLearn(false)
     const [openTest, setOpenTest] = useState(false)
@@ -64,16 +67,18 @@ const DetailHeader = ({ info, id, questions }) => {
                             <BookmarkAdd fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Sửa" placement="bottom">
-                        <IconButton
-                            aria-label="create"
-                            size="large"
-                            sx={{ border: '1px solid #767680' }}
-                            onClick={() => history.push(`/study-sets/${id}/update`)}
-                        >
-                            <Edit fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
-                        </IconButton>
-                    </Tooltip>
+                    {idUser === userId && (
+                        <Tooltip title="Sửa" placement="bottom">
+                            <IconButton
+                                aria-label="create"
+                                size="large"
+                                sx={{ border: '1px solid #767680' }}
+                                onClick={() => history.push(`/study-sets/${id}/update`)}
+                            >
+                                <Edit fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                 </Box>
             </Box>
             <Box mt={2.5}>

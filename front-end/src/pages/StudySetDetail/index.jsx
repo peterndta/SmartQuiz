@@ -17,6 +17,7 @@ const StudySetDetail = () => {
     const showSnackbar = useSnackbar()
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
+
     useEffect(() => {
         const controller = new AbortController()
         const signal = controller.signal
@@ -45,7 +46,12 @@ const StudySetDetail = () => {
                 <Loading />
             ) : (
                 <React.Fragment>
-                    <DetailHeader info={studySetDetail} id={id} questions={studySetDetail.questions} />
+                    <DetailHeader
+                        info={studySetDetail}
+                        id={id}
+                        questions={studySetDetail.questions}
+                        userId={studySetDetail.userId}
+                    />
                     <Box mt={3}>
                         <QuestionList questions={studySetDetail?.questions} />
                     </Box>
