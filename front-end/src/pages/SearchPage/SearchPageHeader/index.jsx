@@ -2,7 +2,8 @@ import { useState } from 'react'
 
 import { useLocation } from 'react-router-dom'
 
-import { Grid } from '@mui/material'
+import { FilterAltOff } from '@mui/icons-material'
+import { Grid, IconButton, Tooltip } from '@mui/material'
 import FullWidthHeaderWhite from '~/components/FullWidthHeaderWhite'
 import PageTitle from '~/components/PageTitle'
 
@@ -11,12 +12,13 @@ import Filter from './Filter'
 import Search from './Search'
 
 import { initialValue } from '~/Mock'
+import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
 const SearchPageHeader = () => {
     const grades = useAppSelector((state) => state.grades)
     const { state } = useLocation()
-    const [classLevel, setClassLevel] = useState(state ? state.classLevel : grades[7])
+    const [classLevel, setClassLevel] = useState(state ? state.classLevel : initialValue)
     const [subject, setSubject] = useState(state ? state.subject : initialValue)
     const [typeFilter, setTypeFilter] = useState('')
     function classChangeHandler(name, value) {
@@ -27,9 +29,11 @@ const SearchPageHeader = () => {
         setSubject(() => ({ label: name, value: value }))
         setTypeFilter('subject')
     }
-    // const classChangeHandler = (name, value) => setClassLevel(() => ({ label: name, value: value }))
 
-    // const subjectChangeHandler = (name, value) => setSubject(() => ({ label: name, value: value }))
+    const clearHandler = () => {
+        setClassLevel(initialValue)
+        setSubject(initialValue)
+    }
 
     const subjects = useAppSelector((state) => state.subjects)
     return (
@@ -76,10 +80,30 @@ const SearchPageHeader = () => {
                                     typeFilter={typeFilter}
                                 />
                             </Grid>
-                            {/* <Grid item md={3}>
-                                <Filter data={Mock_Data.dropdown3} title="Lớp" />
-                            </Grid>
                             <Grid item md={3}>
+                                <Tooltip title="Xóa bộ lọc" placement="bottom">
+                                    <IconButton
+                                        // size="small"
+                                        sx={{
+                                            height: 50,
+                                            width: 50,
+                                            borderRadius: 3,
+                                            mt: 5,
+                                            color: AppStyles.colors['#FFFFFF'],
+                                            backgroundColor: AppStyles.colors['#004DFF'],
+                                            borderLeft: '1px solid rgba(0, 46, 153, 0.3)',
+                                            ':hover': {
+                                                bgcolor: AppStyles.colors['#0045e5'],
+                                                color: 'white',
+                                            },
+                                        }}
+                                        onClick={clearHandler}
+                                    >
+                                        <FilterAltOff fontSize="medium" />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+                            {/* <Grid item md={3}>
                                 <Filter data={Mock_Data.dropdown4} title="Môn học" />
                             </Grid> */}
                         </Grid>

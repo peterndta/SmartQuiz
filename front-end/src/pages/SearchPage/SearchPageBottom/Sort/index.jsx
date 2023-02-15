@@ -50,6 +50,9 @@ const Sort = () => {
                     bgcolor: AppStyles.colors['#FAFBFF'],
                     borderRadius: 3,
                     boxShadow: '0px 1px 2px rgba(0, 46, 153, 0.3), 0px 1px 3px 1px rgba(0, 46, 153, 0.15)',
+                    '& svg': {
+                        color: AppStyles.colors['#004DFF'],
+                    },
                 }}
             >
                 <MenuItem value={'Newest'}>Gần nhất</MenuItem>
