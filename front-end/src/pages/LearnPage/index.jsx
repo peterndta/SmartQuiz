@@ -1,14 +1,21 @@
 import React, { useState } from 'react'
 
-import LearnPageBottom from './LearnPageBottom'
-import LearnPageHeader from './LearnPageHeader'
+import { useLocation } from 'react-router-dom'
+
+import LearnNormal from './LearnNormal'
+import LearnPremium from './LearnPremium'
 
 const LearnPage = () => {
     const [start, setStart] = useState()
+    const { state } = useLocation()
+
     return (
         <React.Fragment>
-            <LearnPageHeader />
-            <LearnPageBottom start={start} setStart={setStart} />
+            {!state || state.mode === 'standard' ? (
+                <LearnNormal start={start} setStart={setStart} />
+            ) : (
+                <LearnPremium start={start} setStart={setStart} />
+            )}
         </React.Fragment>
     )
 }
