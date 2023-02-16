@@ -245,6 +245,36 @@ namespace SmartQuizApi.Controllers
             }
         }
 
+        [HttpGet("{id}/exam")]
+        public async Task<IActionResult> GetStudySetForTest(string id, int amount)
+        {
+            try
+            {
+                var studySet = _repositoryManager.StudySet.GetStudySetById(id);
+                if (studySet == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Study set id do not exist"));
+                }
+
+                var studySetDTO = _mapper.Map<GetStudySetDetailsDTO>(studySet);
+                var subjectsOfGrade = _repositoryManager.SubjectsOfGrade.GetSubjectsOfGrade(studySet.SubjectsOfGradeId);
+                _mapper.Map(subjectsOfGrade, studySetDTO);
+
+                var questionsList = await _repositoryManager.Question.GetQuestionsByStudySetId(studySet.Id, amount);
+                studySetDTO.Questions = _mapper.Map<List<GetQuestionDTO>>(questionsList);
+                foreach (var question in studySetDTO.Questions)
+                {
+                    question.MultipleChoice = question.Answers.Where(x => x.IsCorrectAnswer == true).Count() > 1;
+                }
+
+                return StatusCode(StatusCodes.Status200OK, new Response(200, studySetDTO));
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
         private List<GetStudySetsListDTO> GetInfoForStudyList(List<GetStudySetsListDTO> list)
         {
             list.ForEach(x =>
