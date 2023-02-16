@@ -26,7 +26,22 @@ namespace SmartQuizApi.Data.Repositories
         {
             var result = await GetByCondition(x => (name == null || x.Name.Contains(name))
                                                 && (listId.Count == 0 || listId.Contains(x.SubjectsOfGradeId)))
-                                                                                .OrderByDescending(x => x.CreateAt).ToListAsync();
+                                                                                .OrderByDescending(x => x.CreateAt)
+                                                                                .Include(x => x.User)
+                                                                                .Include(x => x.Class).ToListAsync();
+            if (sortType == SortTypes.Oldest)
+            {
+                result = result.OrderBy(x => x.CreateAt).ToList();
+            }
+            return result;
+        }
+
+        public async Task<List<StudySet>> GetAllStudySets(string sortType)
+        {
+            var result = await GetAll().Include(x => x.User)
+                                        .Include(x => x.SubjectsOfGrade)
+                                        .Include(x => x.Class)
+                                        .OrderByDescending(x => x.CreateAt).ToListAsync();
             if (sortType == SortTypes.Oldest)
             {
                 result = result.OrderBy(x => x.CreateAt).ToList();

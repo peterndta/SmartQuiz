@@ -49,7 +49,7 @@ namespace SmartQuizApi.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestion(string id)
         {
             try
@@ -84,7 +84,7 @@ namespace SmartQuizApi.Controllers
 
                 _repositoryManager.Question.CreateQuestion(question);
                 await _repositoryManager.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Delete successfully"));
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Create successfully"));
             }
             catch (Exception ex)
             {
