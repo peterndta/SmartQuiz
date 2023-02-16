@@ -17,7 +17,7 @@ const useStudySet = () => {
             return get({
                 endpoint: `/api/StudySets/my-studyset`,
                 signal: signal,
-                params: { userId: userId, pageNumber: pageNumber, pageSize: 8 },
+                params: { userId: userId, pageNumber: pageNumber, pageSize: 4 },
             })
         else window.location.reload(false)
     }
