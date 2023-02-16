@@ -6,7 +6,7 @@ import MoreMenu from '~/components/MoreMenu'
 import logo from '~/assets/images/User 5.png'
 import { AppStyles } from '~/constants/styles'
 
-const StudyCard = ({ studySet, setId, studySets, setClickIndex, clickIndex, index, deleteStudySetHandler }) => {
+const StudyCard = ({ studySet, studySets, setClickIndex, clickIndex, index, deleteStudySetHandler, detailHandler }) => {
     const CardLayoutStyle = {
         borderRadius: 3,
         boxShadow: '0px 1px 2px rgba(0, 46, 153, 0.3), 0px 1px 3px 1px rgba(0, 46, 153, 0.15)',
@@ -16,8 +16,8 @@ const StudyCard = ({ studySet, setId, studySets, setClickIndex, clickIndex, inde
         },
     }
     const getId = () => {
-        setId(studySet.id)
         setClickIndex(studySets.findIndex((obj) => obj.id === studySet.id))
+        detailHandler(studySet.id)
     }
 
     return (

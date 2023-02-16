@@ -4,7 +4,7 @@ import { Grid } from '@mui/material'
 
 import StudyCard from './StudyCard'
 
-const ListLibStudySets = ({ studySets, setId, setClickIndex, clickIndex, deleteStudySetHandler }) => {
+const ListLibStudySets = ({ studySets, setClickIndex, clickIndex, deleteStudySetHandler, detailHandler }) => {
     return (
         <Grid container rowSpacing={3} columnSpacing={3} display="flex" flexDirection="column">
             {studySets.map((studySet, index) => (
@@ -12,11 +12,11 @@ const ListLibStudySets = ({ studySets, setId, setClickIndex, clickIndex, deleteS
                     key={studySet.id}
                     studySet={studySet}
                     index={index}
-                    setId={setId}
                     studySets={studySets}
                     setClickIndex={setClickIndex}
                     clickIndex={clickIndex}
                     deleteStudySetHandler={deleteStudySetHandler}
+                    detailHandler={detailHandler}
                 />
             ))}
         </Grid>

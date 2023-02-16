@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Waypoint } from 'react-waypoint'
 
-import { Grid, Skeleton, Typography } from '@mui/material'
+import { Box, Grid, Skeleton, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 import EmptyStudySets from '~/components/EmptyStudySets'
 import QuestionList from '~/components/QuestionList'
@@ -35,18 +35,35 @@ const StudySets = ({ getMyStudySets }) => {
     const [studySet, setStudySet] = useState({})
     const [studySetDetail, setStudySetDetail] = useState({})
     const showSnackbar = useSnackbar()
-    const [Id, setId] = useState()
     const [clickIndex, setClickIndex] = useState(0)
     const { userId } = useAppSelector((state) => state.auth)
     const [page, setPage] = useState(1)
     const [hasNextPage, setHasNextPage] = useState(false)
-    const [totalPage, setTotalPage] = useState(1)
 
     const loadMoreData = () => {
-        if (page <= totalPage) {
-            if (hasNextPage === true) {
-                setPage(page + 1)
-            }
+        let nextPage = page + 1
+        const controller = new AbortController()
+        const signal = controller.signal
+        getMyStudySets(userId, nextPage, signal)
+            .then((response) => {
+                const data = response.data.data
+                setPage(response.data.meta.currentPage)
+                setHasNextPage(response.data.meta.hasNext)
+
+                const cloneStudySet = studySet
+                const newStudySet = [...cloneStudySet, ...data]
+                setStudySet(newStudySet)
+                setIsFirstRender(false)
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+                // setIsFirstRender(false)
+            })
+        return () => {
+            controller.abort()
         }
     }
 
@@ -57,18 +74,17 @@ const StudySets = ({ getMyStudySets }) => {
             .then((response) => {
                 const data = response.data.data
                 setPage(response.data.meta.currentPage)
-                setTotalPage(response.data.meta.totalPages)
                 setHasNextPage(response.data.meta.hasNext)
-                if (page > 1) {
-                    const cloneStudySet = studySet
-                    const newStudySet = [...cloneStudySet, ...data]
-                    setStudySet(newStudySet)
-                } else {
-                    setStudySet(data)
-                }
+                // if (page > 1 && hasNextPage === true) {
+                //     const cloneStudySet = studySet
+                //     const newStudySet = [...cloneStudySet, ...data]
+                //     setStudySet(newStudySet)
+                // } else {
+                setStudySet(data)
+                // }
 
                 if (data?.length != 0) {
-                    getStudySet(!Id ? data[0]?.id : Id, userId, signal).then((response) => {
+                    getStudySet(data[0]?.id, userId, signal).then((response) => {
                         const data = response.data.data
                         setStudySetDetail(data)
                         setIsFirstRender(false)
@@ -87,7 +103,19 @@ const StudySets = ({ getMyStudySets }) => {
             controller.abort()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [Id, page])
+    }, [])
+
+    const detailHandler = (Id) => {
+        const controller = new AbortController()
+        const signal = controller.signal
+        getStudySet(Id, userId, signal).then((response) => {
+            const data = response.data.data
+            setStudySetDetail(data)
+        })
+        return () => {
+            controller.abort()
+        }
+    }
 
     const deleteStudySetHandler = (studySetId) => {
         setIsFirstRender(true)
@@ -146,12 +174,20 @@ const StudySets = ({ getMyStudySets }) => {
                             <React.Fragment>
                                 <ListLibStudySets
                                     studySets={studySet}
-                                    setId={setId}
                                     setClickIndex={setClickIndex}
                                     clickIndex={clickIndex}
                                     deleteStudySetHandler={deleteStudySetHandler}
+                                    detailHandler={detailHandler}
                                 />
-                                {hasNextPage && <Waypoint onEnter={loadMoreData} />}
+                                {hasNextPage && (
+                                    <Waypoint onEnter={loadMoreData}>
+                                        <Box>
+                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
+                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
+                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
+                                        </Box>
+                                    </Waypoint>
+                                )}
                             </React.Fragment>
                         )}
                     </Grid>
