@@ -1,7 +1,7 @@
 import React from 'react'
 
-import LearnPageBottom from '../LearnPageBottom'
-import LearnPageHeader from '../LearnPageHeader'
+import LearnPageBottom from './LearnPageBottom'
+import LearnPageHeader from './LearnPageHeader'
 
 const LearnNormal = ({ start, setStart }) => {
     return (
