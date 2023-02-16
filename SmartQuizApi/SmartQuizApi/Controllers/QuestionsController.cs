@@ -112,7 +112,7 @@ namespace SmartQuizApi.Controllers
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 using (var stream = new MemoryStream())
                 {
-                    formFile.CopyTo(stream);
+                    await formFile.CopyToAsync(stream);
                     stream.Position = 0;
                     ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                     using (ExcelPackage package = new ExcelPackage(stream))
@@ -122,22 +122,15 @@ namespace SmartQuizApi.Controllers
                         for (int i = 2; i <= totalRows && i <= 2000; i++)
                         {
                             var questionName = GetString(workSheet, i, 1);
-                            var firstAnswer = GetString(workSheet, i, 2);
-                            var firstValue = GetBool(workSheet, i, 3);
-                            if (questionName == null || firstAnswer == null || firstValue == null)
+                            if (questionName == null)
                             {
                                 break;
                             }
 
                             var listAnswer = new List<CreateAnwserDTO>();
                             var anAnswer = new CreateAnwserDTO();
-                            listAnswer.Add(new CreateAnwserDTO
-                            {
-                                Name= firstAnswer,
-                                IsCorrectAnswer = firstValue.Value,
-                            });
 
-                            for (int j = 4; j <= 17; j++)
+                            for (int j = 2; j <= 17; j++)
                             {
                                 if (j % 2 == 0)
                                 {
@@ -158,16 +151,19 @@ namespace SmartQuizApi.Controllers
                                 }
                             }
 
-                            var question = new CreateQuestionDTO
+                            if (listAnswer.Where(x => x.IsCorrectAnswer).Count() != 0)
                             {
-                                Name = questionName,
-                                Answers = listAnswer,
-                            };
-                            listQuestion.Add(question);
+                                var question = new CreateQuestionDTO
+                                {
+                                    Name = questionName,
+                                    Answers = listAnswer,
+                                };
+                                listQuestion.Add(question);
+                            }
                         }                       
                     }                   
                 }
-                return Ok(listQuestion);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, listQuestion, ""));
             }
             catch (Exception ex)
             {
@@ -177,22 +173,25 @@ namespace SmartQuizApi.Controllers
 
         private string? GetString(ExcelWorksheet worksheet, int row, int column)
         {
-            if (worksheet.Cells[row, column].Value == null)
+            try
+            {
+                return worksheet.Cells[row, column].Value.ToString();
+            }
+            catch
             {
                 return null;
             }
-            return worksheet.Cells[row, column].Value.ToString();
         }
 
         private bool? GetBool(ExcelWorksheet worksheet, int row, int column)
         {
-            if (worksheet.Cells[row, column].Value == null)
-            {
-                return null;
-            }
-            else
+            try
             {
                 return (bool)worksheet.Cells[row, column].Value;
+            }
+            catch 
+            {
+                return null;
             }
         }
     }
