@@ -15,7 +15,7 @@ import { AppStyles } from '~/constants/styles'
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const LearnPageBottom = ({ start, setStart }) => {
+const LearnPageBottom = ({ start }) => {
     const { id } = useParams()
     const { getStudySet } = useStudySet()
     const showSnackbar = useSnackbar()
@@ -126,7 +126,6 @@ const LearnPageBottom = ({ start, setStart }) => {
                 open={open}
                 handleClose={handleClose}
                 numberOfQuestion={studySetDetail?.questions?.length}
-                setStart={setStart}
             />
             <Box display="flex" justifyContent="right" mb={2}>
                 <Tooltip title="Tùy chọn" placement="bottom">

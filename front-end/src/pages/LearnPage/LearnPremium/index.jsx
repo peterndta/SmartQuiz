@@ -3,11 +3,11 @@ import React from 'react'
 import LearnPageBottom from './LearnPageBottom'
 import LearnPageHeader from './LearnPageHeader'
 
-const LearnPremium = ({ start, setStart }) => {
+const LearnPremium = ({ start }) => {
     return (
         <React.Fragment>
             <LearnPageHeader />
-            <LearnPageBottom start={start} setStart={setStart} />
+            <LearnPageBottom start={start} />
         </React.Fragment>
     )
 }

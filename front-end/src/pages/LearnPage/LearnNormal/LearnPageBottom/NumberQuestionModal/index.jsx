@@ -1,12 +1,17 @@
 import { useState } from 'react'
 
+import { useHistory, useLocation } from 'react-router-dom'
+
 import { Box, Modal, TextField, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 
 import { AppStyles } from '~/constants/styles'
 
-const NumberQuestionModal = ({ open, handleClose, numberOfQuestion, setStart }) => {
+const NumberQuestionModal = ({ open, handleClose, numberOfQuestion }) => {
     const [num, setNum] = useState(1)
+
+    const { pathname } = useLocation()
+    const history = useHistory()
 
     const handleChange = (e) => {
         const regex = /^[0-9\b]+$/
@@ -16,7 +21,7 @@ const NumberQuestionModal = ({ open, handleClose, numberOfQuestion, setStart }) 
     }
 
     const handleSubmit = () => {
-        setStart(+num)
+        history.push(`${pathname}?started=${num}`, { mode: 'standard' })
         handleClose()
     }
 
@@ -66,7 +71,7 @@ const NumberQuestionModal = ({ open, handleClose, numberOfQuestion, setStart }) 
                         /{numberOfQuestion} câu hỏi
                     </Typography>
                 </Box>
-                <ButtonCompo variant="contained" style={EndButton} onClick={handleSubmit}>
+                <ButtonCompo variant="contained" style={EndButton} onClick={handleSubmit} disable={num <= 0}>
                     Tiến hành học
                 </ButtonCompo>
             </Box>

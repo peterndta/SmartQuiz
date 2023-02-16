@@ -1,7 +1,7 @@
 import FullWidthHeaderWhite from '~/components/FullWidthHeaderWhite'
 import PageTitle from '~/components/PageTitle'
 
-import logo from '../../../assets/images/Logo.png'
+import logo from '../../../../assets/images/Logo.png'
 
 const LearnPageHeader = () => {
     const HeaderStyle = {
