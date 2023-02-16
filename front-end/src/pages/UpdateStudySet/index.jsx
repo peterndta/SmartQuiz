@@ -30,7 +30,7 @@ const UpdateStudySet = () => {
     const history = useHistory()
     const [isLoading, setIsLoading] = useState(true)
     const { getStudySet, updateStudySet } = useStudySet()
-    const { updateQuestion, createQuestion } = useQuestion()
+    const { updateQuestion, createQuestion, removeQuestion } = useQuestion()
     const showSnackbar = useSnackbar()
 
     const mutateQuestionHandler = (question) => {
@@ -40,10 +40,25 @@ const UpdateStudySet = () => {
             isCorrectAnswer: answer.isCorrect,
         }))
         if (modalMode === 'create') {
-            const formatQuestion = { name: quest, answer: formatAnswers, studySetId: questId }
+            const formatQuestion = { name: quest, answers: formatAnswers, studySetId: id }
             createQuestion(formatQuestion)
                 .then((res) => {
                     const newQuestion = res.data.data
+
+                    const formattedAnswers = newQuestion.answers.map((answer) => {
+                        return {
+                            name: answer.name,
+                            isCorrect: answer.isCorrectAnswer,
+                            id: answer.id,
+                        }
+                    })
+                    const formattedQuestion = {
+                        quest: newQuestion.name,
+                        id: newQuestion.id,
+                        ans: formattedAnswers,
+                    }
+
+                    setQuestions((prev) => [...prev, { ...formattedQuestion }])
                 })
                 .catch(() => {
                     showSnackbar({
@@ -108,9 +123,19 @@ const UpdateStudySet = () => {
 
     const deleteQuestionDraft = useCallback(
         (id) => {
-            const cloneQuestions = JSON.parse(JSON.stringify(questions))
-            const updatedQuestion = cloneQuestions.filter((question) => question.id !== id)
-            setQuestions(updatedQuestion)
+            removeQuestion(id)
+                .then(() => {
+                    const cloneQuestions = JSON.parse(JSON.stringify(questions))
+
+                    const updatedQuestion = cloneQuestions.filter((question) => question.id !== id)
+                    setQuestions(updatedQuestion)
+                })
+                .catch(() => {
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Học phần này có thể đã bị xóa, vui lòng tải lại trang!',
+                    })
+                })
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [JSON.stringify(questions.length)]
