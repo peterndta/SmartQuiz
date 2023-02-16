@@ -34,5 +34,12 @@ namespace SmartQuizApi.Data.Repositories
         {
             return GetByCondition(x => x.StudySetId.Equals(studySetId)).Count();
         }
+
+        public async Task<List<Question>> GetQuestionsByStudySetId(string id, int amount)
+        {
+            return await GetByCondition(x => x.StudySetId.Equals(id)).OrderBy(x => Guid.NewGuid())
+                                                                    .Take(amount)
+                                                                    .Include(x => x.Answers).ToListAsync();
+        }
     }
 }

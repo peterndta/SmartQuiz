@@ -128,7 +128,7 @@ namespace SmartQuizApi.Controllers
                             }
 
                             var listAnswer = new List<CreateAnwserDTO>();
-                            var anAnswer = new CreateAnwserDTO();
+                            var tempName = "";
 
                             for (int j = 2; j <= 17; j++)
                             {
@@ -138,12 +138,15 @@ namespace SmartQuizApi.Controllers
                                     {
                                         break;
                                     }
-                                    anAnswer.Name = GetString(workSheet, i, j);
+                                    tempName = GetString(workSheet, i, j);
                                 }
                                 else if (GetBool(workSheet, i, j) != null)
                                 {
-                                    anAnswer.IsCorrectAnswer = GetBool(workSheet, i, j) == null ? false : GetBool(workSheet, i, j).Value;
-                                    listAnswer.Add(anAnswer);
+                                    listAnswer.Add(new CreateAnwserDTO
+                                    {
+                                        Name = tempName,
+                                        IsCorrectAnswer = GetBool(workSheet, i, j).Value,
+                                    });
                                 }
                                 else
                                 {
@@ -151,7 +154,7 @@ namespace SmartQuizApi.Controllers
                                 }
                             }
 
-                            if (listAnswer.Where(x => x.IsCorrectAnswer).Count() != 0)
+                            if (listAnswer.Where(x => x.IsCorrectAnswer == true).Count() > 0)
                             {
                                 var question = new CreateQuestionDTO
                                 {
