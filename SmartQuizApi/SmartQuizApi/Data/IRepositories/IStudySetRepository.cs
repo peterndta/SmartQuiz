@@ -11,5 +11,6 @@ namespace SmartQuizApi.Data.IRepositories
         Task<List<StudySet>> FilterStudySetAsync(string? name, List<int> listId, string sortType);
         void DeleteStudySet(StudySet studySet);
         Task<List<StudySet>> GetStudySetByUserId(int userId);
+        Task<List<StudySet>> GetAllStudySets(string sortType);
     }
 }

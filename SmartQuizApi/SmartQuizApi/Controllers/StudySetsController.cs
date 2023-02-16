@@ -4,6 +4,7 @@ using SmartQuizApi.Data.DTOs.QuestionDTOs;
 using SmartQuizApi.Data.DTOs.StudySetDTOs;
 using SmartQuizApi.Data.IRepositories;
 using SmartQuizApi.Data.Models;
+using SmartQuizApi.Services.Commons;
 using SmartQuizApi.Services.Utils;
 
 namespace SmartQuizApi.Controllers
@@ -174,13 +175,14 @@ namespace SmartQuizApi.Controllers
         {
             try
             {
+                var studySetsList = new List<StudySet>();
                 var listSubjectsOfGradeId = _repositoryManager.SubjectsOfGrade.GetListSubjectsOfGradesId(filter.GradeId, filter.SubjectId);
                 if ((filter.SubjectId == null && filter.GradeId == null && filter.StudySetName == null) || listSubjectsOfGradeId == null)
                 {
-                    return StatusCode(StatusCodes.Status200OK, new Response(200, new List<GetStudySetsListDTO>(), ""));
+                    studySetsList = await _repositoryManager.StudySet.GetAllStudySets(sorttype);
                 }            
                 
-                var studySetsList = await _repositoryManager.StudySet.FilterStudySetAsync(filter.StudySetName, listSubjectsOfGradeId, sorttype);
+                studySetsList = await _repositoryManager.StudySet.FilterStudySetAsync(filter.StudySetName, listSubjectsOfGradeId, sorttype);
                 if (studySetsList.Count == 0)
                 {
                     return StatusCode(StatusCodes.Status200OK, new Response(200, new List<GetStudySetsListDTO>(), ""));
