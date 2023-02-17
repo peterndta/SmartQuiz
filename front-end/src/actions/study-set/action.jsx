@@ -46,7 +46,27 @@ const useStudySet = () => {
         else window.location.reload(false)
     }
 
-    return { getStudySetList, getStudySet, getMyStudySets, createStudySet, deleteStudySet, updateStudySet }
+    const getStudySetExam = (id, amount, signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth)
+            return get({
+                endpoint: `/api/StudySets/${id}/exam`,
+                signal: signal,
+                params: { amount: amount },
+            })
+        else window.location.reload(false)
+    }
+
+    return {
+        getStudySetList,
+        getStudySet,
+        getMyStudySets,
+        createStudySet,
+        deleteStudySet,
+        updateStudySet,
+        getStudySetExam,
+    }
 }
 
 export default useStudySet

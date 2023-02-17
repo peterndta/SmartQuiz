@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { clone, cloneDeep } from 'lodash'
 import { useHistory, useParams } from 'react-router-dom'
@@ -46,9 +46,8 @@ const LearnPageBottom = ({ start }) => {
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [open, setOpen] = useState(false)
-    const [index, setIndex] = useState(15)
+    const [index, setIndex] = useState(start)
     const [setIds, setSetIds] = useState(new Set([]))
-    const questionsLength = useRef(0)
     const history = useHistory()
 
     const handleOpen = () => setOpen(true)
@@ -82,7 +81,6 @@ const LearnPageBottom = ({ start }) => {
         }
 
         if (selectedChoices.length === 0) {
-            updateStudySetQuestion(getQuestion)
             showSnackbar({
                 severity: 'error',
                 children: 'Bạn chưa lựa chọn đáp án nào!',
@@ -107,8 +105,9 @@ const LearnPageBottom = ({ start }) => {
 
             const severity = isCorrect ? 'success' : 'error'
             const children = isCorrect ? 'Chúc mừng bạn đã vượt qua!' : 'Bạn đã lựa chọn đáp án sai!'
-            showSnackbar({ severity, children })
+            if (!isCorrect) updateStudySetQuestion(getQuestion)
 
+            showSnackbar({ severity, children })
             await delay(2000)
             setSelectedChoices([])
             setCorrectAnswers({ isSubmit: false, ans: [] })
@@ -142,7 +141,6 @@ const LearnPageBottom = ({ start }) => {
             .then((response) => {
                 const data = response.data.data
                 data.questions.forEach((question, index) => (question.index = index + 1))
-                questionsLength.current = data.questions.length
                 setStudySetDetail(data)
                 setIsFirstRender(false)
             })
@@ -160,7 +158,7 @@ const LearnPageBottom = ({ start }) => {
     }, [])
 
     useEffect(() => {
-        setIndex(14)
+        setIndex(start - 1)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [start])
 
@@ -203,14 +201,14 @@ const LearnPageBottom = ({ start }) => {
                             id={id}
                         />
                     ))}
-                    {index - setIds.size === questionsLength.current && (
+                    {index === studySetDetail.questions.length && (
                         <CardLayout style={CardLayoutStyle}>
                             <CardContent
                                 sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             >
                                 <Box>
                                     <Typography align="center" variant="h5">
-                                        Bạn đã kết thúc học phần này.
+                                        Chúc mừng bạn đã học phần này.
                                     </Typography>
                                     <Box mt={3} display="flex" justifyContent="center">
                                         <ButtonCompo

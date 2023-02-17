@@ -10,8 +10,9 @@ import { AppStyles } from '~/constants/styles'
 const TestModal = ({ open, handleClose, id, numberOfQuestion }) => {
     const history = useHistory()
     const [num, setNum] = useState(1)
-    const [type, setType] = useState(15)
+    const [time, setTime] = useState(15)
     let limitQuestion
+
     if (numberOfQuestion > 360) {
         limitQuestion = 360
     } else {
@@ -28,10 +29,10 @@ const TestModal = ({ open, handleClose, id, numberOfQuestion }) => {
         }
     }
     const createTestHandler = () => {
-        history.push(`/study-sets/${id}/test`)
+        history.push(`/study-sets/${id}/test`, { time: time, quantity: num })
     }
     const handleTimeChange = (event) => {
-        setType(event.target.value)
+        setTime(event.target.value)
     }
 
     const EndButton = {
@@ -100,7 +101,7 @@ const TestModal = ({ open, handleClose, id, numberOfQuestion }) => {
                                     minWidth: 30,
                                 }}
                             >
-                                <Select value={type} onChange={handleTimeChange}>
+                                <Select value={time} onChange={handleTimeChange}>
                                     <MenuItem value={15}>15</MenuItem>
                                     <MenuItem value={30}>30</MenuItem>
                                     <MenuItem value={45}>45</MenuItem>
