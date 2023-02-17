@@ -6,9 +6,11 @@ import { Box, FormControl, FormControlLabel, FormLabel, Modal, Radio, RadioGroup
 import ButtonCompo from '~/components/ButtonCompo'
 
 import { AppStyles } from '~/constants/styles'
+import { useAppSelector } from '~/hooks/redux-hooks'
 
 const LearnModal = ({ open, handleClose, id }) => {
     const [value, setValue] = useState('standard')
+    const { vip } = useAppSelector((state) => state.auth)
 
     const handleChange = (event) => {
         setValue(event.target.value)
@@ -57,8 +59,13 @@ const LearnModal = ({ open, handleClose, id }) => {
                         value={value}
                         onChange={handleChange}
                     >
-                        <FormControlLabel value="standard" control={<Radio />} label="Học tiêu chuẩn" />
-                        <FormControlLabel value="fee" disabled control={<Radio />} label="Học trả phí" />
+                        <FormControlLabel value="standard" control={<Radio />} label="Standard" />
+                        <FormControlLabel
+                            value="premium"
+                            disabled={!vip}
+                            control={<Radio />}
+                            label="Spaced-repetition"
+                        />
                     </RadioGroup>
                 </FormControl>
                 <ButtonCompo

@@ -1,14 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import LearnPageBottom from './LearnPageBottom'
-import LearnPageHeader from './LearnPageHeader'
+import queryString from 'query-string'
+import { useLocation } from 'react-router-dom'
+
+import LearnNormal from './LearnNormal'
+import LearnPremium from './LearnPremium'
 
 const LearnPage = () => {
-    const [start, setStart] = useState()
+    const { search: query } = useLocation()
+    const { started } = queryString.parse(query)
+    const [start, setStart] = useState(1)
+    const { state } = useLocation()
+
+    useEffect(() => {
+        if (started) {
+            if (Number.isInteger(+started)) {
+                if (started <= 0) {
+                    setStart(1)
+                } else {
+                    setStart(+started)
+                }
+            }
+        }
+    }, [started])
+
     return (
         <React.Fragment>
-            <LearnPageHeader />
-            <LearnPageBottom start={start} setStart={setStart} />
+            {!state || state.mode === 'standard' ? <LearnNormal start={start} /> : <LearnPremium start={start} />}
         </React.Fragment>
     )
 }

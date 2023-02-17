@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 
 import { Grid } from '@mui/material'
 
@@ -13,12 +13,14 @@ import { useStudySet } from '~/actions/study-set'
 
 const TestPageBottom = () => {
     const { id } = useParams()
-    const { getStudySet } = useStudySet()
+    const { getStudySetExam } = useStudySet()
     const showSnackbar = useSnackbar()
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [selectQuestionAnswers, setSelectQuestionAnswers] = useState([])
     const [checkAnswers, setCheckAnswers] = useState({ isSubmit: false, questions: [], correctCount: 0, wrongCount: 0 })
+    const { state } = useLocation()
+    const exam = { time: state ? state.time : 30, quantity: state ? state.quantity : 20 }
 
     const handleSelectQuestion = (question) => {
         if (selectQuestionAnswers.length === 0) {
@@ -83,9 +85,10 @@ const TestPageBottom = () => {
     useEffect(() => {
         const controller = new AbortController()
         const signal = controller.signal
-        getStudySet(id, signal)
+        getStudySetExam(id, exam.quantity, signal)
             .then((response) => {
                 const data = response.data.data
+                console.log(data)
 
                 setStudySetDetail(data)
                 setIsFirstRender(false)
@@ -120,6 +123,7 @@ const TestPageBottom = () => {
                     questionLength={studySetDetail.questions.length}
                     selectedLength={selectQuestionAnswers.length}
                     handleSubmit={handleSubmit}
+                    time={exam.time}
                 />
             </Grid>
         </Grid>

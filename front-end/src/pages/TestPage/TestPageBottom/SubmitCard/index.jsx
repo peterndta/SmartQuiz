@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef, useState } from 'react'
+import { memo, useRef, useState } from 'react'
 
 import Countdown, { zeroPad } from 'react-countdown'
 
@@ -33,13 +33,13 @@ const ButtonStyle2 = {
     minWidth: 235,
 }
 
-const SubmitCard = ({ questionLength, selectedLength, handleSubmit }) => {
+const minuteGenerator = (time) => Date.now() + time * 60 * 1000
+
+const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time }) => {
     const [isPaused, setIsPaused] = useState(false)
     const countdownRef = useRef(null)
 
-    const now = useMemo(() => Date.now(), [])
-
-    const [countDown, setCountDown] = useState(now + 6000)
+    const [countDown, setCountDown] = useState(minuteGenerator(time))
 
     const setRef = (countdown) => {
         if (countdown) {
