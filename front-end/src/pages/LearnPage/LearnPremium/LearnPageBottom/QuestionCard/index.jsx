@@ -1,3 +1,5 @@
+import { useHistory } from 'react-router-dom'
+
 import { ArrowCircleRight } from '@mui/icons-material'
 import { Box, CardContent, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
@@ -12,7 +14,6 @@ const CardLayoutStyle = {
     mb: 2,
     borderRadius: 3,
     p: 1,
-    height: 'none',
 }
 
 const ButtonStyle = {
@@ -48,12 +49,14 @@ const QuestionCard = ({
     disableButton,
     id,
 }) => {
+    const history = useHistory()
+
     return (
         <Box>
             <CardLayout style={CardLayoutStyle}>
                 <CardContent>
                     <Typography sx={{ mb: 5, fontSize: 20, fontWeight: 500 }}>
-                        {question.index + 1}. {question.name}
+                        {question.index}. {question.name}
                     </Typography>
                     <Typography sx={{ mb: 2, fontWeight: 500 }}>Câu trả lời</Typography>
                     {question.answers.map((answer, index) => (

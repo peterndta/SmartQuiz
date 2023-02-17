@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { useParams } from 'react-router-dom'
+import { clone, cloneDeep } from 'lodash'
+import { useHistory, useParams } from 'react-router-dom'
 import SwipeableViews from 'react-swipeable-views'
 
 import { Settings } from '@mui/icons-material'
-import { Box, IconButton, Skeleton, Tooltip } from '@mui/material'
+import { Box, CardContent, IconButton, Skeleton, Tooltip, Typography } from '@mui/material'
+import ButtonCompo from '~/components/ButtonCompo'
+import CardLayout from '~/components/CardLayout'
 
 import NumberQuestionModal from './NumberQuestionModal'
 import QuestionCard from './QuestionCard'
@@ -15,6 +18,25 @@ import { AppStyles } from '~/constants/styles'
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+const CardLayoutStyle = {
+    mb: 2,
+    borderRadius: 3,
+    p: 1,
+    height: 400,
+    width: 850,
+}
+
+const ButtonStyle = {
+    color: AppStyles.colors['#000F33'],
+    textTransform: 'none',
+    height: 56,
+    backgroundColor: AppStyles.colors['#CCDBFF'],
+    ':hover': {
+        bgcolor: AppStyles.colors['#004DFF'],
+        color: 'white',
+    },
+}
+
 const LearnPageBottom = ({ start }) => {
     const { id } = useParams()
     const { getStudySet } = useStudySet()
@@ -24,8 +46,10 @@ const LearnPageBottom = ({ start }) => {
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [open, setOpen] = useState(false)
-    const [index, setIndex] = useState(start)
-    const timeout = useRef(1)
+    const [index, setIndex] = useState(15)
+    const [setIds, setSetIds] = useState(new Set([]))
+    const questionsLength = useRef(0)
+    const history = useHistory()
 
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
@@ -34,6 +58,28 @@ const LearnPageBottom = ({ start }) => {
         const getQuestion = { ...studySetDetail.questions[index] }
         const getAnswers = [...getQuestion.answers]
         const correctAnswers = getAnswers.filter((ans) => ans.isCorrectAnswer === true)
+
+        if (index > 0 && index % 3 === 0) {
+            const updatedSetIds = clone(setIds)
+
+            let random = Math.floor(Math.random() * (index - 1))
+            let getQuestionAtPosition = cloneDeep(studySetDetail.questions[random])
+            let flag = true
+
+            while (flag) {
+                if (updatedSetIds.has(getQuestionAtPosition.id)) {
+                    random = Math.floor(Math.random() * (index - 1))
+                    getQuestionAtPosition = cloneDeep(studySetDetail.questions[random])
+                } else {
+                    updatedSetIds.add(getQuestionAtPosition.id)
+                    flag = false
+                    setSetIds(updatedSetIds)
+                }
+            }
+            const updatedStudySet = cloneDeep(studySetDetail)
+            updatedStudySet.questions.splice(index + 1, 0, getQuestionAtPosition)
+            setStudySetDetail(updatedStudySet)
+        }
 
         if (selectedChoices.length === 0) {
             updateStudySetQuestion(getQuestion)
@@ -48,19 +94,21 @@ const LearnPageBottom = ({ start }) => {
                 severity: 'error',
                 children: 'Bạn đã lựa chọn đáp án sai!',
             })
-            timeout.current = setTimeout(() => {
-                setSelectedChoices([])
-                setCorrectAnswers({ isSubmit: false, ans: [] })
-                setIndex((prev) => prev + 1)
-            }, 2000)
+
+            await delay(2000)
+            setSelectedChoices([])
+            setCorrectAnswers({ isSubmit: false, ans: [] })
+            setIndex((prev) => prev + 1)
         } else if (selectedChoices.length === correctAnswers.length) {
             setCorrectAnswers({ isSubmit: true, ans: [...correctAnswers] })
             const isCorrect = correctAnswers.every((correctAns) =>
                 selectedChoices.some((choice) => choice.id === correctAns.id)
             )
+
             const severity = isCorrect ? 'success' : 'error'
             const children = isCorrect ? 'Chúc mừng bạn đã vượt qua!' : 'Bạn đã lựa chọn đáp án sai!'
             showSnackbar({ severity, children })
+
             await delay(2000)
             setSelectedChoices([])
             setCorrectAnswers({ isSubmit: false, ans: [] })
@@ -93,7 +141,8 @@ const LearnPageBottom = ({ start }) => {
         getStudySet(id, signal)
             .then((response) => {
                 const data = response.data.data
-                data.questions.forEach((question, index) => (question.index = index))
+                data.questions.forEach((question, index) => (question.index = index + 1))
+                questionsLength.current = data.questions.length
                 setStudySetDetail(data)
                 setIsFirstRender(false)
             })
@@ -111,10 +160,7 @@ const LearnPageBottom = ({ start }) => {
     }, [])
 
     useEffect(() => {
-        setIndex(start - 1)
-        return () => {
-            clearTimeout(timeout.current)
-        }
+        setIndex(14)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [start])
 
@@ -157,6 +203,35 @@ const LearnPageBottom = ({ start }) => {
                             id={id}
                         />
                     ))}
+                    {index - setIds.size === questionsLength.current && (
+                        <CardLayout style={CardLayoutStyle}>
+                            <CardContent
+                                sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                <Box>
+                                    <Typography align="center" variant="h5">
+                                        Bạn đã kết thúc học phần này.
+                                    </Typography>
+                                    <Box mt={3} display="flex" justifyContent="center">
+                                        <ButtonCompo
+                                            style={{ ...ButtonStyle, marginRight: 3 }}
+                                            fullWidth={false}
+                                            onClick={() => history.push(`/study-sets/${id}`)}
+                                        >
+                                            Trở về học phần
+                                        </ButtonCompo>
+                                        <ButtonCompo
+                                            style={{ ...ButtonStyle }}
+                                            fullWidth={false}
+                                            onClick={() => history.push(`/study-sets/${id}/test`)}
+                                        >
+                                            Làm kiểm tra
+                                        </ButtonCompo>
+                                    </Box>
+                                </Box>
+                            </CardContent>
+                        </CardLayout>
+                    )}
                 </SwipeableViews>
             )}
         </Box>
