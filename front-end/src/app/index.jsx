@@ -10,7 +10,6 @@ import { setSubjects } from '~/features/subjectSlice'
 import useSubject from '~/features/subjectSlice/subject-action'
 import { useAppDispatch } from '~/hooks/redux-hooks'
 import Loading from '~/pages/Loading'
-import LocalStorageUtils from '~/utils/LocalStorageUtils'
 
 function App() {
     const authAction = useAuthAction()
@@ -20,8 +19,6 @@ function App() {
     const { getGrades } = useGrade()
     const [loading, setIsLoading] = useState(true)
     const showSnackBar = useSnackbar()
-
-    console.log(!!LocalStorageUtils.getItem('token'))
 
     useEffect(() => {
         const firstController = new AbortController()

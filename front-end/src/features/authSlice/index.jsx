@@ -6,7 +6,7 @@ const initialState = {
     email: '',
     username: '',
     role: '',
-    status: '',
+    vip: false,
     image: '',
     exp: 0,
 }
@@ -22,15 +22,14 @@ const authSlice = createSlice({
             state.image = action.payload.image
             state.exp = action.payload.exp
             state.userId = action.payload.userId
-            state.exp = action.payload.exp
             state.token = action.payload.token
+            state.vip = true
         },
         logout: (state) => {
             state.email = ''
             state.username = ''
             state.role = ''
             state.image = ''
-            state.exp = ''
             state.userId = ''
             state.exp = 0
             state.token = ''
