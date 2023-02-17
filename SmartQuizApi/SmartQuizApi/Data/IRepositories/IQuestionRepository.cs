@@ -9,5 +9,6 @@ namespace SmartQuizApi.Data.IRepositories
         void DeleteQuestion(Question question);
         Question? GetQuestionById(string id);
         int GetTotalQuestionByStudySetId(string studySetId);
+        Task<List<Question>> GetQuestionsByStudySetId(string id, int amount);
     }
 }
