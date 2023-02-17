@@ -56,8 +56,20 @@ const privateRoutes = [
     },
     {
         component: lazy(() => import('~/pages/MyLibrary')),
-        path: '/thu-vien',
-        name: 'thu-vien',
+        path: '/my-library',
+        name: 'my-library',
+        layout: 'common',
+    },
+    {
+        component: lazy(() => import('~/pages/UpgradeAccount')),
+        path: '/upgrade',
+        name: 'upgrade',
+        layout: 'common',
+    },
+    {
+        component: lazy(() => import('~/pages/Checkout')),
+        path: '/checkout',
+        name: 'checkout',
         layout: 'common',
     },
     {
