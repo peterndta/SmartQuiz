@@ -1,3 +1,6 @@
+import queryString from 'query-string'
+import { useLocation } from 'react-router-dom'
+
 import { Box, Divider, Typography } from '@mui/material'
 
 import InputBox from './InputBox'
@@ -6,8 +9,10 @@ import Paypal from './Paypal'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
-const CheckoutPageRight = ({ mode, year, month, day }) => {
+const CheckoutPageRight = ({ year, month, day }) => {
     const { email, username } = useAppSelector((state) => state.auth)
+    const { search: query } = useLocation()
+    const { mode } = queryString.parse(query)
 
     return (
         <Box>

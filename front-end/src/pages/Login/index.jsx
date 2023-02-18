@@ -8,6 +8,7 @@ import { Box, Grid, Tab } from '@mui/material'
 
 import Loading from '../Loading'
 import SigninForm from './SigninForm'
+import SignupForm from './SignupForm'
 import Welcome from './Welcome'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
@@ -67,7 +68,9 @@ const Login = () => {
                             <TabPanel value={'0'} sx={{ p: 0 }}>
                                 <SigninForm />
                             </TabPanel>
-                            <TabPanel value={'1'}>Đăng ký</TabPanel>
+                            <TabPanel value={'1'}>
+                                <SignupForm />
+                            </TabPanel>
                         </TabContext>
                     </Box>
                 </Box>
