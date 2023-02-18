@@ -96,7 +96,7 @@ const Banner = () => {
                                 variant="contained"
                                 startIcon={<Avatar src={Crown} />}
                                 component={Link}
-                                to="/dang-nhap"
+                                to="/upgrade"
                             >
                                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                                     PREMIUM

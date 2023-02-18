@@ -79,14 +79,26 @@ const CreateStudySet = () => {
         importQuestion(formData)
             .then((response) => {
                 const data = response.data.data
-                console.log(data)
-                setLoad(false)
+                const formatQuestions = data.map((item) => {
+                    return {
+                        quest: item.name,
+                        ans: item.answers.map((answer) => {
+                            return {
+                                name: answer.name,
+                                isCorrect: answer.isCorrectAnswer,
+                            }
+                        }),
+                    }
+                })
+                setQuestions(formatQuestions)
             })
             .catch(() => {
                 showSnackbar({
                     severity: 'error',
                     children: 'Something went wrong, please try again later.',
                 })
+            })
+            .finally(() => {
                 setLoad(false)
             })
     }

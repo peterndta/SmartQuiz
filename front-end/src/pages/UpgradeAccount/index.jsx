@@ -49,22 +49,23 @@ const UpgradeAccount = () => {
                     <MonthlyOption />
                 </Grid>
                 <Grid item xs={4} md={4} lg={4}>
-                    <Box
-                        height={100}
-                        width={100}
-                        display="flex"
-                        style={{
-                            backgroundImage: `url(${star})`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: 'cover',
-                            overflow: 'hidden',
-                            position: 'absolute',
-                            right: '17.3%',
-                            top: '26.5%',
-                            borderTopRightRadius: 6,
-                        }}
-                    />
-                    <YearlyOption />
+                    <Box sx={{ position: 'relative' }}>
+                        <Box
+                            height={100}
+                            width={100}
+                            display="flex"
+                            style={{
+                                backgroundImage: `url(${star})`,
+                                backgroundRepeat: 'no-repeat',
+                                backgroundSize: 'cover',
+                                overflow: 'hidden',
+                                position: 'absolute',
+                                right: '0%',
+                                borderTopRightRadius: 6,
+                            }}
+                        />
+                        <YearlyOption />
+                    </Box>
                 </Grid>
             </Grid>
         </Box>

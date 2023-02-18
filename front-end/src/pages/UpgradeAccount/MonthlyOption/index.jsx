@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useHistory } from 'react-router-dom'
+
 import { CheckBox } from '@mui/icons-material'
 import { Box, Grid, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
@@ -21,6 +23,7 @@ const MonthlyOption = () => {
             color: 'white',
         },
     }
+    const history = useHistory()
     return (
         <Box
             sx={{
@@ -69,7 +72,7 @@ const MonthlyOption = () => {
                     </Grid>
                 </Box>
             ))}
-            <ButtonCompo variant="outlined" style={EndButton}>
+            <ButtonCompo variant="outlined" style={EndButton} onClick={() => history.push('/checkout/montly')}>
                 Bắt đầu dùng thử miễn phí
             </ButtonCompo>
         </Box>
