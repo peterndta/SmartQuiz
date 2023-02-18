@@ -1,8 +1,5 @@
-import React from 'react'
-
 import { Link } from 'react-router-dom'
 
-import { GppGood } from '@mui/icons-material'
 import { Avatar, Box, CardContent, Grid, Typography } from '@mui/material'
 
 import CardLayout from '../CardLayout'
@@ -47,12 +44,12 @@ const ClassCard = ({ studySet, md }) => {
                                         {/* {studySet?.StudySetName} */}
                                         {studySet.name}
                                     </Typography>
-                                    {Math.random() < 0.5 && (
+                                    {/* {Math.random() < 0.5 && (
                                         <GppGood
                                             fontSize="small"
                                             sx={{ ml: 1, mt: -0.5, color: AppStyles.colors['#004DFF'] }}
                                         />
-                                    )}
+                                    )} */}
                                 </Box>
                                 <MoreMenu />
                             </Box>
