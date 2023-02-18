@@ -68,7 +68,7 @@ const privateRoutes = [
     },
     {
         component: lazy(() => import('~/pages/Checkout')),
-        path: '/checkout/:id',
+        path: '/checkout',
         name: 'checkout',
         layout: 'common',
     },

@@ -87,8 +87,8 @@ const YearlyOption = () => {
                     </Grid>
                 </Box>
             ))}
-            <ButtonCompo variant="outlined" style={EndButton} onClick={() => history.push('/checkout/yearly')}>
-                Bắt đầu dùng thử miễn phí
+            <ButtonCompo variant="outlined" style={EndButton} onClick={() => history.push('/checkout?mode=yearly')}>
+                Bắt đầu đăng ký
             </ButtonCompo>
         </Box>
     )

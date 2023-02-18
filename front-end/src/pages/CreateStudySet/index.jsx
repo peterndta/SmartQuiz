@@ -82,8 +82,10 @@ const CreateStudySet = () => {
                 const formatQuestions = data.map((item) => {
                     return {
                         quest: item.name,
+                        id: uuid(),
                         ans: item.answers.map((answer) => {
                             return {
+                                id: uuid(),
                                 name: answer.name,
                                 isCorrect: answer.isCorrectAnswer,
                             }

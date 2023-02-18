@@ -72,8 +72,8 @@ const MonthlyOption = () => {
                     </Grid>
                 </Box>
             ))}
-            <ButtonCompo variant="outlined" style={EndButton} onClick={() => history.push('/checkout/montly')}>
-                Bắt đầu dùng thử miễn phí
+            <ButtonCompo variant="outlined" style={EndButton} onClick={() => history.push('/checkout?mode=montly')}>
+                Bắt đầu đăng ký
             </ButtonCompo>
         </Box>
     )
