@@ -33,7 +33,7 @@ const Header = () => {
     const { logoutHandler } = useAuthAction()
     const open = Boolean(anchorEl)
 
-    const { email, username, image } = useAppSelector((state) => state.auth)
+    const { email, username, image, vip } = useAppSelector((state) => state.auth)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -254,25 +254,15 @@ const Header = () => {
                                             {email}
                                         </Typography>
                                         <Divider textAlign="center" sx={{ width: '100%', mt: 2 }}>
-                                            <Chip label="Standard" />
+                                            <Chip
+                                                label={vip === true ? 'Premium' : 'Standard'}
+                                                sx={{
+                                                    backgroundColor: vip === true && AppStyles.colors['#FEDA01'],
+                                                    color: vip === true && AppStyles.colors['#0045e5'],
+                                                }}
+                                            />
                                         </Divider>
                                     </Box>
-
-                                    {/* <MenuItem sx={{ display: 'flex', pr: 5 }}>
-                                        <Typography ml={1}>Học phần của tôi</Typography>
-                                    </MenuItem>
-
-                                    <MenuItem
-                                        sx={{ display: 'flex', pr: 5 }}
-                                    >
-                                        <Typography ml={1}>Học phần đã lưu</Typography>
-                                    </MenuItem>
-
-                                    <MenuItem
-                                        sx={{ display: 'flex', pr: 5 }}
-                                    >
-                                        <Typography ml={1}>Thông tin cá nhân</Typography>
-                                    </MenuItem> */}
 
                                     <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={handleClickLogout}>
                                         <Typography ml={1}>Đăng xuất</Typography>

@@ -18,7 +18,7 @@ const Checkout = () => {
     var day = now.getDate()
 
     return (
-        <Box maxWidth={1000} sx={{ m: '0 auto', mt: 5, mb: 9 }}>
+        <Box maxWidth={1000} sx={{ m: '0 auto', mt: 10, mb: 9 }}>
             <Box>
                 <Typography sx={{ fontSize: 32, fontWeight: 600, color: AppStyles.colors['#333333'] }}>
                     Hoàn tất thanh toán để bắt đầu sử dụng Premium
@@ -28,7 +28,7 @@ const Checkout = () => {
                         <CheckoutPageLeft mode={mode ? mode : 'montly'} year={year} month={month} day={day} />
                     </Grid>
                     <Grid item md={9} lg={7}>
-                        <CheckoutPageRight mode={mode ? mode : 'montly'} year={year} month={month} day={day} />
+                        <CheckoutPageRight year={year} month={month} day={day} />
                     </Grid>
                 </Grid>
             </Box>
