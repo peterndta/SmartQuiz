@@ -542,6 +542,34 @@ const initialValue = {
     label: '',
 }
 
+const UpgradeOptions = [
+    {
+        id: 1,
+        name: 'Tạo học phần với tệp Excel',
+        isPremium: false,
+    },
+    {
+        id: 2,
+        name: 'Tạo lớp để chia sẻ tài nguyên nội bộ',
+        isPremium: false,
+    },
+    {
+        id: 4,
+        name: 'Phương pháp học phổ thông',
+        isPremium: false,
+    },
+    {
+        id: 3,
+        name: 'Thêm hình ảnh cho câu hỏi',
+        isPremium: true,
+    },
+    {
+        id: 5,
+        name: 'Phương pháp học lập lại ngắt quãng',
+        isPremium: true,
+    },
+]
+
 export {
     universitiesName,
     levelSchool,
@@ -554,4 +582,5 @@ export {
     level,
     choices,
     exampleQuestion,
+    UpgradeOptions,
 }

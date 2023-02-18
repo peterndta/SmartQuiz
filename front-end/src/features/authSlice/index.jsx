@@ -34,9 +34,12 @@ const authSlice = createSlice({
             state.exp = 0
             state.token = ''
         },
+        checkout: (state, action) => {
+            state.vip = action.payload
+        },
     },
 })
 
-export const { login, logout } = authSlice.actions
+export const { login, logout, checkout } = authSlice.actions
 
 export default authSlice.reducer
