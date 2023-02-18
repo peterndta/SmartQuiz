@@ -16,20 +16,21 @@ import sets_empty from '~/assets/images/sets_empty.png'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
+const ButtonStyle = {
+    mt: 1,
+    mb: 5,
+    width: '100%',
+    backgroundColor: AppStyles.colors['#004DFF'],
+    textTransform: 'none',
+    fontSize: 16,
+    ':hover': {
+        bgcolor: AppStyles.colors['#0045e5'],
+        color: 'white',
+    },
+}
+
 const StudySets = ({ getMyStudySets }) => {
     const history = useHistory()
-    const ButtonStyle = {
-        mt: 1,
-        mb: 5,
-        width: '100%',
-        backgroundColor: AppStyles.colors['#004DFF'],
-        textTransform: 'none',
-        fontSize: 16,
-        ':hover': {
-            bgcolor: AppStyles.colors['#0045e5'],
-            color: 'white',
-        },
-    }
     const { getStudySet, deleteStudySet } = useStudySet()
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [studySet, setStudySet] = useState({})
@@ -60,7 +61,6 @@ const StudySets = ({ getMyStudySets }) => {
                     severity: 'error',
                     children: 'Something went wrong, please try again later.',
                 })
-                // setIsFirstRender(false)
             })
         return () => {
             controller.abort()
@@ -75,13 +75,8 @@ const StudySets = ({ getMyStudySets }) => {
                 const data = response.data.data
                 setPage(response.data.meta.currentPage)
                 setHasNextPage(response.data.meta.hasNext)
-                // if (page > 1 && hasNextPage === true) {
-                //     const cloneStudySet = studySet
-                //     const newStudySet = [...cloneStudySet, ...data]
-                //     setStudySet(newStudySet)
-                // } else {
+
                 setStudySet(data)
-                // }
 
                 if (data?.length != 0) {
                     getStudySet(data[0]?.id, userId, signal).then((response) => {
@@ -152,7 +147,6 @@ const StudySets = ({ getMyStudySets }) => {
                 <React.Fragment>
                     <Grid item xs={4} md={4} lg={3.5}>
                         <Typography
-                            // textAlign={'left'}
                             variant="h6"
                             fontWeight={500}
                             sx={{

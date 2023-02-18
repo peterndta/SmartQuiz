@@ -19,7 +19,7 @@ const DraftCard = ({ studySet }) => {
 
     return (
         <Grid item md={3}>
-            <CardLayout style={CardLayoutStyle} onClick={() => history.push(`/study-sets/${studySet.id}`)}>
+            <CardLayout style={CardLayoutStyle} onClick={() => history.replace(`/create`, studySet)}>
                 <CardContent>
                     <Box display="flex" alignItems="center" justifyContent="space-between">
                         <Box display="flex" alignItems="center">
@@ -36,11 +36,8 @@ const DraftCard = ({ studySet }) => {
                                     color: 'black',
                                     textDecoration: 'none',
                                 }}
-                                // component={Link}
-                                // to={`/study-sets/${studySet.id}`}
                             >
-                                {/* {studySet?.StudySetName} */}
-                                {studySet.name}
+                                {studySet.title}
                             </Typography>
                         </Box>
                     </Box>
@@ -59,7 +56,7 @@ const DraftCard = ({ studySet }) => {
                                 userSelect: 'none',
                             }}
                         >
-                            ĐẠI HỌC |
+                            {studySet.classLevel.label} |
                         </Typography>
                         <Typography
                             ml={0.5}
@@ -67,7 +64,7 @@ const DraftCard = ({ studySet }) => {
                             color="text.secondary"
                             sx={{ fontSize: 14, userSelect: 'none' }}
                         >
-                            100 câu
+                            {studySet.questions.length}
                         </Typography>
                     </Box>
                 </CardContent>
