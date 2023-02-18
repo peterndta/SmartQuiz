@@ -1,3 +1,5 @@
+import { useHistory } from 'react-router-dom'
+
 import { ArrowCircleRight } from '@mui/icons-material'
 import { Box, CardContent, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
@@ -48,6 +50,8 @@ const QuestionCard = ({
     disableButton,
     id,
 }) => {
+    const history = useHistory()
+
     return (
         <Box>
             <CardLayout style={CardLayoutStyle}>

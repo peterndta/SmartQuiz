@@ -49,12 +49,6 @@ const privateRoutes = [
         role: 'user',
     },
     {
-        component: lazy(() => import('~/pages/Draft')),
-        path: '/drafts',
-        name: 'drafts',
-        layout: 'common',
-    },
-    {
         component: lazy(() => import('~/pages/MyLibrary')),
         path: '/thu-vien',
         name: 'thu-vien',

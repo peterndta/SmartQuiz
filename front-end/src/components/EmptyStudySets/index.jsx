@@ -1,12 +1,10 @@
-import React from 'react'
-
 import { Link } from 'react-router-dom'
 
 import { Box, Button, Typography } from '@mui/material'
 
 import { AppStyles } from '~/constants/styles'
 
-const EmptyStudySets = ({ textAbove, textBelow, image }) => {
+const EmptyStudySets = ({ textAbove, textBelow, image, disable = false }) => {
     return (
         <Box textAlign="center">
             <Box
@@ -25,25 +23,27 @@ const EmptyStudySets = ({ textAbove, textBelow, image }) => {
             <Typography fontSize={16} mt={1} sx={{ color: AppStyles.colors['#000F33'] }}>
                 {textBelow}
             </Typography>
-            <Button
-                sx={{
-                    color: AppStyles.colors['#FFFFFF'],
-                    borderRadius: 3,
-                    px: 3,
-                    py: 1,
-                    mt: 3,
-                    textTransform: 'none',
-                    backgroundColor: AppStyles.colors['#004DFF'],
-                    ':hover': {
-                        bgcolor: AppStyles.colors['#0045e5'],
-                        color: 'white',
-                    },
-                }}
-                component={Link}
-                to="/create"
-            >
-                <Typography> Tạo học phần</Typography>
-            </Button>
+            {!disable && (
+                <Button
+                    sx={{
+                        color: AppStyles.colors['#FFFFFF'],
+                        borderRadius: 3,
+                        px: 3,
+                        py: 1,
+                        mt: 3,
+                        textTransform: 'none',
+                        backgroundColor: AppStyles.colors['#004DFF'],
+                        ':hover': {
+                            bgcolor: AppStyles.colors['#0045e5'],
+                            color: 'white',
+                        },
+                    }}
+                    component={Link}
+                    to="/create"
+                >
+                    <Typography> Tạo học phần</Typography>
+                </Button>
+            )}
         </Box>
     )
 }
