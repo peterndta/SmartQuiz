@@ -99,7 +99,7 @@ const Header = () => {
                             </Box>
                             <Box
                                 component={NavLink}
-                                to="/thu-vien"
+                                to="/my-library"
                                 sx={{
                                     textDecoration: 'none',
                                     color: AppStyles.colors['#333333'],
@@ -192,7 +192,7 @@ const Header = () => {
                                 variant="contained"
                                 startIcon={<Avatar src={Crown} sx={{ width: 27, height: 27 }} />}
                                 component={Link}
-                                to="/dang-nhap"
+                                to="/upgrade"
                             >
                                 <Typography sx={{ textTransform: 'none', fontWeight: 500 }}>Premium Plan</Typography>
                             </Button>

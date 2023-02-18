@@ -88,7 +88,6 @@ const TestPageBottom = () => {
         getStudySetExam(id, exam.quantity, signal)
             .then((response) => {
                 const data = response.data.data
-                console.log(data)
 
                 setStudySetDetail(data)
                 setIsFirstRender(false)

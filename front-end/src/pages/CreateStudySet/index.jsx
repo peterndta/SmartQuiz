@@ -1,20 +1,22 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useHistory, useLocation } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 
-import { AddBox, Article, FileDownload } from '@mui/icons-material'
-import { Box, Button, Container, Tooltip, Typography } from '@mui/material'
+import { AddBox, Article, ImportExport } from '@mui/icons-material'
+import { Box, Button, Container, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 
-import template from '../../assets/files/Template.xlsx'
 import QuestionsExample from './Example'
+import ImportExportModal from './ImportExportModal'
 import Modal from './Modal'
 import ModalUpdate from './ModalUpdate'
 import NewStudySet from './NewStudySet'
 import Questions from './Questions'
 
+import { useSnackbar } from '~/HOC/SnackbarContext'
 import { initialValue } from '~/Mock'
+import { useQuestion } from '~/actions/question'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
@@ -31,9 +33,14 @@ const CreateStudySet = () => {
     const { userId } = useAppSelector((state) => state.auth)
     const [modalMode, setModalMode] = useState('create')
     const [question, setQuestion] = useState({})
+    const isSubmitSuccessfully = useRef(false)
     const history = useHistory()
     const { createStudySet } = useStudySet()
-
+    const { importQuestion } = useQuestion()
+    const [openImportExport, setOpenImportExport] = useState(false)
+    const [files, setFiles] = useState()
+    const [load, setLoad] = useState(false)
+    const showSnackbar = useSnackbar()
     const mutateQuestionHandler = (question) => {
         if (modalMode === 'create') setQuestions((prev) => [...prev, { ...question }])
         else if (modalMode === 'edit') {
@@ -60,6 +67,48 @@ const CreateStudySet = () => {
         setModalMode('edit')
         setOpenModal(true)
     }
+
+    const onInputChange = (e) => {
+        setFiles(e.target.files[0])
+    }
+    const handleUpload = () => {
+        setOpenImportExport(false)
+        setLoad(true)
+        closeModalHandler()
+        const formData = new FormData()
+        formData.append('formFile', files)
+        importQuestion(formData)
+            .then((response) => {
+                const data = response.data.data
+                const formatQuestions = data.map((item) => {
+                    return {
+                        quest: item.name,
+                        id: uuid(),
+                        ans: item.answers.map((answer) => {
+                            return {
+                                id: uuid(),
+                                name: answer.name,
+                                isCorrect: answer.isCorrectAnswer,
+                            }
+                        }),
+                    }
+                })
+                setQuestions(formatQuestions)
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+            .finally(() => {
+                setLoad(false)
+            })
+    }
+
+    const handleOpenImportExport = () => setOpenImportExport(true)
+
+    const handleCloseImportExport = () => setOpenImportExport(false)
 
     const titleChangeHandler = ({ target: { value } }) => setTitle(value)
 
@@ -116,19 +165,21 @@ const CreateStudySet = () => {
         }
         createStudySet(studySet).then(() => {
             if (state) {
-                const drafts = LocalStorageUtils.getItem('drafts')
+                const drafts = LocalStorageUtils.getItem('create')
                 const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
-                LocalStorageUtils.setItem('drafts', {
+                isSubmitSuccessfully.current = true
+
+                LocalStorageUtils.setItem('create', {
                     path: '/create',
                     studySet: updateDrafts,
                 })
             }
-            history.push('/')
+            history.replace('/')
         })
     }
 
     const saveDraft = () => {
-        const drafts = LocalStorageUtils.getItem('drafts') || { path: history.location.pathname, studySet: [] }
+        const drafts = LocalStorageUtils.getItem('create') || { path: history.location.pathname, studySet: [] }
         const draft = {
             id: uuid(),
             title,
@@ -161,7 +212,7 @@ const CreateStudySet = () => {
 
     useEffect(() => {
         return () => {
-            if (history.location.pathname !== '/create') {
+            if (history.location.pathname !== '/create' && !isSubmitSuccessfully.current) {
                 saveDraft()
             }
         }
@@ -170,20 +221,36 @@ const CreateStudySet = () => {
 
     return (
         <Box component="form" onSubmit={submitStudySetHandler}>
+            <ImportExportModal
+                open={openImportExport}
+                handleClose={handleCloseImportExport}
+                handleUpload={handleUpload}
+                onInputChange={onInputChange}
+                files={files}
+            />
             <Container maxWidth="xl">
                 <NewStudySet infoStudySetHandler={infoStudySetHandler} infoStudySet={infoStudySet} />
-                <Box display="flex" justifyContent="flex-end" mt={2}>
-                    <Tooltip
-                        title="Tải template"
-                        component="a"
-                        href={template}
-                        download="Template.xlsx"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        <Button variant="contained" sx={{ px: 5, py: 2 }}>
-                            <FileDownload />
-                        </Button>
+                <Box display="flex" justifyContent="flex-end" mt={2} alignItems="center">
+                    {load && (
+                        <Box mr={1}>
+                            <Typography sx={{ fontSize: 16, color: AppStyles.colors['#333333'], fontWeight: 500 }}>
+                                Tệp đang được tải lên
+                            </Typography>
+                            <Box display="flex" justifyContent="flex-end" mt={1}>
+                                <LinearProgress sx={{ width: 120 }} />
+                            </Box>
+                        </Box>
+                    )}
+
+                    <Tooltip title="Tải lên câu hỏi bằng Excel">
+                        <IconButton
+                            aria-label="create"
+                            size="medium"
+                            sx={{ border: '1px solid #767680' }}
+                            onClick={handleOpenImportExport}
+                        >
+                            <ImportExport fontSize="medium" sx={{ color: AppStyles.colors['#767680'] }} />
+                        </IconButton>
                     </Tooltip>
                 </Box>
                 {(() => {

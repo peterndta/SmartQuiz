@@ -22,8 +22,21 @@ const useQuestion = () => {
         if (isAuth) return remove({ endpoint: `/api/questions/${id}` })
         else window.location.reload(false)
     }
+    const importQuestion = (formData) => {
+        const isAuth = authMiddleware()
 
-    return { createQuestion, updateQuestion, removeQuestion }
+        if (isAuth)
+            return post({
+                endpoint: '/api/questions/import',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                body: formData,
+            })
+        else window.location.reload(false)
+    }
+
+    return { createQuestion, updateQuestion, removeQuestion, importQuestion }
 }
 
 export default useQuestion
