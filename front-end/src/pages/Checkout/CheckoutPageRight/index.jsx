@@ -1,6 +1,7 @@
 import { Box, Divider, Typography } from '@mui/material'
 
 import InputBox from './InputBox'
+import Paypal from './Paypal'
 
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
@@ -32,7 +33,9 @@ const CheckoutPageRight = ({ mode, year, month, day }) => {
                 <Typography sx={{ color: AppStyles.colors['#333333'], fontWeight: 500 }}>Tên tài khoản</Typography>
                 <InputBox name={username} />
             </Box>
-
+            <Box mt={3}>
+                <Paypal />
+            </Box>
             <Box mt={2}>
                 <Typography sx={{ fontSize: 14, color: AppStyles.colors['#333333'], opacity: 0.5 }}>
                     Gói đăng ký Premium theo {mode === 'yearly' ? 'năm' : 'tháng'} của bạn sẽ bắt đầu từ hôm nay và sẽ
