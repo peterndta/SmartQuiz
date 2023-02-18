@@ -6,6 +6,7 @@ using SmartQuizApi.Data.DTOs.QuestionDTOs;
 using SmartQuizApi.Data.DTOs.SchoolDTOs;
 using SmartQuizApi.Data.DTOs.StudySetDTOs;
 using SmartQuizApi.Data.DTOs.SubjectDTOs;
+using SmartQuizApi.Data.DTOs.UserDTO;
 using SmartQuizApi.Data.Models;
 
 namespace SmartQuizApi.Config
@@ -16,7 +17,7 @@ namespace SmartQuizApi.Config
         {
             CreateMap<CreateStudySetDTO, StudySet>();
             CreateMap<Grade, GetAllGradesDTO>();
-            CreateMap<Subject, GetAllSubjectsDTO>();
+            CreateMap<Subject, GetSubjectsDTO>();
             CreateMap<StudySet, GetStudySetDetailsDTO>().ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.User.Name));
             CreateMap<Question, GetQuestionDTO>();
             CreateMap<Answer, GetAnswerDTO>();
@@ -34,6 +35,8 @@ namespace SmartQuizApi.Config
                                                                 .ForMember(des => des.SubjectName, opt => opt.MapFrom(src => src.Subject.Name))
                                                                 .ForMember(des => des.GradeName, opt => opt.MapFrom(src => src.Grade.Name));
             CreateMap<CreateBill, Bill>();
+            CreateMap<User, UserInfoDTO>();
+            CreateMap<CreateUserInfor, User>();
         }
     }
 }

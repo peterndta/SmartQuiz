@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartQuizApi.Data.IRepositories;
 using SmartQuizApi.Data.Models;
+using System.Collections.Generic;
 
 namespace SmartQuizApi.Data.Repositories
 {
@@ -43,6 +44,34 @@ namespace SmartQuizApi.Data.Repositories
                 });
             }
             return listId;
+        }
+
+        public List<int> GetListSubjectsOfGradesId(List<int> listId)
+        {
+            var listIdResult = new List<int>();
+            var result = GetByCondition(x => listId.Contains(x.Id)).ToList();
+            if (result.Count > 0)
+            {
+                result.ForEach(x =>
+                {
+                    listIdResult.Add(x.Id);
+                });
+            }
+            return listIdResult;
+        }
+
+        public List<int> GetListSubjectsOfGradeId(int? gradeId, List<int> subjectId)
+        {
+            var listIdResult = new List<int>();
+            var result = GetByCondition(x => subjectId.Contains(x.Id) && x.GradeId == gradeId).ToList();
+            if (result.Count > 0)
+            {
+                result.ForEach(x =>
+                {
+                    listIdResult.Add(x.Id);
+                });
+            }
+            return listIdResult;
         }
     }
 }

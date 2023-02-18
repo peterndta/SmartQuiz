@@ -79,14 +79,24 @@ namespace SmartQuizApi.Controllers
                     if (userBasedEmail != null)
                     {
                         if (!userBasedEmail.Role.Equals(roleClaim))
+                        {
                             return Unauthorized(new Response(401, "You don't have permission for this request"));
+                        }
                     }
                     else
                     {
                         return BadRequest(new Response(400, "Invalid token"));
                     }
 
-                    return Ok(new Response(200, "", "Authorized"));
+                    bool haveInfor = false;
+                    if (userBasedEmail.GradeId != null)
+                    {
+                        haveInfor = true;
+                    }
+                    return Ok(new Response(200, new
+                    {
+                        haveInfor
+                    }, "Authorized"));
                 }
                 return BadRequest(new Response(400, "Fail"));
             }

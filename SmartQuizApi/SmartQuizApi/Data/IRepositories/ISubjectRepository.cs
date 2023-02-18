@@ -8,6 +8,7 @@ namespace SmartQuizApi.Data.IRepositories
         void UpdateSubject(Subject subject);
         void DeleteSubject(Subject subject);
         Task<List<Subject>> GetAllSubjectsAsync(); 
-        Subject? GetSubjectById(int id); 
+        Subject? GetSubjectById(int id);
+        Task<List<Subject>> GetSubjectsAsync(List<int> listId);
     }
 }
