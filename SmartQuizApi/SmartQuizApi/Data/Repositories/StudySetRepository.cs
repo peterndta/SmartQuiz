@@ -36,7 +36,7 @@ namespace SmartQuizApi.Data.Repositories
             return result;
         }
 
-        public async Task<List<StudySet>> GetAllStudySets(string sortType)
+        public async Task<List<StudySet>> GetAllStudySetsAsync(string sortType)
         {
             var result = await GetAll().Include(x => x.User)
                                         .Include(x => x.SubjectsOfGrade)
@@ -56,6 +56,14 @@ namespace SmartQuizApi.Data.Repositories
                                                                             .Include(x => x.Class).ToListAsync();
         }
 
+        public async Task<List<StudySet>> GetRecommendStudySetAsync(List<int> subjectsOfGradeId, int amount)
+        {
+            return await GetByCondition(x => subjectsOfGradeId.Contains(x.SubjectsOfGradeId)).Take(amount)
+                                                            .Include(x => x.User)
+                                                            .Include(x => x.SubjectsOfGrade)
+                                                            .Include(x => x.Class).ToListAsync(); 
+        }
+
         public StudySet? GetStudySetById(string id)
         {
             return GetByCondition(x => x.Id.Equals(id)).Include(x => x.User)
@@ -63,7 +71,7 @@ namespace SmartQuizApi.Data.Repositories
                                                     .Include(x => x.Class).FirstOrDefault();
         }
 
-        public async Task<List<StudySet>> GetStudySetByUserId(int userId)
+        public async Task<List<StudySet>> GetStudySetByUserIdAsync(int userId)
         {
             return await GetByCondition(x => x.UserId == userId).Include(x => x.User)
                                                         .Include(x => x.SubjectsOfGrade)

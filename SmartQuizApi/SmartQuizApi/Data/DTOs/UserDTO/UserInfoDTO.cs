@@ -18,6 +18,8 @@ namespace SmartQuizApi.Data.DTOs.UserDTO
 
         public int? GradeId { get; set; }
 
+        public string? GradeName { get; set; }
+
         public List<GetSubjectsDTO> FavoriteSubjects { get; set; }
     }
 }

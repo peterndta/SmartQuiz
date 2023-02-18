@@ -54,7 +54,7 @@ namespace SmartQuizApi.Data.Repositories
             {
                 result.ForEach(x =>
                 {
-                    listIdResult.Add(x.Id);
+                    listIdResult.Add(x.SubjectId);
                 });
             }
             return listIdResult;
@@ -63,7 +63,7 @@ namespace SmartQuizApi.Data.Repositories
         public List<int> GetListSubjectsOfGradeId(int? gradeId, List<int> subjectId)
         {
             var listIdResult = new List<int>();
-            var result = GetByCondition(x => subjectId.Contains(x.Id) && x.GradeId == gradeId).ToList();
+            var result = GetByCondition(x => subjectId.Contains(x.SubjectId) && x.GradeId == gradeId).ToList();
             if (result.Count > 0)
             {
                 result.ForEach(x =>
