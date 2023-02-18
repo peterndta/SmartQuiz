@@ -22,7 +22,14 @@ namespace SmartQuizApi.Data.Repositories
 
         public User? GetUserById(int id)
         {
-            return GetByCondition(x => x.Id == id).FirstOrDefault();
+            return GetByCondition(x => x.Id == id)
+                    .Include(x => x.Grade)
+                    .Include(x => x.Favorites).FirstOrDefault();
+        }
+
+        public void UpdateUser(User user)
+        {
+            Update(user);
         }
     }
 }

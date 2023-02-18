@@ -26,7 +26,7 @@ namespace SmartQuizApi.Controllers
             try
             {
                 var subjectsList = await _repositoryManager.Subject.GetAllSubjectsAsync();
-                var subjectsListDTO = _mapper.Map<List<GetAllSubjectsDTO>>(subjectsList);
+                var subjectsListDTO = _mapper.Map<List<GetSubjectsDTO>>(subjectsList);
                 return StatusCode(StatusCodes.Status200OK, new Response(200, subjectsListDTO));
             }
             catch (Exception ex)
