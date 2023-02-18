@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PayPal.Api;
 using SmartQuizApi.Data.DTOs.QuestionDTOs;
 using SmartQuizApi.Data.DTOs.StudySetDTOs;
 using SmartQuizApi.Data.IRepositories;
@@ -73,7 +74,7 @@ namespace SmartQuizApi.Controllers
                 var subjectsOfGrade = _repositoryManager.SubjectsOfGrade.GetSubjectsOfGrade(studySet.SubjectsOfGradeId);
                 _mapper.Map(subjectsOfGrade, studySetDTO);
 
-                var questionsList = await _repositoryManager.Question.GetQuestionsByStudySetId(studySet.Id);
+                var questionsList = await _repositoryManager.Question.GetQuestionsByStudySetIdAsync(studySet.Id);
                 studySetDTO.Questions = _mapper.Map<List<GetQuestionDTO>>(questionsList);
                 foreach (var question in studySetDTO.Questions)
                 {
@@ -179,7 +180,7 @@ namespace SmartQuizApi.Controllers
                 var listSubjectsOfGradeId = _repositoryManager.SubjectsOfGrade.GetListSubjectsOfGradesId(filter.GradeId, filter.SubjectId);
                 if ((filter.SubjectId == null && filter.GradeId == null && filter.StudySetName == null) || listSubjectsOfGradeId == null)
                 {
-                    studySetsList = await _repositoryManager.StudySet.GetAllStudySets(sorttype);
+                    studySetsList = await _repositoryManager.StudySet.GetAllStudySetsAsync(sorttype);
                 }            
                 
                 studySetsList = await _repositoryManager.StudySet.FilterStudySetAsync(filter.StudySetName, listSubjectsOfGradeId, sorttype);
@@ -232,7 +233,7 @@ namespace SmartQuizApi.Controllers
                     return StatusCode(StatusCodes.Status200OK, new Response(200, "User id does not exist"));
                 }
 
-                var studySetsList = await _repositoryManager.StudySet.GetStudySetByUserId(userId);
+                var studySetsList = await _repositoryManager.StudySet.GetStudySetByUserIdAsync(userId);
                 var studySetsListDTO = _mapper.Map<List<GetStudySetsListDTO>>(studySetsList).OrderByDescending(x => x.CreateAt).ToList();
                 var result = PaginatedList<GetStudySetsListDTO>.Create(studySetsListDTO, @params.pageNumber, @params.pageSize);
 
@@ -260,7 +261,7 @@ namespace SmartQuizApi.Controllers
                 var subjectsOfGrade = _repositoryManager.SubjectsOfGrade.GetSubjectsOfGrade(studySet.SubjectsOfGradeId);
                 _mapper.Map(subjectsOfGrade, studySetDTO);
 
-                var questionsList = await _repositoryManager.Question.GetQuestionsByStudySetId(studySet.Id, amount);
+                var questionsList = await _repositoryManager.Question.GetQuestionsByStudySetIdAsync(studySet.Id, amount);
                 studySetDTO.Questions = _mapper.Map<List<GetQuestionDTO>>(questionsList);
                 foreach (var question in studySetDTO.Questions)
                 {
@@ -270,6 +271,35 @@ namespace SmartQuizApi.Controllers
                 return StatusCode(StatusCodes.Status200OK, new Response(200, studySetDTO));
             }
             catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpGet("recommend")]
+        public async Task<IActionResult> GetRecommendStudySet(int userId, int amount)
+        {
+            try
+            {
+                var user = _repositoryManager.User.GetUserById(userId);
+                if (user == null)
+                {
+                    return StatusCode(StatusCodes.Status200OK, new Response(200, "User id does not exist"));
+                }
+
+                var listFavorites = new List<int>();
+                foreach (var item in user.Favorites)
+                {
+                    listFavorites.Add(item.SubjectsOfGradeId);
+                } 
+
+                var studySetsList = await _repositoryManager.StudySet.GetRecommendStudySetAsync(listFavorites, amount);
+                var studySetsListDTO = _mapper.Map<List<GetStudySetsListDTO>>(studySetsList);
+
+                studySetsListDTO = (List<GetStudySetsListDTO>)GetInfoForStudyList(studySetsListDTO);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, studySetsListDTO, ""));
+            }
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
             }

@@ -35,7 +35,7 @@ namespace SmartQuizApi.Config
                                                                 .ForMember(des => des.SubjectName, opt => opt.MapFrom(src => src.Subject.Name))
                                                                 .ForMember(des => des.GradeName, opt => opt.MapFrom(src => src.Grade.Name));
             CreateMap<CreateBill, Bill>();
-            CreateMap<User, UserInfoDTO>();
+            CreateMap<User, UserInfoDTO>().ForMember(des => des.GradeName, opt => opt.MapFrom(src => src.Grade.Name));
             CreateMap<CreateUserInfor, User>();
         }
     }
