@@ -25,6 +25,8 @@ public partial class SmartquizContext : DbContext
 
     public virtual DbSet<ClassMember> ClassMembers { get; set; }
 
+    public virtual DbSet<Favorite> Favorites { get; set; }
+
     public virtual DbSet<Grade> Grades { get; set; }
 
     public virtual DbSet<History> Histories { get; set; }
@@ -144,6 +146,27 @@ public partial class SmartquizContext : DbContext
                 .HasForeignKey(d => d.MemberId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ClassMember_Users");
+        });
+
+        modelBuilder.Entity<Favorite>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.SubjectsOfGradeId });
+
+            entity.Property(e => e.UserId).HasColumnName("User_id");
+            entity.Property(e => e.SubjectsOfGradeId).HasColumnName("Subjects_of_grade_id");
+            entity.Property(e => e.CreateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("Create_at");
+
+            entity.HasOne(d => d.SubjectsOfGrade).WithMany(p => p.Favorites)
+                .HasForeignKey(d => d.SubjectsOfGradeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Favorites_SubjectsOfGrade");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Favorites)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Favorites_Users");
         });
 
         modelBuilder.Entity<Grade>(entity =>
@@ -269,14 +292,17 @@ public partial class SmartquizContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_User");
 
             entity.Property(e => e.Email).HasMaxLength(50);
+            entity.Property(e => e.GradeId).HasColumnName("Grade_id");
             entity.Property(e => e.ImageUrl).HasColumnName("Image_url");
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(50)
                 .HasColumnName("Phone_number");
-            entity.Property(e => e.Role)
-                .HasMaxLength(10)
-                .IsFixedLength();
+            entity.Property(e => e.Role).HasMaxLength(50);
+
+            entity.HasOne(d => d.Grade).WithMany(p => p.Users)
+                .HasForeignKey(d => d.GradeId)
+                .HasConstraintName("FK_Users_Grades");
         });
 
         OnModelCreatingPartial(modelBuilder);

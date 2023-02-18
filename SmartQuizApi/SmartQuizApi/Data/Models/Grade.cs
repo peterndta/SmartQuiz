@@ -10,4 +10,6 @@ public partial class Grade
     public string Name { get; set; } = null!;
 
     public virtual ICollection<SubjectsOfGrade> SubjectsOfGrades { get; } = new List<SubjectsOfGrade>();
+
+    public virtual ICollection<User> Users { get; } = new List<User>();
 }

@@ -19,6 +19,8 @@ public partial class User
 
     public string? ImageUrl { get; set; }
 
+    public int? GradeId { get; set; }
+
     public virtual ICollection<Bill> Bills { get; } = new List<Bill>();
 
     public virtual ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
@@ -26,6 +28,10 @@ public partial class User
     public virtual ICollection<ClassMember> ClassMembers { get; } = new List<ClassMember>();
 
     public virtual ICollection<Class> Classes { get; } = new List<Class>();
+
+    public virtual ICollection<Favorite> Favorites { get; } = new List<Favorite>();
+
+    public virtual Grade? Grade { get; set; }
 
     public virtual ICollection<History> Histories { get; } = new List<History>();
 

@@ -11,6 +11,8 @@ public partial class SubjectsOfGrade
 
     public int Id { get; set; }
 
+    public virtual ICollection<Favorite> Favorites { get; } = new List<Favorite>();
+
     public virtual Grade Grade { get; set; } = null!;
 
     public virtual ICollection<StudySet> StudySets { get; } = new List<StudySet>();

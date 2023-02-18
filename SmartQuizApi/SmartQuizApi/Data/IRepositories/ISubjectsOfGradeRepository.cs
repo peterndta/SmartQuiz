@@ -7,5 +7,7 @@ namespace SmartQuizApi.Data.IRepositories
         SubjectsOfGrade? GetSubjectsOfGrade(int gradeId, int subjectId);
         SubjectsOfGrade? GetSubjectsOfGrade(int subjectsOfGradeId);
         List<int>? GetListSubjectsOfGradesId(int? gradeId, int? subjectId);
+        List<int> GetListSubjectsOfGradesId(List<int> listId);
+        List<int> GetListSubjectsOfGradeId(int? gradeId, List<int> subjectId);
     }
 }

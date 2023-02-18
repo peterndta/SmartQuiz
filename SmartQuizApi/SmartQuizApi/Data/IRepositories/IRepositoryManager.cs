@@ -12,6 +12,7 @@
         ISubjectsOfGradeRepository SubjectsOfGrade { get; }
         IHistoryRepository History { get; }
         IBillRepository Bill { get; }
+        IFavoriteRepository Favorite { get; }
         Task SaveChangesAsync();
     }
 }
