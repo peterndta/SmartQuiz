@@ -1,4 +1,4 @@
-import { GppGood, Groups2, Star } from '@mui/icons-material'
+import { Groups2, Star } from '@mui/icons-material'
 import { Avatar, Box, Divider, Grid, Typography } from '@mui/material'
 
 import Medal1 from '~/assets/images/Metal-1.png'
@@ -62,9 +62,9 @@ const TableContent = ({ studySet }) => {
                                 {/* {data?.StudySetName} */}
                                 Toán THPT 2021-2022
                             </Typography>
-                            {Math.random() < 0.5 && (
+                            {/* {Math.random() < 0.5 && (
                                 <GppGood fontSize="small" sx={{ ml: 1, color: AppStyles.colors['#004DFF'] }} />
-                            )}
+                            )} */}
                         </Box>
                         <Box display="flex">
                             <Typography
