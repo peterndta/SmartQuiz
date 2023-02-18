@@ -1,14 +1,15 @@
-import React from 'react'
-
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
+import EmptyStudySets from '~/components/EmptyStudySets'
 
 import Create from './Create'
-import Update from './Update'
 
-import { Mock_Data } from '~/Mock'
+import sets_empty from '~/assets/images/sets_empty.png'
+import LocalStorageUtils from '~/utils/LocalStorageUtils'
 
 const Draft = () => {
-    return (
+    const createQuestions = LocalStorageUtils.getItem('create') || { path: '', studySet: [] }
+
+    return createQuestions.studySet.length > 0 ? (
         <Box
             sx={{
                 backgroundColor: '#eef2ff',
@@ -17,9 +18,29 @@ const Draft = () => {
                 position: 'absolute',
             }}
         >
-            <Create title="Tạo mới" studySets={Mock_Data.myClass} />
-            <Update title="Cập nhật" studySets={Mock_Data.yourSet} />
+            <Create title="Tạo mới" studySets={createQuestions.studySet} />
         </Box>
+    ) : (
+        <Grid
+            container
+            spacing={3}
+            columnSpacing={4}
+            sx={{
+                backgroundColor: '#eef2ff',
+                width: '80%',
+                mt: 2,
+                position: 'absolute',
+            }}
+        >
+            <Grid item xs={10} md={10} lg={10} justifyContent="center" alignItems="center">
+                <EmptyStudySets
+                    image={sets_empty}
+                    textAbove="Bạn chưa có bản nháp nào."
+                    textBelow="Các bản nháp được tạo sẽ hiển thị ở đây."
+                    disable={true}
+                />
+            </Grid>
+        </Grid>
     )
 }
 
