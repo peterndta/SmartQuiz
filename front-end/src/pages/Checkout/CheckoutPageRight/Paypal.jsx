@@ -1,52 +1,87 @@
-import React, { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+import queryString from 'query-string'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
+import { useSnackbar } from '~/HOC/SnackbarContext'
+import { usePayment } from '~/actions/payment'
 import { PAY_PAL } from '~/config'
+import { useAppSelector } from '~/hooks/redux-hooks'
 
-const amount = '0.5'
 const currency = 'USD'
 const Paypal = () => {
-    const [PaidFor, setPaidFor] = useState(false)
+    const { userId, vip } = useAppSelector((state) => state.auth)
     const [Error, setError] = useState(null)
-    console.log(PAY_PAL)
-    function handleApprove() {
-        // Call BE to fullfill order
 
-        // If res is success
-        setPaidFor(true)
-        // Refresh user's account or subscrip status
+    const showSnackbar = useSnackbar()
+    const { createBill } = usePayment()
 
-        // if the res is error
-    }
+    const { search: query } = useLocation()
+    const { mode } = queryString.parse(query)
+    const amount = useRef(mode === 'monthly' ? 0.84 : 4.2)
 
-    if (PaidFor) {
-        alert('Thank for purchase!')
-    }
+    useEffect(() => {
+        if (mode === 'yearly') {
+            amount.current = 4.2
+        } else {
+            amount.current = 0.84
+        }
+    }, [mode])
+    const history = useHistory()
+    function handleApprove(order) {
+        const gmtTime = new Date(order.create_time)
+        const gmtPlus7Time = new Date(gmtTime.getTime() + 7 * 60 * 60 * 1000).toISOString()
 
-    if (Error) {
-        alert(Error)
+        console.log(order.create_time)
+        console.log(gmtPlus7Time)
+        console.log(order.id)
+        const info = {
+            paymentDate: gmtPlus7Time,
+            userId: userId,
+            subcription: 1,
+            payId: order.id,
+        }
+        console.log(info)
+        createBill(info)
+            .then((response) => {
+                const data = response.data.data
+                // console.log(data)
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Giao dịch thành công.',
+                })
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: Error,
+                })
+            })
+            .finally(() => {
+                history.push('/')
+            })
     }
 
     return (
         <PayPalScriptProvider
             options={{
                 'disable-funding': 'card',
-                'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID,
+                'client-id': PAY_PAL,
             }}
         >
             <PayPalButtons
                 style={{
                     color: 'gold',
-                    // layout: "horizontal",
                     tagline: false,
                     shape: 'rect',
                 }}
                 onClick={(data, actions) => {
-                    const hasAlreadyBoughtCourse = false // = true nếu mua rồi và sẽ hiện alert báo đã mua rồi -> default = false
-
-                    if (hasAlreadyBoughtCourse) {
-                        setError('You bought this already')
-
+                    if (vip) {
+                        showSnackbar({
+                            severity: 'error',
+                            children: 'Bạn đã có Premium rồi.',
+                        })
                         return actions.reject()
                     } else {
                         return actions.resolve()
@@ -59,7 +94,7 @@ const Paypal = () => {
                                 description: '1 Month Subscription',
                                 amount: {
                                     currency_code: currency,
-                                    value: amount,
+                                    value: amount.current,
                                 },
                             },
                         ],
@@ -70,14 +105,11 @@ const Paypal = () => {
                 }}
                 onApprove={async (data, actions) => {
                     const order = await actions.order.capture()
-                    console.log(order)
-
-                    handleApprove()
+                    handleApprove(order)
                 }}
                 onCancel={() => {}}
                 onError={(error) => {
                     setError(error)
-                    console.log(Error)
                 }}
             />
         </PayPalScriptProvider>
