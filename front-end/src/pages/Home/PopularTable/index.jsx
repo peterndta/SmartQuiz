@@ -1,13 +1,19 @@
-import React from 'react'
+import { useState } from 'react'
 
-import { FeedRounded, TopicRounded } from '@mui/icons-material'
-import { Box, Paper, Typography } from '@mui/material'
+import { TabContext, TabList, TabPanel } from '@mui/lab'
+import { Box, Paper, Tab, Typography } from '@mui/material'
 
 import TableContent from './TableContent'
 
 import { AppStyles } from '~/constants/styles'
 
 const PopularTable = ({ studySet }) => {
+    const [index, setIndex] = useState('0')
+
+    const changeIndexHandler = (_, value) => {
+        setIndex(value)
+    }
+
     return (
         <Box>
             <Typography
@@ -24,73 +30,56 @@ const PopularTable = ({ studySet }) => {
             </Typography>
 
             <Paper elevation={0} sx={{ borderRadius: 2.5, backgroundColor: AppStyles.colors['#FAFBFF'] }}>
-                <Box alignItems="center" justifyContent="space-around" display="flex">
-                    <Box
-                        sx={{
-                            width: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            '& > .active > span': {
-                                color: AppStyles.colors['#004DFF'],
-                            },
-                        }}
-                    >
-                        <Box
-                            display="flex"
-                            alignItems="center"
+                <TabContext value={index}>
+                    <TabList onChange={changeIndexHandler} variant="fullWidth">
+                        <Tab
+                            label="Lớp học của tôi"
+                            value={'0'}
                             sx={{
-                                flex: 1,
-                                px: 4,
-                                py: 2,
-                                mr: 2,
-                                textDecoration: 'none',
-                                color: AppStyles.colors['#767680'],
-                                position: 'relative',
-                                fontFamily: 'Roboto',
-                                ':hover': {
-                                    bgcolor: AppStyles.colors['#004DFF'],
-                                    color: AppStyles.colors['#FFFFFF'],
-                                },
-                                cursor: 'pointer',
+                                minWidth: 100,
+                                textTransform: 'none',
+                                fontSize: 16,
+                                fontWeight: 500,
+                                color: AppStyles.colors['#333333'],
+                            }}
+                        />
+                        <Tab
+                            label="Học phần của tôi"
+                            value={'1'}
+                            sx={{
+                                minWidth: 100,
+                                textTransform: 'none',
+                                fontSize: 16,
+                                fontWeight: 500,
+                                color: AppStyles.colors['#333333'],
+                            }}
+                        />
+                    </TabList>
+                    <TabPanel value={'0'} sx={{ p: 0 }}>
+                        <Paper
+                            elevation={1}
+                            sx={{
+                                borderRadius: 2.5,
+                                height: '100%',
+                                backgroundColor: AppStyles.colors['#FAFBFF'],
                             }}
                         >
-                            <FeedRounded fontSize="medium" />
-                            <Typography component="span" variant="body1" sx={{ ml: 1, fontWeight: 600 }}>
-                                Học phần
-                            </Typography>
-                        </Box>
-                        <Box
-                            display="flex"
-                            alignItems="center"
+                            <TableContent studySet={studySet} />
+                        </Paper>
+                    </TabPanel>
+                    <TabPanel value={'1'} sx={{ p: 0 }}>
+                        <Paper
+                            elevation={1}
                             sx={{
-                                flex: 1,
-                                px: 4,
-                                py: 2,
-                                textDecoration: 'none',
-                                color: AppStyles.colors['#767680'],
-                                position: 'relative',
-                                fontFamily: 'Roboto',
-                                ':hover': {
-                                    bgcolor: AppStyles.colors['#004DFF'],
-                                    color: AppStyles.colors['#FFFFFF'],
-                                },
-                                cursor: 'pointer',
+                                borderRadius: 2.5,
+                                height: '100%',
+                                backgroundColor: AppStyles.colors['#FAFBFF'],
                             }}
                         >
-                            <TopicRounded fontSize="medium" />
-                            <Typography component="span" variant="body1" sx={{ fontWeight: 600 }}>
-                                Lớp học
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Box>
-            </Paper>
-
-            <Paper
-                elevation={1}
-                sx={{ mt: 2, borderRadius: 2.5, height: '100%', backgroundColor: AppStyles.colors['#FAFBFF'] }}
-            >
-                <TableContent studySet={studySet} />
+                            <TableContent studySet={studySet} />
+                        </Paper>
+                    </TabPanel>
+                </TabContext>
             </Paper>
         </Box>
     )

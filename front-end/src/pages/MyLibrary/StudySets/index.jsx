@@ -16,20 +16,21 @@ import sets_empty from '~/assets/images/sets_empty.png'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
+const ButtonStyle = {
+    mt: 1,
+    mb: 5,
+    width: '100%',
+    backgroundColor: AppStyles.colors['#004DFF'],
+    textTransform: 'none',
+    fontSize: 16,
+    ':hover': {
+        bgcolor: AppStyles.colors['#0045e5'],
+        color: 'white',
+    },
+}
+
 const StudySets = ({ getMyStudySets }) => {
     const history = useHistory()
-    const ButtonStyle = {
-        mt: 1,
-        mb: 5,
-        width: '100%',
-        backgroundColor: AppStyles.colors['#004DFF'],
-        textTransform: 'none',
-        fontSize: 16,
-        ':hover': {
-            bgcolor: AppStyles.colors['#0045e5'],
-            color: 'white',
-        },
-    }
     const { getStudySet, deleteStudySet } = useStudySet()
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [studySet, setStudySet] = useState({})

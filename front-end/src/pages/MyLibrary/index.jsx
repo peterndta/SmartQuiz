@@ -20,10 +20,12 @@ function padWithLeadingZeros(num, totalLength) {
 const MyLibrary = () => {
     const { username, image, userId } = useAppSelector((state) => state.auth)
     const [index, setIndex] = useState('0')
+
     const changeIndexHandler = (_, value) => {
         setIndex(value)
     }
     const { getMyStudySets } = useStudySet()
+
     return (
         <FullWidthHeaderWhite maxWidthContent={1670}>
             <Box display="flex" flexDirection="column" width={700}>
