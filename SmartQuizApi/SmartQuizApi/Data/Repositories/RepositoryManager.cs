@@ -16,6 +16,7 @@ namespace SmartQuizApi.Data.Repositories
         private IBookMarkRepository _bookMarkRepository;
         private ISubjectsOfGradeRepository _subjectsOfGradeRepository;
         private IHistoryRepository _historyRepository;
+        private IBillRepository _billRepository;
         public RepositoryManager(SmartquizContext context)
         {
             _context= context;
@@ -126,6 +127,18 @@ namespace SmartQuizApi.Data.Repositories
                     _historyRepository = new HistoryRepository(_context);
                 }
                 return _historyRepository;
+            }
+        }
+
+        public IBillRepository Bill
+        {
+            get
+            {
+                if (_billRepository == null)
+                {
+                    _billRepository = new BillRepository(_context);
+                }
+                return _billRepository;
             }
         }
 
