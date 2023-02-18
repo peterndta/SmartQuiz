@@ -29,8 +29,6 @@ public partial class SmartquizContext : DbContext
 
     public virtual DbSet<History> Histories { get; set; }
 
-    public virtual DbSet<Method> Methods { get; set; }
-
     public virtual DbSet<Question> Questions { get; set; }
 
     public virtual DbSet<StudySet> StudySets { get; set; }
@@ -69,18 +67,13 @@ public partial class SmartquizContext : DbContext
             entity.Property(e => e.ExpirationDate)
                 .HasColumnType("date")
                 .HasColumnName("Expiration_date");
-            entity.Property(e => e.MethodId).HasColumnName("Method_id");
-            entity.Property(e => e.NumberOfMonths).HasColumnName("Number_of_months");
+            entity.Property(e => e.PayId)
+                .HasMaxLength(50)
+                .HasColumnName("Pay_id");
             entity.Property(e => e.PaymentDate)
                 .HasColumnType("date")
                 .HasColumnName("Payment_date");
-            entity.Property(e => e.TotalAmount).HasColumnName("Total_amount");
             entity.Property(e => e.UserId).HasColumnName("User_id");
-
-            entity.HasOne(d => d.Method).WithMany(p => p.Bills)
-                .HasForeignKey(d => d.MethodId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Bills_Methods");
 
             entity.HasOne(d => d.User).WithMany(p => p.Bills)
                 .HasForeignKey(d => d.UserId)
@@ -178,11 +171,6 @@ public partial class SmartquizContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Histories_Users");
-        });
-
-        modelBuilder.Entity<Method>(entity =>
-        {
-            entity.Property(e => e.AmountPerMonth).HasColumnName("Amount_per_month");
         });
 
         modelBuilder.Entity<Question>(entity =>
