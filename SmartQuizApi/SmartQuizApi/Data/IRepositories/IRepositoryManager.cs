@@ -11,6 +11,7 @@
         IBookMarkRepository BookMark { get; }
         ISubjectsOfGradeRepository SubjectsOfGrade { get; }
         IHistoryRepository History { get; }
+        IBillRepository Bill { get; }
         Task SaveChangesAsync();
     }
 }

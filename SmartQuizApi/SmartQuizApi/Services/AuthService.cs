@@ -24,10 +24,10 @@ namespace SmartQuizApi.Services
             return handler.ReadJwtToken(parsedToken);
         }
 
-        public async Task<string> GenerateToken(User user)
+        public async Task<string> GenerateToken(User user, bool premimum)
         {
             var signinCredentials = GetSigninCredentials();
-            var claims = await GetClaims(user);
+            var claims = await GetClaims(user, premimum);
             var tokenOptions = GenerateTokenOptions(signinCredentials, claims);
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
@@ -64,7 +64,7 @@ namespace SmartQuizApi.Services
             return tokenOptions;
         }
 
-        private Task<List<Claim>> GetClaims(User user)
+        private Task<List<Claim>> GetClaims(User user, bool primium)
         {
             var claims = new List<Claim>
             {
@@ -73,6 +73,7 @@ namespace SmartQuizApi.Services
                 new("role", user.Role),
                 new("image", user.ImageUrl),
                 new("userId", user.Id.ToString()),
+                new("premium", primium.ToString())
             };
 
             return Task.FromResult(claims);
