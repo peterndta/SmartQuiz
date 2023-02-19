@@ -73,7 +73,7 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time }) => {
                         precision={3}
                         renderer={(props) => (
                             <Typography sx={{ ml: 2, color: AppStyles.colors['#FFAF00'], fontSize: 36 }}>
-                                {zeroPad(props.minutes)}:{zeroPad(props.seconds)}
+                                {zeroPad(props.hours)}:{zeroPad(props.minutes)}:{zeroPad(props.seconds)}
                             </Typography>
                         )}
                         ref={setRef}
