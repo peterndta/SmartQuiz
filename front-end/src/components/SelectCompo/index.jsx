@@ -37,7 +37,7 @@ const SelectCompo = ({
                 value={value.value}
             >
                 {data.map((dt, index) => (
-                    <MenuItem value={dt.label} key={index} name={dt.label}>
+                    <MenuItem value={dt.value} key={index} name={dt.label}>
                         {dt.label}
                     </MenuItem>
                 ))}
