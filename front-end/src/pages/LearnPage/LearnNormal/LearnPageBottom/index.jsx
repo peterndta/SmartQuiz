@@ -14,6 +14,7 @@ import QuestionCard from './QuestionCard'
 import { useSnackbar } from '~/HOC/SnackbarContext'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
+import { useAppSelector } from '~/hooks/redux-hooks'
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -46,6 +47,7 @@ const LearnPageBottom = ({ start }) => {
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [open, setOpen] = useState(false)
     const [index, setIndex] = useState(start)
+    const { userId } = useAppSelector((state) => state.auth)
     const history = useHistory()
 
     const handleOpen = () => setOpen(true)
@@ -112,7 +114,8 @@ const LearnPageBottom = ({ start }) => {
     useEffect(() => {
         const controller = new AbortController()
         const signal = controller.signal
-        getStudySet(id, signal)
+        const userIdd = userId ? userId : null
+        getStudySet(id, userIdd, signal)
             .then((response) => {
                 const data = response.data.data
                 data.questions.forEach((question, index) => (question.index = index))

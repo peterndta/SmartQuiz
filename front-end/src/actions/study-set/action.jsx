@@ -6,8 +6,7 @@ const useStudySet = () => {
 
     const getStudySet = (id, userId, signal) =>
         get({
-            endpoint: `/api/StudySets/${id}`,
-            params: { userId: userId },
+            endpoint: `/api/StudySets/${id}?userId=${userId}`,
             signal: signal,
         })
 
