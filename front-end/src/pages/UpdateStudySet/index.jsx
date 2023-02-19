@@ -17,6 +17,7 @@ import { initialValue } from '~/Mock'
 import { useQuestion } from '~/actions/question'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
+import { useAppSelector } from '~/hooks/redux-hooks'
 
 const UpdateStudySet = () => {
     const { id } = useParams()
@@ -29,6 +30,7 @@ const UpdateStudySet = () => {
     const [question, setQuestion] = useState({})
     const history = useHistory()
     const [isLoading, setIsLoading] = useState(true)
+    const { userId } = useAppSelector((state) => state.auth)
     const { getStudySet, updateStudySet } = useStudySet()
     const { updateQuestion, createQuestion, removeQuestion } = useQuestion()
     const showSnackbar = useSnackbar()
@@ -179,7 +181,8 @@ const UpdateStudySet = () => {
     useEffect(() => {
         const controller = new AbortController()
         const signal = controller.signal
-        getStudySet(id, signal)
+        const userIdd = userId ? userId : null
+        getStudySet(id, userIdd, signal)
             .then((res) => {
                 const studySet = res.data.data
                 const formatQuestions = studySet.questions.map((question) => {
