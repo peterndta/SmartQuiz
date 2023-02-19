@@ -4,9 +4,10 @@ import { get, post, put, remove } from '~/utils/ApiCaller'
 const useStudySet = () => {
     const getStudySetList = (filters, signal) => get({ endpoint: `/api/StudySets/filter${filters}`, signal })
 
-    const getStudySet = (id, signal) =>
+    const getStudySet = (id, userId, signal) =>
         get({
             endpoint: `/api/StudySets/${id}`,
+            params: { userId: userId },
             signal: signal,
         })
 
@@ -58,6 +59,30 @@ const useStudySet = () => {
         else window.location.reload(false)
     }
 
+    const getRecentStudySets = (userId, amount, signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth)
+            return get({
+                endpoint: `/api/StudySets`,
+                signal: signal,
+                params: { userId: userId, amount: amount },
+            })
+        else window.location.reload(false)
+    }
+
+    const getRecommendStudySets = (userId, amount, signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth)
+            return get({
+                endpoint: `/api/StudySets/recommend`,
+                signal: signal,
+                params: { userId: userId, amount: amount },
+            })
+        else window.location.reload(false)
+    }
+
     return {
         getStudySetList,
         getStudySet,
@@ -66,6 +91,8 @@ const useStudySet = () => {
         deleteStudySet,
         updateStudySet,
         getStudySetExam,
+        getRecentStudySets,
+        getRecommendStudySets,
     }
 }
 

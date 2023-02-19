@@ -10,6 +10,7 @@ import DetailHeader from './DetailHeader'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
 import { useStudySet } from '~/actions/study-set'
+import { useAppSelector } from '~/hooks/redux-hooks'
 
 const StudySetDetail = () => {
     const { id } = useParams()
@@ -17,11 +18,14 @@ const StudySetDetail = () => {
     const showSnackbar = useSnackbar()
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
+    const { userId } = useAppSelector((state) => state.auth)
 
     useEffect(() => {
         const controller = new AbortController()
         const signal = controller.signal
-        getStudySet(id, signal)
+        const userIdd = userId ? userId : null
+
+        getStudySet(id, userIdd, signal)
             .then((response) => {
                 const data = response.data.data
 

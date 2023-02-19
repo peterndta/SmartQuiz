@@ -17,8 +17,8 @@ const useAuthAction = () => {
         }).then((response) => {
             if (response?.data?.isSuccess) {
                 LocalStorageUtils.setUser(token)
-                const { email, name, image, role, exp, userId } = jwt_decode(token)
-                dispatch(login({ email, name, image, role, exp, userId, token }))
+                const { email, name, image, role, exp, userId, premium } = jwt_decode(token)
+                dispatch(login({ email, name, image, role, exp, userId, token, premium }))
                 if (role === 'admin') {
                     history.push('/admin')
                 } else {

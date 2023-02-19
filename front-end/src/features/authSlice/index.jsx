@@ -23,7 +23,8 @@ const authSlice = createSlice({
             state.exp = action.payload.exp
             state.userId = action.payload.userId
             state.token = action.payload.token
-            state.vip = true
+            const premium = action.payload.premium === 'False' ? false : true
+            state.vip = premium
         },
         logout: (state) => {
             state.email = ''

@@ -36,13 +36,14 @@ function App() {
 
                 dispatch(setGrades(grades))
                 dispatch(setSubjects(subjects))
-                setIsLoading(false)
             })
             .catch(() => {
                 showSnackBar({
                     severity: 'error',
                     children: 'Something went wrong, please try again later.',
                 })
+            })
+            .finally(() => {
                 setIsLoading(false)
             })
 

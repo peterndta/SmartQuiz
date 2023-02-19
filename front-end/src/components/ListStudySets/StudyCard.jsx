@@ -42,12 +42,6 @@ const StudyCard = ({ studySet, md }) => {
                             >
                                 {studySet.name}
                             </Typography>
-                            {/* {Math.random() < 0.5 && (
-                                <GppGood
-                                    fontSize="small"
-                                    sx={{ ml: 1, mt: -0.5, color: AppStyles.colors['#004DFF'] }}
-                                />
-                            )} */}
                         </Box>
                         <MoreMenu saveButtonOn={true} />
                     </Box>
@@ -66,8 +60,9 @@ const StudyCard = ({ studySet, md }) => {
                                 opacity: '50%',
                             }}
                         >
-                            {studySet.gradeName !== 'Đại học' ? 'Lớp ' + studySet.gradeName + ' - ' : ''}
-                            {!studySet.subjectName ? studySet.schoolName : studySet.subjectName} |
+                            {studySet.gradeName !== 'Đại học'
+                                ? 'Lớp' + ` ${studySet.gradeName} - ${studySet.subjectName} |`
+                                : studySet.subjectName + ' | '}
                         </Typography>
                         <Typography ml={0.5} variant="body1" sx={{ fontSize: 14, userSelect: 'none', opacity: '50%' }}>
                             {studySet.totalQuestions} câu
