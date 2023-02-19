@@ -164,7 +164,8 @@ const CreateStudySet = () => {
             isPublic: true,
             questions: formatQuestions,
         }
-        createStudySet(studySet).then(() => {
+        createStudySet(studySet).then((res) => {
+            const id = res.data.data
             if (state) {
                 const drafts = LocalStorageUtils.getItem('create')
                 const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
@@ -175,7 +176,7 @@ const CreateStudySet = () => {
                     studySet: updateDrafts,
                 })
             }
-            history.replace('/')
+            history.replace(`/study-sets/${id}`)
         })
     }
 
