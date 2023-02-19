@@ -1,7 +1,9 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Grid, Skeleton, Typography } from '@mui/material'
 import ListClassCard from '~/components/ListClassCard'
 
-const ClassList = ({ title, studySets }) => {
+import { Mock_Data } from '~/Mock'
+
+const ClassList = ({ title, studySets, isLoading }) => {
     return (
         <Box mt={4}>
             <Typography
@@ -17,7 +19,17 @@ const ClassList = ({ title, studySets }) => {
             >
                 {title}
             </Typography>
-            <ListClassCard studySets={studySets} md={4} />
+            {isLoading ? (
+                <Grid container rowSpacing={2} columnSpacing={3} display="flex">
+                    {Mock_Data.yourSet.map((studySet) => (
+                        <Grid item md={4} key={studySet.id}>
+                            <Skeleton sx={{ height: 120 }} animation="wave" variant="rounded" />
+                        </Grid>
+                    ))}
+                </Grid>
+            ) : (
+                <ListClassCard studySets={studySets} md={4} />
+            )}
         </Box>
     )
 }
