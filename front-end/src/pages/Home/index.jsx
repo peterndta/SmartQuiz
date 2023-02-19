@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Grid } from '@mui/material'
+import { Grid, Skeleton } from '@mui/material'
 
 import Banner from './Banner'
 import ClassList from './ClassList'
@@ -11,7 +11,6 @@ import { Mock_Data } from '~/Mock'
 import { useStudySet } from '~/actions/study-set'
 import { useAppSelector } from '~/hooks/redux-hooks'
 import StudySetCards from '~/pages/Home/StudySetCards'
-import Loading from '~/pages/Loading'
 
 const Home = () => {
     const { userId } = useAppSelector((state) => state.auth)
@@ -55,18 +54,34 @@ const Home = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    return isLoading ? (
-        <Loading />
-    ) : (
+    return (
         <Grid maxWidth={1660} container spacing={3} columnSpacing={4} sx={{ pt: 2, m: '0 auto', mb: 9 }}>
             <Grid item xs={12} md={8} lg={8}>
-                <Banner />
-                <StudySetCards title="Đã xem gần đây" studySets={recentStudySets} />
-                <ClassList title="Lớp học" studySets={Mock_Data.yourSet} />
-                <StudySetCards title="Gợi ý cho bạn" studySets={recommendStudySets} />
+                {isLoading ? (
+                    <Skeleton sx={{ height: 240, width: 1074 }} animation="wave" variant="rounded" />
+                ) : (
+                    <Banner />
+                )}
+                <StudySetCards
+                    title="Đã xem gần đây"
+                    studySets={recentStudySets}
+                    isLoading={isLoading}
+                    loadType={Mock_Data.recent}
+                />
+                <ClassList title="Lớp học" studySets={Mock_Data.yourSet} isLoading={isLoading} />
+                <StudySetCards
+                    title="Gợi ý cho bạn"
+                    studySets={recommendStudySets}
+                    isLoading={isLoading}
+                    loadType={Mock_Data.yourSet}
+                />
             </Grid>
             <Grid item xs={12} md={4} lg={4}>
-                <PopularTable studySet={Mock_Data.recent} />
+                {isLoading ? (
+                    <Skeleton sx={{ height: 730, width: 521 }} animation="wave" variant="rounded" />
+                ) : (
+                    <PopularTable studySet={Mock_Data.recent} isLoading={isLoading} />
+                )}
             </Grid>
         </Grid>
     )
