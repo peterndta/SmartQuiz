@@ -41,6 +41,7 @@ const CreateStudySet = () => {
     const [files, setFiles] = useState()
     const [load, setLoad] = useState(false)
     const showSnackbar = useSnackbar()
+
     const mutateQuestionHandler = (question) => {
         if (modalMode === 'create') setQuestions((prev) => [...prev, { ...question }])
         else if (modalMode === 'edit') {

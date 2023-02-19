@@ -2,16 +2,7 @@ import { FormControl, MenuItem, Select } from '@mui/material'
 
 import { AppStyles } from '~/constants/styles'
 
-const SelectCompo = ({
-    selectStyle,
-    formControlStyle,
-    isRequire = false,
-    isDisable = false,
-    onChange,
-    value,
-    data,
-    multiple = false,
-}) => {
+const SelectMultiCompo = ({ selectStyle, formControlStyle, onChange, value, data }) => {
     return (
         <FormControl
             fullWidth
@@ -24,11 +15,9 @@ const SelectCompo = ({
                     borderRadius: 3,
                 },
             }}
-            required={isRequire}
-            disabled={isDisable}
         >
             <Select
-                multiple={multiple}
+                multiple={true}
                 sx={{ ...selectStyle }}
                 onChange={(_, props) => {
                     const { name, value } = props.props
@@ -37,7 +26,7 @@ const SelectCompo = ({
                 value={value.value}
             >
                 {data.map((dt, index) => (
-                    <MenuItem value={dt.label} key={index} name={dt.label}>
+                    <MenuItem value={dt.value} key={index} name={dt.label}>
                         {dt.label}
                     </MenuItem>
                 ))}
@@ -46,4 +35,4 @@ const SelectCompo = ({
     )
 }
 
-export default SelectCompo
+export default SelectMultiCompo
