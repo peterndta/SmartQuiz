@@ -43,8 +43,9 @@ const Paypal = () => {
         }
 
         createBill(info)
-            .then(() => {
-                dispatch(checkout())
+            .then((res) => {
+                console.log(res)
+                dispatch(checkout(true))
                 showSnackbar({
                     severity: 'success',
                     children: 'Giao dịch thành công.',
