@@ -60,12 +60,7 @@ const LearnModal = ({ open, handleClose, id }) => {
                         onChange={handleChange}
                     >
                         <FormControlLabel value="standard" control={<Radio />} label="Standard" />
-                        <FormControlLabel
-                            value="premium"
-                            disabled={!vip}
-                            control={<Radio />}
-                            label="Spaced-repetition"
-                        />
+                        <FormControlLabel value="premium" disabled={!vip} control={<Radio />} label="Premium" />
                     </RadioGroup>
                 </FormControl>
                 <ButtonCompo
