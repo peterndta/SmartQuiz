@@ -3,16 +3,16 @@ import React, { useEffect, useState } from 'react'
 import queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
 
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid, Skeleton, Typography } from '@mui/material'
 import ListStudySets from '~/components/ListStudySets'
 
 import Paging from './Pagination'
 import Sort from './Sort'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
+import { Mock_Data } from '~/Mock'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
-import Loading from '~/pages/Loading'
 
 const filterStringGenerator = ({ studysetname, sorttype, pageNumber, gradeid, subjectid }) => {
     let filterString = '?'
@@ -90,7 +90,13 @@ const SearchPageBottom = () => {
             </Box>
             <Box mt={4}>
                 {isFirstRender ? (
-                    <Loading />
+                    <Grid container rowSpacing={2} columnSpacing={3} display="flex" mb={10}>
+                        {Mock_Data.search.map((studySet) => (
+                            <Grid item md={3} key={studySet.id}>
+                                <Skeleton sx={{ height: 120 }} animation="wave" variant="rounded" />
+                            </Grid>
+                        ))}
+                    </Grid>
                 ) : (
                     <React.Fragment>
                         {studySetLength > 0 ? (
