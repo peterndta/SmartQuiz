@@ -62,6 +62,11 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time }) => {
         handleSubmit()
     }
 
+    const submitHandler = () => {
+        handleSubmit()
+        countdownRef.current && countdownRef.current.pause()
+    }
+
     return (
         <CardLayout style={CardLayoutStyle}>
             <CardContent>
@@ -104,7 +109,7 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time }) => {
                     <ButtonCompo
                         variant="contained"
                         style={ButtonStyle2}
-                        onClick={handleSubmit}
+                        onClick={submitHandler}
                         fullWidth={countDown === 0}
                     >
                         Nộp bài
