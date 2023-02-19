@@ -7,12 +7,14 @@ import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { useSnackbar } from '~/HOC/SnackbarContext'
 import { usePayment } from '~/actions/payment'
 import { PAY_PAL } from '~/config'
-import { useAppSelector } from '~/hooks/redux-hooks'
+import { checkout } from '~/features/authSlice'
+import { useAppDispatch, useAppSelector } from '~/hooks/redux-hooks'
 
 const currency = 'USD'
 const Paypal = () => {
     const { userId, vip } = useAppSelector((state) => state.auth)
     const [Error, setError] = useState(null)
+    const dispatch = useAppDispatch()
 
     const showSnackbar = useSnackbar()
     const { createBill } = usePayment()
@@ -33,20 +35,16 @@ const Paypal = () => {
         const gmtTime = new Date(order.create_time)
         const gmtPlus7Time = new Date(gmtTime.getTime() + 7 * 60 * 60 * 1000).toISOString()
 
-        console.log(order.create_time)
-        console.log(gmtPlus7Time)
-        console.log(order.id)
         const info = {
             paymentDate: gmtPlus7Time,
             userId: userId,
             subcription: 1,
             payId: order.id,
         }
-        console.log(info)
+
         createBill(info)
-            .then((response) => {
-                const data = response.data.data
-                // console.log(data)
+            .then(() => {
+                dispatch(checkout())
                 showSnackbar({
                     severity: 'success',
                     children: 'Giao dịch thành công.',
