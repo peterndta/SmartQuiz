@@ -2,12 +2,12 @@ import React, { useRef, useState } from 'react'
 
 import { Link as RouterLink } from 'react-router-dom'
 
-import { BookmarkAdd, BorderColor, Delete, MoreVert } from '@mui/icons-material'
+import { BookmarkAdd, BorderColor, Delete, MoreVert, RemoveCircleOutline } from '@mui/icons-material'
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
 
 import { AppStyles } from '~/constants/styles'
 
-const MoreMenu = ({ studySetId, saveButtonOn, color, deleteButtonOn, deleteStudySetHandler }) => {
+const MoreMenu = ({ studySetId, saveButtonOn, color, deleteButtonOn, deleteStudySetHandler, removeButtonOn }) => {
     const ref = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
 
@@ -53,9 +53,20 @@ const MoreMenu = ({ studySetId, saveButtonOn, color, deleteButtonOn, deleteStudy
                 {deleteButtonOn && (
                     <MenuItem sx={{ color: 'text.secondary' }} onClick={deleteHandler}>
                         <ListItemIcon>
-                            <Delete fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
+                            <Delete fontSize="small" color="error" />
                         </ListItemIcon>
-                        <ListItemText primary="Xóa" primaryTypographyProps={{ variant: 'body2' }} />
+                        <ListItemText primary="Xóa" primaryTypographyProps={{ variant: 'body2', color: 'error' }} />
+                    </MenuItem>
+                )}
+                {removeButtonOn && (
+                    <MenuItem sx={{ color: 'text.secondary' }} onClick={deleteHandler}>
+                        <ListItemIcon>
+                            <RemoveCircleOutline fontSize="small" color="error" />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary="Xóa khỏi lớp"
+                            primaryTypographyProps={{ variant: 'body2', color: 'error' }}
+                        />
                     </MenuItem>
                 )}
             </Menu>

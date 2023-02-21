@@ -32,6 +32,12 @@ const hyBridRoutes = [
         name: 'detail',
         layout: 'common',
     },
+    {
+        component: lazy(() => import('~/pages/ClassDetail')),
+        path: '/class/:id',
+        name: 'settings',
+        layout: 'common',
+    },
 ]
 
 const privateRoutes = [

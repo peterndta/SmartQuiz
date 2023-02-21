@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 
 import { useHistory } from 'react-router-dom'
 
-import { BookmarkAdd, CheckBox, Description, Edit } from '@mui/icons-material'
+import { Add, BookmarkAdd, CheckBox, Description, Edit } from '@mui/icons-material'
 import { Avatar, Box, Divider, IconButton, Tooltip, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
+import CreateClassModal from '~/components/CreateClassModal'
 import QuestionCard from '~/components/QuestionList/QuestionCard'
 
+import AddModal from './AddModal'
 import LearnModal from './LearnModal'
 import TestModal from './TestModal'
 
@@ -16,13 +18,26 @@ import { useAppSelector } from '~/hooks/redux-hooks'
 
 const DetailHeader = ({ info, id, questions, userId }) => {
     const [openLearn, setOpenLearn] = useState(false)
+    const [openTest, setOpenTest] = useState(false)
+    const [openAdd, setOpenAdd] = useState(false)
+    const [openAddClass, setOpenAddClass] = useState(false)
+
     const { userId: idUser } = useAppSelector((state) => state.auth)
 
     const handleOpenLearn = () => setOpenLearn(true)
     const handleCloseLearn = () => setOpenLearn(false)
-    const [openTest, setOpenTest] = useState(false)
+
     const handleOpenTest = () => setOpenTest(true)
     const handleCloseTest = () => setOpenTest(false)
+
+    const handleOpenAdd = () => setOpenAdd(true)
+    const handleCloseAdd = () => setOpenAdd(false)
+
+    const handleOpenAddClass = () => {
+        setOpenAddClass(true)
+        handleCloseAdd()
+    }
+    const handleCloseAddClass = () => setOpenAddClass(false)
 
     const history = useHistory()
     const ButtonStyle = {
@@ -41,6 +56,8 @@ const DetailHeader = ({ info, id, questions, userId }) => {
         <React.Fragment>
             <LearnModal open={openLearn} handleClose={handleCloseLearn} id={id} />
             <TestModal open={openTest} handleClose={handleCloseTest} id={id} numberOfQuestion={info.questions.length} />
+            <AddModal open={openAdd} handleClose={handleCloseAdd} handleOpenAddClass={handleOpenAddClass} />
+            <CreateClassModal open={openAddClass} handleClose={handleCloseAddClass} />
             <Typography sx={{ fontWeight: 500, fontSize: 32, color: AppStyles.colors['#333333'] }}>
                 {info.name}
             </Typography>
@@ -62,15 +79,19 @@ const DetailHeader = ({ info, id, questions, userId }) => {
                     </Typography>
                 </Box>
                 <Box display="flex" alignItems="center">
+                    <Tooltip title="Thêm" placement="bottom">
+                        <IconButton size="large" sx={{ border: '1px solid #767680', mr: 2 }} onClick={handleOpenAdd}>
+                            <Add fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
+                        </IconButton>
+                    </Tooltip>
                     <Tooltip title="Lưu" placement="bottom">
-                        <IconButton aria-label="create" size="large" sx={{ border: '1px solid #767680', mr: 2 }}>
+                        <IconButton size="large" sx={{ border: '1px solid #767680', mr: 2 }}>
                             <BookmarkAdd fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
                         </IconButton>
                     </Tooltip>
                     {idUser === userId && (
                         <Tooltip title="Sửa" placement="bottom">
                             <IconButton
-                                aria-label="create"
                                 size="large"
                                 sx={{ border: '1px solid #767680' }}
                                 onClick={() => history.push(`/study-sets/${id}/update`)}

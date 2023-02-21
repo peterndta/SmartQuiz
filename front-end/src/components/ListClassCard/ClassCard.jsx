@@ -12,6 +12,9 @@ const ClassCard = ({ studySet, md }) => {
     const CardLayoutStyle = {
         borderRadius: 3,
         boxShadow: '0px 1px 2px rgba(0, 46, 153, 0.3), 0px 1px 3px 1px rgba(0, 46, 153, 0.15)',
+        '&:hover': {
+            backgroundColor: AppStyles.colors['#E6EDFF'],
+        },
     }
     return (
         <Grid item md={md}>
@@ -39,7 +42,7 @@ const ClassCard = ({ studySet, md }) => {
                                             textDecoration: 'none',
                                         }}
                                         component={Link}
-                                        to={`/study-sets/${studySet.id}`}
+                                        to={`/class/${studySet.id}`}
                                     >
                                         {/* {studySet?.StudySetName} */}
                                         {studySet.name}

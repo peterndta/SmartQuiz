@@ -2,7 +2,7 @@ import React, { memo } from 'react'
 
 import Question from './Question'
 
-const Questions = ({ quest, deleteQuestionDraft, openEditModal }) => {
+const Questions = ({ quest, deleteQuestionDraft, openEditModal, images, onImageChange }) => {
     const questions = JSON.parse(quest)
     return (
         <React.Fragment>
@@ -13,6 +13,8 @@ const Questions = ({ quest, deleteQuestionDraft, openEditModal }) => {
                     {...question}
                     deleteQuestionDraft={deleteQuestionDraft}
                     openEditModal={openEditModal}
+                    images={images}
+                    onImageChange={onImageChange}
                 />
             ))}
         </React.Fragment>

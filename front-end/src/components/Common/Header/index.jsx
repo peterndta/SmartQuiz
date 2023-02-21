@@ -18,6 +18,7 @@ import {
     Typography,
 } from '@mui/material'
 import { grey, yellow } from '@mui/material/colors'
+import CreateClassModal from '~/components/CreateClassModal'
 
 import logo from '../../../assets/images/Logo.png'
 import Notification from '../../Noti'
@@ -34,6 +35,11 @@ const Header = () => {
     const open = Boolean(anchorEl)
 
     const { email, username, image, vip } = useAppSelector((state) => state.auth)
+
+    const [openClass, setOpenClass] = useState(false)
+    const handleOpenClass = () => setOpenClass(true)
+    const handleCloseClass = () => setOpenClass(false)
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget)
     }
@@ -46,6 +52,7 @@ const Header = () => {
 
     return (
         <AppBar position="fixed" sx={{ backgroundColor: AppStyles.colors['#FAFBFF'], boxShadow: 'none' }}>
+            <CreateClassModal open={openClass} handleClose={handleCloseClass} />
             <Toolbar disableGutters>
                 <Box
                     display="flex"
@@ -264,6 +271,9 @@ const Header = () => {
                                         </Divider>
                                     </Box>
 
+                                    <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={handleOpenClass}>
+                                        <Typography ml={1}>Tạo lớp học</Typography>
+                                    </MenuItem>
                                     <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={handleClickLogout}>
                                         <Typography ml={1}>Đăng xuất</Typography>
                                     </MenuItem>
