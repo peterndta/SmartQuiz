@@ -1,4 +1,4 @@
-import { CardContent, Divider } from '@mui/material'
+import { Box, CardContent, Divider } from '@mui/material'
 import CardLayout from '~/components/CardLayout'
 
 import QuestionAction from './QuestionContent/QuestionAction'
@@ -9,7 +9,7 @@ const CardLayoutStyle = {
     mt: 5,
 }
 
-const Question = ({ index, quest, ans, deleteQuestionDraft, id, openEditModal }) => {
+const Question = ({ index, quest, ans, deleteQuestionDraft, id, openEditModal, images, onImageChange }) => {
     return (
         <CardLayout style={CardLayoutStyle}>
             <CardContent>
@@ -18,9 +18,24 @@ const Question = ({ index, quest, ans, deleteQuestionDraft, id, openEditModal })
                     deleteQuestionDraft={deleteQuestionDraft}
                     id={id}
                     openEditModal={openEditModal}
+                    onImageChange={onImageChange}
                 />
                 <Divider />
                 <QuestionDescription quest={quest} ans={ans} />
+                {images && (
+                    <Box
+                        mt={2}
+                        component="img"
+                        alt="CQUIZ"
+                        src={images.preview}
+                        draggable={false}
+                        sx={{
+                            objectFit: 'contain',
+                            maxHeight: 250,
+                            maxWidth: 1050,
+                        }}
+                    />
+                )}
             </CardContent>
         </CardLayout>
     )

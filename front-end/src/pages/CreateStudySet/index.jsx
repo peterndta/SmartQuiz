@@ -39,6 +39,7 @@ const CreateStudySet = () => {
     const { importQuestion } = useQuestion()
     const [openImportExport, setOpenImportExport] = useState(false)
     const [files, setFiles] = useState()
+    const [images, setImages] = useState()
     const [load, setLoad] = useState(false)
     const showSnackbar = useSnackbar()
 
@@ -72,6 +73,19 @@ const CreateStudySet = () => {
     const onInputChange = (e) => {
         setFiles(e.target.files[0])
     }
+    useEffect(() => {
+        return () => {
+            images && URL.createObjectURL(images.preview)
+        }
+    }, [images])
+
+    const onImageChange = (e) => {
+        const file = e.target.files[0]
+        console.log(file)
+        file.preview = URL.createObjectURL(file)
+        setImages(file)
+    }
+
     const handleUpload = () => {
         setOpenImportExport(false)
         setLoad(true)
@@ -230,6 +244,7 @@ const CreateStudySet = () => {
                 onInputChange={onInputChange}
                 files={files}
             />
+
             <Container maxWidth="xl">
                 <NewStudySet infoStudySetHandler={infoStudySetHandler} infoStudySet={infoStudySet} />
                 <Box display="flex" justifyContent="flex-end" mt={2} alignItems="center">
@@ -285,6 +300,8 @@ const CreateStudySet = () => {
                         quest={JSON.stringify(questions)}
                         deleteQuestionDraft={deleteQuestionDraft}
                         openEditModal={openEditModal}
+                        images={images}
+                        onImageChange={onImageChange}
                     />
                 ) : (
                     <QuestionsExample />

@@ -375,6 +375,28 @@ const levelSchool = [
         value: 4,
     },
 ]
+const membersClass = [
+    {
+        name: 'Truong Anh',
+        role: 'Thành viên',
+        id: 2,
+    },
+    {
+        name: 'NiceGuy',
+        role: 'Quản trị viên',
+        id: 3,
+    },
+    {
+        name: 'Karingy',
+        role: 'Thành viên',
+        id: 4,
+    },
+    {
+        name: 'Day la ten tui',
+        role: 'Thành viên',
+        id: 5,
+    },
+]
 
 const level = {
     university: 'Đại học',
@@ -592,4 +614,5 @@ export {
     choices,
     exampleQuestion,
     UpgradeOptions,
+    membersClass,
 }
