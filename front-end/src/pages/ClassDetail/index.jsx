@@ -8,6 +8,8 @@ import ClassDetailHeader from './ClassDetailHeader'
 import ClassDetailRight from './ClassDetailRight'
 import ListMembersClass from './ListMembersClass'
 import ListStudySetsVertical from './ListStudySetsVertical'
+import Search from './Search'
+import Sort from './Sort'
 
 import { Mock_Data, membersClass } from '~/Mock'
 
@@ -23,7 +25,7 @@ function TabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box mt={6}>
+                <Box mt={2}>
                     <Typography>{children}</Typography>
                 </Box>
             )}
@@ -60,6 +62,10 @@ const ClassDetail = () => {
             <Grid container columnSpacing={5}>
                 <Grid item xs={7} md={7} lg={8}>
                     <TabPanel value={value} index={0}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                            <Search searchHeight={48} searchWidth={400} inputWidth={330} inputHeight={1.5} />
+                            <Sort />
+                        </Box>
                         {isFirstRender ? (
                             <React.Fragment>
                                 <Skeleton sx={{ height: 120 }} animation="wave" variant="rounded" />
