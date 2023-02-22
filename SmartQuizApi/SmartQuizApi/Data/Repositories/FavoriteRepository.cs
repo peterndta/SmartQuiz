@@ -5,7 +5,7 @@ namespace SmartQuizApi.Data.Repositories
 {
     public class FavoriteRepository : RepositoryBase<Favorite>, IFavoriteRepository
     {
-        public FavoriteRepository(SmartquizContext context) : base(context)
+        public FavoriteRepository(DbA95102SmartquizContext context) : base(context)
         {
         }
 

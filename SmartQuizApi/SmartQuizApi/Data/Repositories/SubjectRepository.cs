@@ -6,7 +6,7 @@ namespace SmartQuizApi.Data.Repositories
 {
     public class SubjectRepository : RepositoryBase<Subject>, ISubjectRepository
     {
-        public SubjectRepository(SmartquizContext context) : base(context)
+        public SubjectRepository(DbA95102SmartquizContext context) : base(context)
         {
         }
 

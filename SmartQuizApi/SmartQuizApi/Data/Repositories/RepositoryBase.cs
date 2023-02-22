@@ -5,9 +5,9 @@ namespace SmartQuizApi.Data.Repositories
 {
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        protected SmartquizContext _context { get; set; }
+        protected DbA95102SmartquizContext _context { get; set; }
 
-        public RepositoryBase(SmartquizContext context)
+        public RepositoryBase(DbA95102SmartquizContext context)
         {
             _context = context;
         }

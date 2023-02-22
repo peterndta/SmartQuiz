@@ -5,7 +5,7 @@ namespace SmartQuizApi.Data.Repositories
 {
     public class BookMarkRepository : RepositoryBase<Bookmark>, IBookMarkRepository
     {
-        public BookMarkRepository(SmartquizContext context) : base(context)
+        public BookMarkRepository(DbA95102SmartquizContext context) : base(context)
         {
         }
         public void CreateBookMark(int userId, string studySetId)
