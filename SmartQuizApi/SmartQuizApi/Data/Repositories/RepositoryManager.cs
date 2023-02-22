@@ -6,7 +6,7 @@ namespace SmartQuizApi.Data.Repositories
 {
     public class RepositoryManager : IRepositoryManager
     {
-        private SmartquizContext _context;
+        private DbA95102SmartquizContext _context;
         private IUserRepository _userRepository;
         private IStudySetRepository _studySetRepository;
         private IGradeRepository _gradeRepository;
@@ -18,7 +18,7 @@ namespace SmartQuizApi.Data.Repositories
         private IHistoryRepository _historyRepository;
         private IBillRepository _billRepository;
         private IFavoriteRepository _favoriteRepository;
-        public RepositoryManager(SmartquizContext context)
+        public RepositoryManager(DbA95102SmartquizContext context)
         {
             _context= context;
         }

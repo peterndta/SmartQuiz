@@ -7,7 +7,7 @@ namespace SmartQuizApi.Data.Repositories
 {
     public class StudySetRepository : RepositoryBase<StudySet>, IStudySetRepository
     {
-        public StudySetRepository(SmartquizContext context) : base(context)
+        public StudySetRepository(DbA95102SmartquizContext context) : base(context)
         {
         }
 
