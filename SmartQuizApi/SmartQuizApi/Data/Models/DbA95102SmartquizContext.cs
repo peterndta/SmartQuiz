@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SmartQuizApi.Data.Models;
 
-public partial class SmartquizContext : DbContext
+public partial class DbA95102SmartquizContext : DbContext
 {
-    public SmartquizContext()
+    public DbA95102SmartquizContext()
     {
     }
 
-    public SmartquizContext(DbContextOptions<SmartquizContext> options)
+    public DbA95102SmartquizContext(DbContextOptions<DbA95102SmartquizContext> options)
         : base(options)
     {
     }
@@ -45,7 +45,7 @@ public partial class SmartquizContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=34.143.204.78;Database=Smartquiz;uid=sqlserver;pwd=123456789;Trusted_Connection=False;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=SQL8002.site4now.net;Database=db_a95102_smartquiz;uid=db_a95102_smartquiz_admin;pwd=aA@1234567890;Trusted_Connection=False;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

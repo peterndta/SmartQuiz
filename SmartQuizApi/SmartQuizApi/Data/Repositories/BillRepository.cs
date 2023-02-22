@@ -5,7 +5,7 @@ namespace SmartQuizApi.Data.Repositories
 {
     public class BillRepository : RepositoryBase<Bill>, IBillRepository
     {
-        public BillRepository(SmartquizContext context) : base(context)
+        public BillRepository(DbA95102SmartquizContext context) : base(context)
         {
         }
 
