@@ -199,6 +199,9 @@ public partial class DbA95102SmartquizContext : DbContext
         modelBuilder.Entity<Question>(entity =>
         {
             entity.Property(e => e.Id).HasMaxLength(50);
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(50)
+                .HasColumnName("Image_url");
             entity.Property(e => e.StudySetId)
                 .HasMaxLength(50)
                 .HasColumnName("Study_set_id");

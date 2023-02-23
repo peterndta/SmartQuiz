@@ -11,6 +11,8 @@ public partial class Question
 
     public string StudySetId { get; set; } = null!;
 
+    public string? ImageUrl { get; set; }
+
     public virtual ICollection<Answer> Answers { get; } = new List<Answer>();
 
     public virtual StudySet StudySet { get; set; } = null!;
