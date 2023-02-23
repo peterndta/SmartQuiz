@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import { cloneDeep } from 'lodash'
 import { useHistory, useLocation } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 
@@ -20,28 +22,31 @@ import { useQuestion } from '~/actions/question'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
+import { storage } from '~/utils/Firebase'
 import LocalStorageUtils from '~/utils/LocalStorageUtils'
 
 const CreateStudySet = () => {
     const grades = useAppSelector((state) => state.grades)
     const { state } = useLocation()
+    const showSnackbar = useSnackbar()
+    const isSubmitSuccessfully = useRef(false)
+    const openId = useRef(1)
+    const history = useHistory()
+    const { createStudySet } = useStudySet()
+    const { userId } = useAppSelector((state) => state.auth)
     const [classLevel, setClassLevel] = useState(state ? state.classLevel : grades[0])
+    const { importQuestion } = useQuestion()
     const [subject, setSubject] = useState(state ? state.subject : initialValue)
     const [title, setTitle] = useState(state ? state.title : '')
     const [questions, setQuestions] = useState(state ? state.questions : [])
     const [openModal, setOpenModal] = useState(false)
-    const { userId } = useAppSelector((state) => state.auth)
     const [modalMode, setModalMode] = useState('create')
     const [question, setQuestion] = useState({})
-    const isSubmitSuccessfully = useRef(false)
-    const history = useHistory()
-    const { createStudySet } = useStudySet()
-    const { importQuestion } = useQuestion()
     const [openImportExport, setOpenImportExport] = useState(false)
     const [files, setFiles] = useState()
-    const [images, setImages] = useState()
+    const [images, setImages] = useState([])
+    const [poster, setPoster] = useState({ src: null, file: null })
     const [load, setLoad] = useState(false)
-    const showSnackbar = useSnackbar()
 
     const mutateQuestionHandler = (question) => {
         if (modalMode === 'create') setQuestions((prev) => [...prev, { ...question }])
@@ -73,17 +78,42 @@ const CreateStudySet = () => {
     const onInputChange = (e) => {
         setFiles(e.target.files[0])
     }
-    useEffect(() => {
-        return () => {
-            images && URL.createObjectURL(images.preview)
-        }
-    }, [images])
 
-    const onImageChange = (e) => {
+    const onImageChange = (e, id) => {
         const file = e.target.files[0]
-        console.log(file)
-        file.preview = URL.createObjectURL(file)
-        setImages(file)
+        if (!file) return
+
+        const { type } = file
+        if (!(type.endsWith('jpeg') || !type.endsWith('png') || !type.endsWith('jpg'))) {
+            showSnackbar({
+                severity: 'error',
+                children: 'Event poster can only be jpeg, png and jpg file.',
+            })
+            return
+        }
+
+        const imageUrl = URL.createObjectURL(e.target.files[0])
+
+        const updatedQuestions = cloneDeep(questions)
+        const position = updatedQuestions.findIndex((quest) => quest.id === id)
+        const updatedQuestion = updatedQuestions.find((quest) => quest.id === id)
+        updatedQuestion.image = imageUrl
+        updatedQuestions.splice(position, 1, updatedQuestion)
+
+        if (images.length === 0) {
+            setImages((prev) => [...prev, { questionId: id, file: file }])
+        } else if (images.length > 0) {
+            const imageIndex = images.findIndex((image) => image.questionId === id)
+            if (imageIndex === -1) {
+                setImages((prev) => [...prev, { questionId: id, file: file }])
+            } else {
+                const updatedImages = cloneDeep(images)
+                updatedImages.splice(imageIndex, 1, { questionId: id, file: file })
+                setImages(updatedImages)
+            }
+        }
+        setPoster({ src: imageUrl, file: file })
+        setQuestions(updatedQuestions)
     }
 
     const handleUpload = () => {
@@ -157,40 +187,75 @@ const CreateStudySet = () => {
     const submitStudySetHandler = (event) => {
         event.preventDefault()
 
-        const formatQuestions = questions.map((item) => {
-            return {
-                name: item.quest,
-                answers: item.ans.map((ans) => {
-                    return {
-                        name: ans.name,
-                        isCorrectAnswer: ans.isCorrect,
-                    }
-                }),
-            }
-        })
+        const imageUrls = []
 
-        const studySet = {
-            name: title,
-            userId: +userId,
-            gradeId: classLevel.value,
-            subjectId: subject.value,
-            classId: null,
-            isPublic: true,
-            questions: formatQuestions,
-        }
-        createStudySet(studySet).then((res) => {
-            const id = res.data.data
-            if (state) {
-                const drafts = LocalStorageUtils.getItem('create')
-                const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
-                isSubmitSuccessfully.current = true
+        images.forEach((image) => {
+            let fileType = 'png'
+            if (image.file.type.endsWith('jpg')) fileType = 'jpg'
+            else if (image.file.type.endsWith('jpeg')) fileType = 'jpeg'
+            const storageRef = ref(storage, `images/${image.file.name + uuid()}.${fileType}`)
+            const uploadTask = uploadBytesResumable(storageRef, image.file)
+            uploadTask.on(
+                'state_changed',
+                () => {},
+                () => {
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Something went wrong, cannot upload event poster.',
+                    })
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                        imageUrls.push({ imageUrl: url, questId: image.questionId })
+                        if (imageUrls.length === images.length) {
+                            const updatedQuestion = questions.map((question) => {
+                                imageUrls.forEach((image) => {
+                                    if (question.id === image.questId) {
+                                        question.image = image.imageUrl
+                                    }
+                                })
+                                return question
+                            })
+                            const formatQuestions = updatedQuestion.map((item) => {
+                                return {
+                                    name: item.quest,
+                                    imageUrl: item.image,
+                                    answers: item.ans.map((ans) => {
+                                        return {
+                                            name: ans.name,
+                                            isCorrectAnswer: ans.isCorrect,
+                                        }
+                                    }),
+                                }
+                            })
 
-                LocalStorageUtils.setItem('create', {
-                    path: '/create',
-                    studySet: updateDrafts,
-                })
-            }
-            history.replace(`/study-sets/${id}`)
+                            const studySet = {
+                                name: title,
+                                userId: +userId,
+                                gradeId: classLevel.value,
+                                subjectId: subject.value,
+                                classId: null,
+                                isPublic: true,
+                                questions: formatQuestions,
+                            }
+                            createStudySet(studySet).then((res) => {
+                                const id = res.data.data
+                                if (state) {
+                                    const drafts = LocalStorageUtils.getItem('create')
+                                    const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
+                                    isSubmitSuccessfully.current = true
+
+                                    LocalStorageUtils.setItem('create', {
+                                        path: '/create',
+                                        studySet: updateDrafts,
+                                    })
+                                }
+                                history.replace(`/study-sets/${id}`)
+                            })
+                        }
+                    })
+                }
+            )
         })
     }
 
@@ -225,6 +290,12 @@ const CreateStudySet = () => {
         else if (classLevel.value <= 7 && subject.value > 7) setSubject(initialValue)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [classLevel.value])
+
+    useEffect(() => {
+        return () => {
+            poster.src && URL.revokeObjectURL(poster.src)
+        }
+    }, [poster.src])
 
     useEffect(() => {
         return () => {
@@ -279,6 +350,7 @@ const CreateStudySet = () => {
                                         onClose={closeModalHandler}
                                         submitQuestionHandler={mutateQuestionHandler}
                                         open={openModal}
+                                        openId={openId}
                                     />
                                 )
                             )
