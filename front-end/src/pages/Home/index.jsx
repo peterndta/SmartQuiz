@@ -55,7 +55,7 @@ const Home = () => {
     }, [])
 
     return (
-        <Grid maxWidth={1660} container spacing={3} columnSpacing={4} sx={{ pt: 2, m: '0 auto', mb: 9 }}>
+        <Grid maxWidth={1660} container spacing={3} columnSpacing={4} sx={{ pt: 2, m: '0 auto', mb: 10 }}>
             <Grid item xs={12} md={8} lg={8}>
                 {isLoading ? (
                     <Skeleton sx={{ height: 240, width: 1074 }} animation="wave" variant="rounded" />
@@ -67,13 +67,23 @@ const Home = () => {
                     studySets={recentStudySets}
                     isLoading={isLoading}
                     loadType={Mock_Data.recent}
+                    emptyTextAbove="Bạn chưa xem học phần nào gần đây"
+                    emptyTextBelow="Các học phần bạn đã xem qua sẽ hiển thị ở đây."
                 />
-                <ClassList title="Lớp học" studySets={Mock_Data.yourSet} isLoading={isLoading} />
+                <ClassList
+                    title="Lớp học"
+                    studySets={Mock_Data.yourSet}
+                    isLoading={isLoading}
+                    emptyTextAbove="Bạn chưa tham gia lớp học nào"
+                    emptyTextBelow="Các lớp học bạn tham gia sẽ hiển thị ở đây."
+                />
                 <StudySetCards
                     title="Gợi ý cho bạn"
                     studySets={recommendStudySets}
                     isLoading={isLoading}
                     loadType={Mock_Data.yourSet}
+                    emptyTextAbove="Bạn chưa có gợi ý nào"
+                    emptyTextBelow="Các gợi ý dành cho bạn sẽ hiển thị ở đây."
                 />
             </Grid>
             <Grid item xs={12} md={4} lg={4}>

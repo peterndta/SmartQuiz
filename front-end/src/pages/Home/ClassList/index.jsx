@@ -1,9 +1,12 @@
+import React from 'react'
+
 import { Box, Grid, Skeleton, Typography } from '@mui/material'
+import EmptyStudySets from '~/components/EmptyStudySets'
 import ListClassCard from '~/components/ListClassCard'
 
 import { Mock_Data } from '~/Mock'
 
-const ClassList = ({ title, studySets, isLoading }) => {
+const ClassList = ({ title, studySets, isLoading, emptyTextAbove, emptyTextBelow }) => {
     return (
         <Box mt={4}>
             <Typography
@@ -28,7 +31,13 @@ const ClassList = ({ title, studySets, isLoading }) => {
                     ))}
                 </Grid>
             ) : (
-                <ListClassCard studySets={studySets} md={4} />
+                <React.Fragment>
+                    {studySets?.length ? (
+                        <ListClassCard studySets={studySets} md={4} />
+                    ) : (
+                        <EmptyStudySets textAbove={emptyTextAbove} textBelow={emptyTextBelow} disable={true} />
+                    )}
+                </React.Fragment>
             )}
         </Box>
     )

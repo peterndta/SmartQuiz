@@ -7,16 +7,19 @@ import { AppStyles } from '~/constants/styles'
 const EmptyStudySets = ({ textAbove, textBelow, image, disable = false }) => {
     return (
         <Box textAlign="center">
-            <Box
-                mt={2}
-                component="img"
-                alt="sets_empty"
-                src={image}
-                sx={{
-                    width: 300,
-                    height: 150,
-                }}
-            />
+            {image && (
+                <Box
+                    mt={2}
+                    component="img"
+                    alt="sets_empty"
+                    src={image}
+                    sx={{
+                        width: 300,
+                        height: 150,
+                    }}
+                />
+            )}
+
             <Typography fontSize={24} fontWeight={700} sx={{ color: AppStyles.colors['#000F33'] }}>
                 {textAbove}
             </Typography>
