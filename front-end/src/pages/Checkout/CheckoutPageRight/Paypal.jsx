@@ -22,12 +22,18 @@ const Paypal = () => {
     const { search: query } = useLocation()
     const { mode } = queryString.parse(query)
     const amount = useRef(mode === 'monthly' ? 0.84 : 4.2)
+    const subcription = useRef(mode === 'monthly' ? 1 : 12)
+    const description = useRef(mode === 'monthly' ? 'SmartQuiz gói 1 tháng' : 'SmartQuiz gói 1 năm')
 
     useEffect(() => {
         if (mode === 'yearly') {
             amount.current = 4.2
+            subcription.current = 12
+            description.current = 'SmartQuiz gói 1 năm'
         } else {
             amount.current = 0.84
+            subcription.current = 1
+            description.current = 'SmartQuiz gói 1 tháng'
         }
     }, [mode])
     const history = useHistory()
@@ -38,13 +44,11 @@ const Paypal = () => {
         const info = {
             paymentDate: gmtPlus7Time,
             userId: userId,
-            subcription: 1,
+            subcription: subcription.current,
             payId: order.id,
         }
-
         createBill(info)
-            .then((res) => {
-                console.log(res)
+            .then(() => {
                 dispatch(checkout(true))
                 showSnackbar({
                     severity: 'success',
@@ -90,7 +94,7 @@ const Paypal = () => {
                     return actions.order.create({
                         purchase_units: [
                             {
-                                description: '1 Month Subscription',
+                                description: description.current,
                                 amount: {
                                     currency_code: currency,
                                     value: amount.current,
