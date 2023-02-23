@@ -40,13 +40,12 @@ const Sort = () => {
     }, [type])
 
     return (
-        <FormControl sx={{ minWidth: 260 }}>
+        <FormControl sx={{ minWidth: 100 }}>
             <Select
                 value={type}
                 variant="outlined"
                 onChange={handleChange}
                 sx={{
-                    pl: 1,
                     bgcolor: AppStyles.colors['#FAFBFF'],
                     borderRadius: 3,
                     boxShadow: '0px 1px 2px rgba(0, 46, 153, 0.3), 0px 1px 3px 1px rgba(0, 46, 153, 0.15)',
