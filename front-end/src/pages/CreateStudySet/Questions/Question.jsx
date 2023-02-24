@@ -1,4 +1,4 @@
-import { Box, CardContent, Divider, LinearProgress } from '@mui/material'
+import { Box, CardContent, Divider } from '@mui/material'
 import CardLayout from '~/components/CardLayout'
 
 import QuestionAction from './QuestionContent/QuestionAction'
@@ -9,9 +9,7 @@ const CardLayoutStyle = {
     mt: 5,
 }
 
-const Question = ({ index, quest, ans, deleteQuestionDraft, id, openEditModal, images, onImageChange }) => {
-    let isLoading = false
-    let imageTemp = 'https://hoc360.net/wp-content/uploads/2019/08/2019-08-12_14h15_32.png'
+const Question = ({ index, quest, ans, deleteQuestionDraft, id, openEditModal, image, onImageChange }) => {
     return (
         <CardLayout style={CardLayoutStyle}>
             <CardContent>
@@ -24,24 +22,20 @@ const Question = ({ index, quest, ans, deleteQuestionDraft, id, openEditModal, i
                 />
                 <Divider />
                 <QuestionDescription quest={quest} ans={ans} />
-                {isLoading ? (
-                    <Box mt={5} mb={3} sx={{ width: '98%' }}>
-                        <LinearProgress />
-                    </Box>
-                ) : (
+                {image ? (
                     <Box mt={3} display="flex" justifyContent="center" sx={{ border: '3px dashed #CCDBFF' }}>
                         <Box
                             component="img"
                             alt="CQUIZ"
-                            src={imageTemp}
+                            src={image}
                             draggable={false}
                             sx={{
-                                objectFit: 'cover',
+                                objectFit: 'contain',
                                 maxHeight: 250,
                             }}
                         />
                     </Box>
-                )}
+                ) : null}
             </CardContent>
         </CardLayout>
     )

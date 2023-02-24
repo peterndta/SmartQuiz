@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { v4 as uuid } from 'uuid'
 
@@ -25,10 +25,9 @@ const initialValue = [
     { name: '', isCorrect: false, id: uuid() },
 ]
 
-const Modal = ({ open, onClose, submitQuestionHandler }) => {
+const Modal = ({ open, onClose, submitQuestionHandler, openId }) => {
     const [answers, setAnswers] = useState(initialValue)
     const [questionName, setQuestionName] = useState('')
-
     const addMoreAnswer = () => {
         const newField = { name: '', isCorrect: false, id: uuid() }
         setAnswers((prev) => [...prev, newField])
@@ -55,7 +54,7 @@ const Modal = ({ open, onClose, submitQuestionHandler }) => {
     }
 
     const handleSubmit = () => {
-        const question = { quest: questionName, ans: answers, id: uuid() }
+        const question = { quest: questionName, ans: answers, id: uuid(), image: null }
         submitQuestionHandler(question)
         handleReset()
     }
@@ -72,14 +71,22 @@ const Modal = ({ open, onClose, submitQuestionHandler }) => {
         setQuestionName('')
     }
 
+    useEffect(() => {
+        if (!open) {
+            // Increment id each time modal closes
+            openId.current = openId.current + 1
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open])
+
     return (
         <Dialog
+            key={openId.current}
             open={open}
             TransitionComponent={Transition}
             onClose={onClose}
             fullWidth
             maxWidth="md"
-            keepMounted={false}
         >
             <DialogTitle>Submit your question and answer</DialogTitle>
             <DialogContent dividers>
