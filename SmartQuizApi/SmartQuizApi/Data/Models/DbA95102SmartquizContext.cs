@@ -107,7 +107,7 @@ public partial class DbA95102SmartquizContext : DbContext
 
         modelBuilder.Entity<Class>(entity =>
         {
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).HasMaxLength(50);
             entity.Property(e => e.CreateAt)
                 .HasColumnType("date")
                 .HasColumnName("Create_at");
@@ -128,7 +128,9 @@ public partial class DbA95102SmartquizContext : DbContext
 
             entity.ToTable("ClassMember");
 
-            entity.Property(e => e.ClassId).HasColumnName("Class_id");
+            entity.Property(e => e.ClassId)
+                .HasMaxLength(50)
+                .HasColumnName("Class_id");
             entity.Property(e => e.MemberId).HasColumnName("Member_id");
             entity.Property(e => e.CreateAt)
                 .HasColumnType("date")
@@ -214,7 +216,9 @@ public partial class DbA95102SmartquizContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_Study_set");
 
             entity.Property(e => e.Id).HasMaxLength(50);
-            entity.Property(e => e.ClassId).HasColumnName("Class_id");
+            entity.Property(e => e.ClassId)
+                .HasMaxLength(50)
+                .HasColumnName("Class_id");
             entity.Property(e => e.CreateAt)
                 .HasColumnType("date")
                 .HasColumnName("Create_at");

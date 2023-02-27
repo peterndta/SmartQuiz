@@ -5,7 +5,7 @@ namespace SmartQuizApi.Data.Models;
 
 public partial class Class
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = null!;
 
     public string Name { get; set; } = null!;
 
@@ -14,6 +14,8 @@ public partial class Class
     public DateTime CreateAt { get; set; }
 
     public DateTime UpdateAt { get; set; }
+
+    public string Description { get; set; } = null!;
 
     public virtual ICollection<ClassMember> ClassMembers { get; } = new List<ClassMember>();
 

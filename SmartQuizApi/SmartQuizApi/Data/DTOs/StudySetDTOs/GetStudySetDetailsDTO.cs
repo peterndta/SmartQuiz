@@ -22,7 +22,7 @@ namespace SmartQuizApi.Data.DTOs.StudySetDTOs
 
         public string? SubjectName { get; set; }
 
-        public int? ClassId { get; set; }
+        public string? ClassId { get; set; }
 
         public bool IsPublic { get; set; }
 

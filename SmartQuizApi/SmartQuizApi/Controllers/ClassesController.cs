@@ -29,9 +29,13 @@ namespace SmartQuizApi.Controllers
                 var newClass = _mapper.Map<Class>(createClass);
                 newClass.CreateAt = DateTime.Now;
                 newClass.UpdateAt = DateTime.Now;
+                newClass.Id = Guid.NewGuid().ToString();
                 _repositoryManager.Class.CreateClass(newClass);
                 await _repositoryManager.SaveChangesAsync();    
-                return StatusCode(StatusCodes.Status200OK, new Response(200, "", ""));
+                return StatusCode(StatusCodes.Status200OK, new Response(200, new
+                {
+                    classId = newClass.Id,
+                }, ""));
             }
             catch (Exception ex)
             {

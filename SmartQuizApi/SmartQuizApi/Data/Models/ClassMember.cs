@@ -5,7 +5,7 @@ namespace SmartQuizApi.Data.Models;
 
 public partial class ClassMember
 {
-    public int ClassId { get; set; }
+    public string ClassId { get; set; } = null!;
 
     public int MemberId { get; set; }
 
