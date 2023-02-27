@@ -15,6 +15,11 @@ namespace SmartQuizApi.Data.Repositories
             Create(user);
         }
 
+        public int GetTotalUser()
+        {
+            return GetAll().Count();
+        }
+
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await GetByCondition(x => x.Email.Equals(email)).FirstOrDefaultAsync();

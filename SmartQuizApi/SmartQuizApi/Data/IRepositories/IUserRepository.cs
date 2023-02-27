@@ -8,5 +8,6 @@ namespace SmartQuizApi.Data.IRepositories
         void CreateUser(User user);
         User? GetUserById(int id);
         void UpdateUser(User user);
+        int GetTotalUser();
     }
 }

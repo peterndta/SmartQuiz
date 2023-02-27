@@ -78,6 +78,11 @@ namespace SmartQuizApi.Data.Repositories
                                                         .Include(x => x.Class).ToListAsync();
         }
 
+        public int GetTotalStudySet()
+        {
+            return GetAll().Count();
+        }
+
         public void UpdateStudySet(StudySet studySet)
         {
             Update(studySet);

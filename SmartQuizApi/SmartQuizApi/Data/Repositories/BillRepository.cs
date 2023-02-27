@@ -19,5 +19,10 @@ namespace SmartQuizApi.Data.Repositories
             var result = GetByCondition(x => x.UserId == userId && DateTime.Compare(x.ExpirationDate, DateTime.UtcNow) > 0).FirstOrDefault();
             return result != null;
         }
+
+        public int GetTotalSubcription(int subcription)
+        {
+            return GetByCondition(x => x.Subcription == subcription).Count();
+        }
     }
 }

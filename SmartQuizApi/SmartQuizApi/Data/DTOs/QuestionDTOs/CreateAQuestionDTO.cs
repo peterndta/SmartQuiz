@@ -8,6 +8,8 @@ namespace SmartQuizApi.Data.DTOs.QuestionDTOs
 
         public string StudySetId { get; set; }
 
+        public string? ImageUrl { get; set; }
+
         public List<CreateAnwserDTO> Answers { get; set; }
     }
 }
