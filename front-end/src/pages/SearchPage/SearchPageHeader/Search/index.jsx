@@ -59,7 +59,7 @@ const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight }) => {
 
     const { search: query, pathname } = useLocation()
     const history = useHistory()
-    const { studysetname, sorttype, pageNumber, gradeid, subjectid } = queryString.parse(query)
+    const { studysetname, sorttype, gradeid, subjectid } = queryString.parse(query)
     const [searchValue, setSearchValue] = useState(studysetname ? studysetname : '')
 
     const searchChangeHandler = (event) => {
@@ -75,8 +75,6 @@ const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight }) => {
             if (subjectid) route += `&subjectid=${subjectid}`
 
             if (gradeid) route += `&gradeid=${gradeid}`
-
-            if (pageNumber) route += `&pageNumber=${pageNumber}`
 
             if (sorttype) route += `&sorttype=${sorttype}`
 
