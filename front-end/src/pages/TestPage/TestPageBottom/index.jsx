@@ -123,6 +123,8 @@ const TestPageBottom = () => {
                     selectedLength={selectQuestionAnswers.length}
                     handleSubmit={handleSubmit}
                     time={exam.time}
+                    correctAns={checkAnswers.correctCount}
+                    isSubmit={checkAnswers.isSubmit}
                 />
             </Grid>
         </Grid>

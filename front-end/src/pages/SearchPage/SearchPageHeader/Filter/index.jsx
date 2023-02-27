@@ -20,7 +20,7 @@ const FormControlStyle = {
 const Filter = ({ title, isRequired, onChange, value, data, isDisable, typeFilter }) => {
     const history = useHistory()
     const { search: query, pathname } = useLocation()
-    const { studysetname, sorttype, pageNumber, gradeid, subjectid } = queryString.parse(query)
+    const { studysetname, sorttype, gradeid, subjectid } = queryString.parse(query)
 
     const filterHandler = () => {
         let route = pathname + '?'
@@ -30,11 +30,17 @@ const Filter = ({ title, isRequired, onChange, value, data, isDisable, typeFilte
             if (value?.value) route += `&subjectid=${value?.value}`
             if (gradeid) route += `&gradeid=${gradeid}`
         } else if (typeFilter === 'grade') {
-            if (subjectid) route += `&subjectid=${subjectid}`
-            if (value?.value) route += `&gradeid=${value?.value}`
+            if (
+                (value?.value <= 2 && +subjectid === 7) ||
+                (value?.value < 9 && +subjectid >= 11) ||
+                (value?.value === 9 && +subjectid < 11)
+            ) {
+                route += `&gradeid=${value?.value}`
+            } else {
+                if (subjectid) route += `&subjectid=${subjectid}`
+                if (value?.value) route += `&gradeid=${value?.value}`
+            }
         }
-
-        if (pageNumber) route += `&pageNumber=${pageNumber}`
 
         if (sorttype) route += `&sorttype=${sorttype}`
 

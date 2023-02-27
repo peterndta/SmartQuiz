@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
+import queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
 
 import { FilterAltOff } from '@mui/icons-material'
@@ -17,25 +18,40 @@ import { useAppSelector } from '~/hooks/redux-hooks'
 
 const SearchPageHeader = () => {
     const grades = useAppSelector((state) => state.grades)
-    const { state } = useLocation()
-    const [classLevel, setClassLevel] = useState(state ? state.classLevel : initialValue)
-    const [subject, setSubject] = useState(state ? state.subject : initialValue)
-    const [typeFilter, setTypeFilter] = useState('')
+    const subjects = useAppSelector((state) => state.subjects)
+    const { search: query } = useLocation()
+    const { gradeid, subjectid } = queryString.parse(query)
+
+    let grade = initialValue
+    let course = initialValue
+
+    if (gradeid) {
+        grade = grades.find((gra) => gra.id === +gradeid)
+    }
+
+    if (subjectid) {
+        course = subjects.all.find((sub) => sub.id === +subjectid)
+    }
+
+    const [classLevel, setClassLevel] = useState(grade)
+    const [subject, setSubject] = useState(course)
+    const typeFilter = useRef('')
+
     function classChangeHandler(name, value) {
+        typeFilter.current = 'grade'
         setClassLevel(() => ({ label: name, value: value }))
-        setTypeFilter('grade')
     }
     function subjectChangeHandler(name, value) {
+        typeFilter.current = 'subject'
         setSubject(() => ({ label: name, value: value }))
-        setTypeFilter('subject')
     }
 
     const clearHandler = () => {
+        typeFilter.current = ''
         setClassLevel(initialValue)
         setSubject(initialValue)
     }
 
-    const subjects = useAppSelector((state) => state.subjects)
     return (
         <FullWidthHeaderWhite maxWidthContent={1112}>
             <Grid item xs={12}>
@@ -60,13 +76,13 @@ const SearchPageHeader = () => {
                                     onChange={classChangeHandler}
                                     data={grades}
                                     title="Cấp học"
-                                    typeFilter={typeFilter}
+                                    typeFilter={typeFilter.current}
                                 />
                             </Grid>
                             <Grid item md={3}>
                                 <Filter
                                     isRequired={true}
-                                    isDisable={false}
+                                    isDisable={!classLevel.value}
                                     value={subject}
                                     onChange={subjectChangeHandler}
                                     data={
@@ -77,7 +93,7 @@ const SearchPageHeader = () => {
                                             : subjects.universitySubjects
                                     }
                                     title="Lĩnh vực"
-                                    typeFilter={typeFilter}
+                                    typeFilter={typeFilter.current}
                                 />
                             </Grid>
                             <Grid item md={3}>
@@ -103,9 +119,6 @@ const SearchPageHeader = () => {
                                     </IconButton>
                                 </Tooltip>
                             </Grid>
-                            {/* <Grid item md={3}>
-                                <Filter data={Mock_Data.dropdown4} title="Môn học" />
-                            </Grid> */}
                         </Grid>
                     </Grid>
                 </Grid>
