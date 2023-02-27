@@ -5,8 +5,7 @@ import { Backdrop, Box, Fade, Modal, Typography } from '@mui/material'
 
 import ButtonCompo from '../ButtonCompo'
 import { AppStyles } from './../../constants/styles'
-
-import 'react-circular-progressbar/dist/styles.css'
+import './progress.css'
 
 const modalStyle = {
     position: 'absolute',
