@@ -13,6 +13,7 @@
         IHistoryRepository History { get; }
         IBillRepository Bill { get; }
         IFavoriteRepository Favorite { get; }
+        IClassRepository Class { get; }
         Task SaveChangesAsync();
     }
 }

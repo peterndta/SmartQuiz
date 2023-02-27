@@ -6,5 +6,6 @@ namespace SmartQuizApi.Data.IRepositories
     {
         void CreateBill(Bill bill);
         bool GetPaymentStatus(int userId);
+        int GetTotalSubcription(int subcription);
     }
 }
