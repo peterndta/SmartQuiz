@@ -54,7 +54,8 @@ const Modal = ({ open, onClose, submitQuestionHandler, openId }) => {
     }
 
     const handleSubmit = () => {
-        const question = { quest: questionName, ans: answers, id: uuid(), image: null }
+        // const question = { quest: questionName, ans: answers, id: uuid(), image: null }
+        const question = { quest: questionName, ans: answers, id: uuid() }
         submitQuestionHandler(question)
         handleReset()
     }
@@ -73,7 +74,6 @@ const Modal = ({ open, onClose, submitQuestionHandler, openId }) => {
 
     useEffect(() => {
         if (!open) {
-            // Increment id each time modal closes
             openId.current = openId.current + 1
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

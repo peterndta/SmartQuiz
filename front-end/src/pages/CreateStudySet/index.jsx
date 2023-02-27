@@ -186,77 +186,113 @@ const CreateStudySet = () => {
 
     const submitStudySetHandler = (event) => {
         event.preventDefault()
+        if (images.length > 0) {
+            const imageUrls = []
 
-        const imageUrls = []
-
-        images.forEach((image) => {
-            let fileType = 'png'
-            if (image.file.type.endsWith('jpg')) fileType = 'jpg'
-            else if (image.file.type.endsWith('jpeg')) fileType = 'jpeg'
-            const storageRef = ref(storage, `images/${image.file.name + uuid()}.${fileType}`)
-            const uploadTask = uploadBytesResumable(storageRef, image.file)
-            uploadTask.on(
-                'state_changed',
-                () => {},
-                () => {
-                    showSnackbar({
-                        severity: 'error',
-                        children: 'Something went wrong, cannot upload event poster.',
-                    })
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-                        imageUrls.push({ imageUrl: url, questId: image.questionId })
-                        if (imageUrls.length === images.length) {
-                            const updatedQuestion = questions.map((question) => {
-                                imageUrls.forEach((image) => {
-                                    if (question.id === image.questId) {
-                                        question.image = image.imageUrl
+            images.forEach((image) => {
+                let fileType = 'png'
+                if (image.file.type.endsWith('jpg')) fileType = 'jpg'
+                else if (image.file.type.endsWith('jpeg')) fileType = 'jpeg'
+                const storageRef = ref(storage, `images/${image.file.name + uuid()}.${fileType}`)
+                const uploadTask = uploadBytesResumable(storageRef, image.file)
+                uploadTask.on(
+                    'state_changed',
+                    () => {},
+                    () => {
+                        showSnackbar({
+                            severity: 'error',
+                            children: 'Something went wrong, cannot upload event poster.',
+                        })
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                            imageUrls.push({ imageUrl: url, questId: image.questionId })
+                            if (imageUrls.length === images.length) {
+                                const updatedQuestion = questions.map((question) => {
+                                    imageUrls.forEach((image) => {
+                                        if (question.id === image.questId) {
+                                            question.image = image.imageUrl
+                                        }
+                                    })
+                                    return question
+                                })
+                                const formatQuestions = updatedQuestion.map((item) => {
+                                    return {
+                                        name: item.quest,
+                                        imageUrl: item.image,
+                                        answers: item.ans.map((ans) => {
+                                            return {
+                                                name: ans.name,
+                                                isCorrectAnswer: ans.isCorrect,
+                                            }
+                                        }),
                                     }
                                 })
-                                return question
-                            })
-                            const formatQuestions = updatedQuestion.map((item) => {
-                                return {
-                                    name: item.quest,
-                                    imageUrl: item.image,
-                                    answers: item.ans.map((ans) => {
-                                        return {
-                                            name: ans.name,
-                                            isCorrectAnswer: ans.isCorrect,
-                                        }
-                                    }),
-                                }
-                            })
 
-                            const studySet = {
-                                name: title,
-                                userId: +userId,
-                                gradeId: classLevel.value,
-                                subjectId: subject.value,
-                                classId: null,
-                                isPublic: true,
-                                questions: formatQuestions,
+                                const studySet = {
+                                    name: title,
+                                    userId: +userId,
+                                    gradeId: classLevel.value,
+                                    subjectId: subject.value,
+                                    classId: null,
+                                    isPublic: true,
+                                    questions: formatQuestions,
+                                }
+                                createStudySet(studySet).then((res) => {
+                                    const id = res.data.data
+                                    if (state) {
+                                        const drafts = LocalStorageUtils.getItem('create')
+                                        const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
+                                        isSubmitSuccessfully.current = true
+
+                                        LocalStorageUtils.setItem('create', {
+                                            path: '/create',
+                                            studySet: updateDrafts,
+                                        })
+                                    }
+                                    history.replace(`/study-sets/${id}`)
+                                })
                             }
-                            createStudySet(studySet).then((res) => {
-                                const id = res.data.data
-                                if (state) {
-                                    const drafts = LocalStorageUtils.getItem('create')
-                                    const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
-                                    isSubmitSuccessfully.current = true
-
-                                    LocalStorageUtils.setItem('create', {
-                                        path: '/create',
-                                        studySet: updateDrafts,
-                                    })
-                                }
-                                history.replace(`/study-sets/${id}`)
-                            })
+                        })
+                    }
+                )
+            })
+        } else {
+            const formatQuestions = questions.map((item) => {
+                return {
+                    name: item.quest,
+                    answers: item.ans.map((ans) => {
+                        return {
+                            name: ans.name,
+                            isCorrectAnswer: ans.isCorrect,
                         }
+                    }),
+                }
+            })
+            const studySet = {
+                name: title,
+                userId: +userId,
+                gradeId: classLevel.value,
+                subjectId: subject.value,
+                classId: null,
+                isPublic: true,
+                questions: formatQuestions,
+            }
+            createStudySet(studySet).then((res) => {
+                const id = res.data.data
+                if (state) {
+                    const drafts = LocalStorageUtils.getItem('create')
+                    const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
+                    isSubmitSuccessfully.current = true
+
+                    LocalStorageUtils.setItem('create', {
+                        path: '/create',
+                        studySet: updateDrafts,
                     })
                 }
-            )
-        })
+                history.replace(`/study-sets/${id}`)
+            })
+        }
     }
 
     const saveDraft = () => {
@@ -345,14 +381,12 @@ const CreateStudySet = () => {
                     switch (modalMode) {
                         case 'create':
                             return (
-                                openModal && (
-                                    <Modal
-                                        onClose={closeModalHandler}
-                                        submitQuestionHandler={mutateQuestionHandler}
-                                        open={openModal}
-                                        openId={openId}
-                                    />
-                                )
+                                <Modal
+                                    onClose={closeModalHandler}
+                                    submitQuestionHandler={mutateQuestionHandler}
+                                    open={openModal}
+                                    openId={openId}
+                                />
                             )
                         case 'edit':
                             return (

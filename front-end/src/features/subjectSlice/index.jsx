@@ -4,6 +4,7 @@ const initialState = {
     secondarySubjects: [],
     highSchoolSubjects: [],
     universitySubjects: [],
+    all: [],
 }
 
 const subjectSlice = createSlice({
@@ -20,6 +21,7 @@ const subjectSlice = createSlice({
                 } else if (formatSubject.value > 7) {
                     state.universitySubjects.push(formatSubject)
                 }
+                state.all.push(formatSubject)
             })
             state.secondarySubjects.pop()
         },
