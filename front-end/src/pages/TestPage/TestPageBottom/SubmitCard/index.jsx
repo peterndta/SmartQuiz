@@ -1,12 +1,15 @@
-import { memo, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 
 import Countdown, { zeroPad } from 'react-countdown'
+import { useHistory, useParams } from 'react-router-dom'
 
 import { Box, CardContent, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 import CardLayout from '~/components/CardLayout'
+import ProgressTesting from '~/components/ProgressTesting'
 
 import { AppStyles } from '~/constants/styles'
+import { formatTime } from '~/utils/Math'
 
 const CardLayoutStyle = {
     borderRadius: 3,
@@ -22,6 +25,10 @@ const ButtonStyle1 = {
     },
     height: 64,
     minWidth: 235,
+    '&:disabled': {
+        color: AppStyles.colors['#FFFFFF'],
+        borderColor: 'white',
+    },
 }
 const ButtonStyle2 = {
     color: AppStyles.colors['#004DFF'],
@@ -35,17 +42,22 @@ const ButtonStyle2 = {
 
 const minuteGenerator = (time) => Date.now() + time * 60 * 1000
 
-const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time }) => {
+const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time, correctAns, isSubmit }) => {
     const [isPaused, setIsPaused] = useState(false)
     const countdownRef = useRef(null)
+    const [timePassed, setTimePassed] = useState({ hours: 0, minutes: 0, seconds: 0 })
+    const [open, setOpen] = useState(false)
+    const history = useHistory()
+    const { id } = useParams()
 
-    const [countDown, setCountDown] = useState(minuteGenerator(time))
+    const countDown = useRef(minuteGenerator(time))
 
     const setRef = (countdown) => {
         if (countdown) {
             countdownRef.current = countdown.getApi()
         }
     }
+    const handleClose = () => setOpen(false)
 
     const handleStartClick = () => {
         setIsPaused(false)
@@ -57,66 +69,114 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time }) => {
         countdownRef.current && countdownRef.current.pause()
     }
 
-    const handleComplete = () => {
-        setCountDown(0)
+    const handleAutoComplete = () => {
         handleSubmit()
+        setOpen(true)
     }
 
     const submitHandler = () => {
-        handleSubmit()
         countdownRef.current && countdownRef.current.pause()
+        handleSubmit()
+        setOpen(true)
     }
 
+    const leftTime = Math.floor((minuteGenerator(time) - countDown.current) / 1000)
+
+    const percentage = (correctAns * 100) / 10
+
+    useEffect(() => {
+        if (isSubmit) {
+            setTimePassed(formatTime(leftTime))
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSubmit])
+
     return (
-        <CardLayout style={CardLayoutStyle}>
-            <CardContent>
-                <Box display="flex" alignItems="center">
-                    <Typography sx={{ color: 'white', fontSize: 20 }}>Thời gian</Typography>
-                    <Countdown
-                        date={countDown}
-                        intervalDelay={0}
-                        precision={3}
-                        renderer={(props) => (
-                            <Typography sx={{ ml: 2, color: AppStyles.colors['#FFAF00'], fontSize: 36 }}>
-                                {zeroPad(props.hours)}:{zeroPad(props.minutes)}:{zeroPad(props.seconds)}
-                            </Typography>
-                        )}
-                        ref={setRef}
-                        onComplete={handleComplete}
-                    />
-                </Box>
-                <Box display="flex" alignItems="center" mt={1}>
-                    <Typography sx={{ color: 'white', fontSize: 20 }}>Đã trả lời</Typography>
+        <React.Fragment>
+            <Box display="flex" justifyContent="flex-end" mb={3}>
+                <ButtonCompo
+                    onClick={() => history.push(`/study-sets/${id}`)}
+                    style={{ backgroundColor: AppStyles.colors['#004DFF'] }}
+                >
+                    Trở về học phần
+                </ButtonCompo>
+            </Box>
+            <CardLayout style={CardLayoutStyle}>
+                <CardContent>
                     <Box display="flex" alignItems="center">
-                        <Typography sx={{ ml: 2, color: AppStyles.colors['#FFAF00'], fontSize: 36 }}>
-                            {selectedLength}
-                        </Typography>
-                        <Typography sx={{ color: 'white', fontSize: 36 }}>/{questionLength}</Typography>
+                        <Typography sx={{ color: 'white', fontSize: 20 }}>Thời gian</Typography>
+                        <Countdown
+                            date={countDown.current}
+                            intervalDelay={0}
+                            precision={3}
+                            renderer={(props) => (
+                                <Typography sx={{ ml: 2, color: AppStyles.colors['#FFAF00'], fontSize: 36 }}>
+                                    {zeroPad(props.hours)}:{zeroPad(props.minutes)}:{zeroPad(props.seconds)}
+                                </Typography>
+                            )}
+                            ref={setRef}
+                            onComplete={handleAutoComplete}
+                        />
                     </Box>
-                </Box>
-                <Box display="flex" justifyContent="space-between" mt={3.5}>
-                    {isPaused
-                        ? countDown !== 0 && (
-                              <ButtonCompo variant="outlined" style={ButtonStyle1} onClick={handleStartClick}>
-                                  Tiếp tục
-                              </ButtonCompo>
-                          )
-                        : countDown !== 0 && (
-                              <ButtonCompo variant="outlined" style={ButtonStyle1} onClick={handlePauseClick}>
-                                  Tạm dừng
-                              </ButtonCompo>
-                          )}
-                    <ButtonCompo
-                        variant="contained"
-                        style={ButtonStyle2}
-                        onClick={submitHandler}
-                        fullWidth={countDown === 0}
-                    >
-                        Nộp bài
-                    </ButtonCompo>
-                </Box>
-            </CardContent>
-        </CardLayout>
+                    <Box display="flex" alignItems="center" mt={1}>
+                        <Typography sx={{ color: 'white', fontSize: 20 }}>Đã trả lời</Typography>
+                        <Box display="flex" alignItems="center">
+                            <Typography sx={{ ml: 2, color: AppStyles.colors['#FFAF00'], fontSize: 36 }}>
+                                {selectedLength}
+                            </Typography>
+                            <Typography sx={{ color: 'white', fontSize: 36 }}>/{questionLength}</Typography>
+                        </Box>
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" mt={3.5}>
+                        {isPaused
+                            ? countDown !== 0 && (
+                                  <ButtonCompo variant="outlined" style={ButtonStyle1} onClick={handleStartClick}>
+                                      Tiếp tục
+                                  </ButtonCompo>
+                              )
+                            : countDown !== 0 && (
+                                  <ButtonCompo
+                                      variant="outlined"
+                                      style={ButtonStyle1}
+                                      onClick={handlePauseClick}
+                                      disable={isSubmit}
+                                  >
+                                      Tạm dừng
+                                  </ButtonCompo>
+                              )}
+                        {!isSubmit ? (
+                            <ButtonCompo
+                                variant="contained"
+                                style={ButtonStyle2}
+                                onClick={submitHandler}
+                                fullWidth={countDown === 0}
+                            >
+                                Nộp bài
+                            </ButtonCompo>
+                        ) : (
+                            <ButtonCompo
+                                variant="contained"
+                                style={ButtonStyle2}
+                                onClick={() => setOpen(true)}
+                                fullWidth={countDown === 0}
+                            >
+                                Xem kết quả
+                            </ButtonCompo>
+                        )}
+                    </Box>
+                </CardContent>
+            </CardLayout>
+            {open && (
+                <ProgressTesting
+                    open={open}
+                    handleClose={handleClose}
+                    rightQuestion={correctAns}
+                    maxQuestion={questionLength}
+                    percentage={percentage}
+                    timeLeft={timePassed}
+                />
+            )}
+        </React.Fragment>
     )
 }
 

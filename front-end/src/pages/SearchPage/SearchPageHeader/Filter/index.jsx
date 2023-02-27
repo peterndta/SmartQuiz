@@ -30,8 +30,16 @@ const Filter = ({ title, isRequired, onChange, value, data, isDisable, typeFilte
             if (value?.value) route += `&subjectid=${value?.value}`
             if (gradeid) route += `&gradeid=${gradeid}`
         } else if (typeFilter === 'grade') {
-            if (subjectid) route += `&subjectid=${subjectid}`
-            if (value?.value) route += `&gradeid=${value?.value}`
+            if (
+                (value?.value <= 2 && +subjectid === 7) ||
+                (value?.value < 9 && +subjectid >= 11) ||
+                (value?.value === 9 && +subjectid < 11)
+            ) {
+                route += `&gradeid=${value?.value}`
+            } else {
+                if (subjectid) route += `&subjectid=${subjectid}`
+                if (value?.value) route += `&gradeid=${value?.value}`
+            }
         }
 
         if (pageNumber) route += `&pageNumber=${pageNumber}`

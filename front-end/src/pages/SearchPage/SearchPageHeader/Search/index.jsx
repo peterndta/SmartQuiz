@@ -95,7 +95,7 @@ const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight }) => {
                 inputProps={{ 'aria-label': 'search' }}
                 onChange={searchChangeHandler}
                 onKeyDown={searchSubmitHandler}
-                value={searchValue}
+                value={searchValue ?? ''}
             />
             <SearchIconWrapper>
                 <SearchIcon sx={{ color: AppStyles.colors['#185CFF'] }} />
