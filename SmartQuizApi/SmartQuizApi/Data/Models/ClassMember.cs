@@ -5,9 +5,9 @@ namespace SmartQuizApi.Data.Models;
 
 public partial class ClassMember
 {
-    public int ClassId { get; set; }
+    public string ClassId { get; set; } = null!;
 
-    public int MemberId { get; set; }
+    public int UserId { get; set; }
 
     public DateTime CreateAt { get; set; }
 
@@ -15,5 +15,5 @@ public partial class ClassMember
 
     public virtual Class Class { get; set; } = null!;
 
-    public virtual User Member { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }

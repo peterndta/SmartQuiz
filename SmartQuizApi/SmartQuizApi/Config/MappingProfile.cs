@@ -1,6 +1,7 @@
 ﻿    using AutoMapper;
 using SmartQuizApi.Data.DTOs.AnswerDTOs;
 using SmartQuizApi.Data.DTOs.BiilDTOs;
+using SmartQuizApi.Data.DTOs.ClassDTOs;
 using SmartQuizApi.Data.DTOs.GradeDTOs;
 using SmartQuizApi.Data.DTOs.QuestionDTOs;
 using SmartQuizApi.Data.DTOs.SchoolDTOs;
@@ -37,6 +38,11 @@ namespace SmartQuizApi.Config
             CreateMap<CreateBill, Bill>();
             CreateMap<User, UserInfoDTO>().ForMember(des => des.GradeName, opt => opt.MapFrom(src => src.Grade.Name));
             CreateMap<CreateUserInfor, User>();
+            CreateMap<CreateClassDTO, Class>();
+            CreateMap<EditClassDTO, Class>().ForMember(des => des.Id, opt => opt.Ignore());
+            CreateMap<Class, GetClass>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name));
+            CreateMap<ClassMember, GetClassMember>().ForMember(des => des.MemberName, opt => opt.MapFrom(src => src.User.Name))
+                                                    .ForMember(des => des.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl));
         }
     }
 }

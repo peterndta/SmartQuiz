@@ -13,5 +13,7 @@ namespace SmartQuizApi.Data.IRepositories
         Task<List<StudySet>> GetStudySetByUserIdAsync(int userId);
         Task<List<StudySet>> GetAllStudySetsAsync(string sortType);
         Task<List<StudySet>> GetRecommendStudySetAsync(List<int> subjectsOfGradeId, int amount);
+        int GetTotalStudySet();
+        Task<List<StudySet>> FilterStudySetByNameAsync(string? name, string sortType, string classId);
     }
 }

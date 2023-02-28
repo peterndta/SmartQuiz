@@ -10,6 +10,8 @@ namespace SmartQuizApi.Data.DTOs.QuestionDTOs
 
         public bool MultipleChoice { get; set; }
 
+        public string? ImageUrl { get; set; }
+
         public List<GetAnswerDTO>? Answers { get; set; }
     }
 }

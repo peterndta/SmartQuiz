@@ -39,8 +39,9 @@ const SearchPageBottom = () => {
     const [studySet, setStudySet] = useState({ list: [], pageCount: 1 })
     const [studySetLength, setStudySetLength] = useState()
     const showSnackbar = useSnackbar()
-    // console.log(filterStringGenerator({ studysetname, sorttype, pageNumber, gradeid, subjectid }))
+
     useEffect(() => {
+        setIsFirstRender(true)
         const params = filterStringGenerator({ studysetname, sorttype, pageNumber, gradeid, subjectid })
 
         const controller = new AbortController()
@@ -57,13 +58,14 @@ const SearchPageBottom = () => {
                     totalPages = 1
                 }
                 setStudySet({ list: listStudySet, pageCount: totalPages })
-                setIsFirstRender(false)
             })
             .catch(() => {
                 showSnackbar({
                     severity: 'error',
                     children: 'Something went wrong, please try again later.',
                 })
+            })
+            .finally(() => {
                 setIsFirstRender(false)
             })
 
