@@ -14,6 +14,7 @@
         IBillRepository Bill { get; }
         IFavoriteRepository Favorite { get; }
         IClassRepository Class { get; }
+        IClassMemberRepository ClassMember { get; }
         Task SaveChangesAsync();
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SmartQuizApi.Data.DTOs.AdminDTOs;
 using SmartQuizApi.Data.DTOs.ClassDTOs;
+using SmartQuizApi.Data.DTOs.StudySetDTOs;
 using SmartQuizApi.Data.IRepositories;
 using SmartQuizApi.Data.Models;
 using SmartQuizApi.Services.Utils;
@@ -42,5 +43,91 @@ namespace SmartQuizApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
             }
         }
+
+        [HttpPut]
+        public async Task<IActionResult> EditClass(EditClassDTO editClass)
+        {
+            try
+            {
+                var getClass = _repositoryManager.Class.GetClassById(editClass.Id);
+                if (getClass == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Class id does not exsit"));
+                }
+                _mapper.Map(editClass, getClass);
+                _repositoryManager.Class.UpdateClass(getClass);
+                await _repositoryManager.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Update successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpPost("add-study-set")]
+        public async Task<IActionResult> AddStudySetToClass(AddStudySetToClass addStudySet)
+        {
+            try
+            {
+                var getClass = _repositoryManager.Class.GetClassById(addStudySet.ClassId);
+                if (getClass == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Class id does not exsit"));
+                }
+
+                addStudySet.StudySetId.ForEach(x =>
+                {
+                    var studySet = _repositoryManager.StudySet.GetStudySetById(x);
+                    if (studySet != null)
+                    {
+                        studySet.IsPublic = false;
+                        studySet.ClassId = addStudySet.ClassId;
+                        _repositoryManager.StudySet.UpdateStudySet(studySet);
+                    }
+                });
+                await _repositoryManager.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Add successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpGet("my-class")]
+        public async Task<IActionResult> GetMyClass(int userId)
+        {
+            try
+            {
+                var user = _repositoryManager.User.GetUserById(userId);
+                if (user == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "User id does not exsit"));
+                }
+
+                var listClass = await _repositoryManager.Class.GetClassByUserIdAsync(userId);
+                var listClassDTO = _mapper.Map<List<GetClass>>(listClass);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, listClassDTO, ""));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpGet("class-member")]
+        public async Task<IActionResult> GetClassMember(string classId)
+        {
+            try
+            {
+                var classMember = await _repositoryManager.ClassMember.GetClassMembers(classId);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", ""));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }       
     }
 }

@@ -6,5 +6,8 @@ namespace SmartQuizApi.Data.IRepositories
     {
         int GetTotalClass();
         void CreateClass(Class @class);
+        Class? GetClassById(string id);
+        void UpdateClass(Class @class);
+        Task<List<Class>> GetClassByUserIdAsync(int userId);
     }
 }

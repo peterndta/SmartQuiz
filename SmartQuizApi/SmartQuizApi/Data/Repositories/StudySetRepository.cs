@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.Table.PivotTable;
 using SmartQuizApi.Data.IRepositories;
 using SmartQuizApi.Data.Models;
 using SmartQuizApi.Services.Commons;
@@ -25,10 +26,24 @@ namespace SmartQuizApi.Data.Repositories
         public async Task<List<StudySet>> FilterStudySetAsync(string? name, List<int> listId, string sortType)
         {
             var result = await GetByCondition(x => (name == null || x.Name.Contains(name))
-                                                && (listId.Count == 0 || listId.Contains(x.SubjectsOfGradeId)))
-                                                                                .OrderByDescending(x => x.CreateAt)
-                                                                                .Include(x => x.User)
-                                                                                .Include(x => x.Class).ToListAsync();
+                                                && (listId.Count == 0 || listId.Contains(x.SubjectsOfGradeId))
+                                                && x.IsPublic == true).OrderByDescending(x => x.CreateAt)
+                                                                    .Include(x => x.User)
+                                                                    .Include(x => x.Class).ToListAsync();
+            if (sortType == SortTypes.Oldest)
+            {
+                result = result.OrderBy(x => x.CreateAt).ToList();
+            }
+            return result;
+        }
+
+        public async Task<List<StudySet>> FilterStudySetByNameAsync(string? name, string sortType, string classId)
+        {
+            var result = await GetByCondition(x => x.ClassId.Equals(classId)
+                                                && name == null || x.Name.Contains(name)).Include(x => x.User)
+                                                                                        .Include(x => x.SubjectsOfGrade)
+                                                                                        .Include(x => x.Class)
+                                                                                        .OrderByDescending(x => x.CreateAt).ToListAsync();
             if (sortType == SortTypes.Oldest)
             {
                 result = result.OrderBy(x => x.CreateAt).ToList();
@@ -38,10 +53,10 @@ namespace SmartQuizApi.Data.Repositories
 
         public async Task<List<StudySet>> GetAllStudySetsAsync(string sortType)
         {
-            var result = await GetAll().Include(x => x.User)
-                                        .Include(x => x.SubjectsOfGrade)
-                                        .Include(x => x.Class)
-                                        .OrderByDescending(x => x.CreateAt).ToListAsync();
+            var result = await GetByCondition(x => x.IsPublic == true).Include(x => x.User)
+                                                                    .Include(x => x.SubjectsOfGrade)
+                                                                    .Include(x => x.Class)
+                                                                    .OrderByDescending(x => x.CreateAt).ToListAsync();
             if (sortType == SortTypes.Oldest)
             {
                 result = result.OrderBy(x => x.CreateAt).ToList();
@@ -51,14 +66,16 @@ namespace SmartQuizApi.Data.Repositories
 
         public async Task<List<StudySet>> GetListStudySetsAsync(List<string> listStudySetId)
         {
-            return await GetByCondition(x => listStudySetId.Contains(x.Id)).Include(x => x.User)
-                                                                            .Include(x => x.SubjectsOfGrade)
-                                                                            .Include(x => x.Class).ToListAsync();
+            return await GetByCondition(x => listStudySetId.Contains(x.Id)
+                                        && x.IsPublic == true).Include(x => x.User)
+                                                            .Include(x => x.SubjectsOfGrade)
+                                                            .Include(x => x.Class).ToListAsync();
         }
 
         public async Task<List<StudySet>> GetRecommendStudySetAsync(List<int> subjectsOfGradeId, int amount)
         {
-            return await GetByCondition(x => subjectsOfGradeId.Contains(x.SubjectsOfGradeId)).Take(amount)
+            return await GetByCondition(x => subjectsOfGradeId.Contains(x.SubjectsOfGradeId) && x.IsPublic == true)
+                                                            .Take(amount)
                                                             .Include(x => x.User)
                                                             .Include(x => x.SubjectsOfGrade)
                                                             .Include(x => x.Class).ToListAsync(); 

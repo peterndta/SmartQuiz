@@ -303,6 +303,24 @@ namespace SmartQuizApi.Controllers
             }
         }
 
+        [HttpGet("class/{id}")]
+        public async Task<IActionResult> ClassDetail(string id, [FromQuery] string? name, [FromQuery] PaginationParams @params, [FromQuery] string sorttype)
+        {
+            try
+            {
+                var studySetsList = await _repositoryManager.StudySet.FilterStudySetByNameAsync(name, sorttype, id);
+                var studySetsListDTO = _mapper.Map<List<GetStudySetsListDTO>>(studySetsList);
+                var result = PaginatedList<GetStudySetsListDTO>.Create(studySetsListDTO, @params.pageNumber, @params.pageSize);
+
+                result = (PaginatedList<GetStudySetsListDTO>)GetInfoForStudyList(result);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, result, "", result.Meta));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
         private List<GetStudySetsListDTO> GetInfoForStudyList(List<GetStudySetsListDTO> list)
         {
             list.ForEach(x =>
