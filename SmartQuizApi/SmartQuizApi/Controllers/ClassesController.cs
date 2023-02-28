@@ -121,13 +121,52 @@ namespace SmartQuizApi.Controllers
         {
             try
             {
+                var getClass = _repositoryManager.Class.GetClassById(classId);
+                if (getClass == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Class id does not exsit"));
+                }
+
                 var classMember = await _repositoryManager.ClassMember.GetClassMembers(classId);
-                return StatusCode(StatusCodes.Status200OK, new Response(200, "", ""));
+                var classMemberDTO = _mapper.Map<List<GetClassMember>>(classMember);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, classMemberDTO, ""));
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
             }
-        }       
+        }
+
+        [HttpPost("join")]
+        public IActionResult Join(string classId, int userId)
+        {
+            try
+            {
+                var getClass = _repositoryManager.Class.GetClassById(classId);
+                if (getClass == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Class id does not exsit"));
+                }
+
+                var user = _repositoryManager.User.GetUserById(userId);
+                if (user == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "User id does not exsit"));
+                }
+
+                _repositoryManager.ClassMember.CreateClassMember(new ClassMember
+                {
+                    UserId = userId,
+                    ClassId = classId,
+                    CreateAt = DateTime.Now,
+                    UpdateAt = DateTime.Now,
+                });
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Join successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
     }
 }

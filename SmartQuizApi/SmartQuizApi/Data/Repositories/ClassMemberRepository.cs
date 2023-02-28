@@ -10,9 +10,14 @@ namespace SmartQuizApi.Data.Repositories
         {
         }
 
+        public void CreateClassMember(ClassMember classMember)
+        {
+            Create(classMember);
+        }
+
         public async Task<List<ClassMember>> GetClassMembers(string classId)
         {
-            return await GetByCondition(x => x.ClassId.Equals(classId)).Include(x => x.Member).ToListAsync();
+            return await GetByCondition(x => x.ClassId.Equals(classId)).Include(x => x.User).ToListAsync();
         }
     }
 }

@@ -5,5 +5,6 @@ namespace SmartQuizApi.Data.IRepositories
     public interface IClassMemberRepository
     {
         Task<List<ClassMember>> GetClassMembers(string classId);
+        void CreateClassMember(ClassMember classMember);
     }
 }

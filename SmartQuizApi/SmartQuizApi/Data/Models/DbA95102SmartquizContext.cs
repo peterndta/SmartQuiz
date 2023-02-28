@@ -124,14 +124,14 @@ public partial class DbA95102SmartquizContext : DbContext
 
         modelBuilder.Entity<ClassMember>(entity =>
         {
-            entity.HasKey(e => new { e.ClassId, e.MemberId });
+            entity.HasKey(e => new { e.ClassId, e.UserId });
 
             entity.ToTable("ClassMember");
 
             entity.Property(e => e.ClassId)
                 .HasMaxLength(50)
                 .HasColumnName("Class_id");
-            entity.Property(e => e.MemberId).HasColumnName("Member_id");
+            entity.Property(e => e.UserId).HasColumnName("User_id");
             entity.Property(e => e.CreateAt)
                 .HasColumnType("date")
                 .HasColumnName("Create_at");
@@ -144,8 +144,8 @@ public partial class DbA95102SmartquizContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ClassMember_Classes");
 
-            entity.HasOne(d => d.Member).WithMany(p => p.ClassMembers)
-                .HasForeignKey(d => d.MemberId)
+            entity.HasOne(d => d.User).WithMany(p => p.ClassMembers)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ClassMember_Users");
         });
