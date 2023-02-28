@@ -7,6 +7,7 @@ import { Box, Grid, Skeleton, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 import EmptyStudySets from '~/components/EmptyStudySets'
 import QuestionList from '~/components/QuestionList'
+import SideBanner from '~/components/SideBanner'
 
 import ListLibStudySets from './ListLibStudySets'
 
@@ -135,7 +136,7 @@ const StudySets = ({ getMyStudySets }) => {
         <Grid
             container
             spacing={3}
-            columnSpacing={4}
+            columnSpacing={5}
             sx={{
                 backgroundColor: '#eef2ff',
                 width: '80%',
@@ -234,7 +235,9 @@ const StudySets = ({ getMyStudySets }) => {
                     />
                 </Grid>
             )}
-            <Grid item xs={8} md={8} lg={2}></Grid>
+            <Grid item xs={8} md={8} lg={2}>
+                <SideBanner />
+            </Grid>
         </Grid>
     )
 }
