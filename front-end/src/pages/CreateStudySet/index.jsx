@@ -261,6 +261,7 @@ const CreateStudySet = () => {
             const formatQuestions = questions.map((item) => {
                 return {
                     name: item.quest,
+                    imageUrl: null,
                     answers: item.ans.map((ans) => {
                         return {
                             name: ans.name,
