@@ -6,6 +6,7 @@ using SmartQuizApi.Data.DTOs.UserDTO;
 using SmartQuizApi.Data.IRepositories;
 using SmartQuizApi.Data.Models;
 using SmartQuizApi.Services.Utils;
+using System.Collections;
 
 namespace SmartQuizApi.Controllers
 {
@@ -125,6 +126,59 @@ namespace SmartQuizApi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
             }
-        } 
+        }
+
+        [HttpGet]
+        [Route("premium")]
+        public IActionResult GetPagedPremiumUsers(PaginationParams para)
+        {
+            try
+            {
+                var premiumUsers = _repositoryManager.User.GetAllPremiumUsers();
+                switch (para.sortOption)
+                {
+                    case "oldest":
+                        premiumUsers = premiumUsers.OrderBy(u => u.Id).ToList();
+                        break;
+                    case "newest":
+                        premiumUsers = premiumUsers.OrderByDescending(u => u.Id).ToList();
+                        break;
+                }
+                var meta = new PaginationMeta()
+                {
+                    CurrentPage = para.pageNumber,
+                    PageSize = para.pageSize,
+                    TotalPages = premiumUsers.Count() / para.pageSize + 1,
+                };
+                premiumUsers = premiumUsers.Skip(para.pageSize * (para.pageNumber - 1))
+                                .Take(para.pageSize).ToList();
+                
+                
+
+                var premiumUsersDTO = new ArrayList();
+                foreach (var user in premiumUsers)
+                {
+                    var dto = new PremiumUserDTO();
+                    dto.Email = user.Email;
+                    dto.Name = user.Name;
+                    //extract bill
+                    var bill = user.Bills.Where(b => DateTime.Compare(b.EffectiveDate, DateTime.Now) <= 0 && DateTime.Compare(DateTime.Now, b.ExpirationDate) <= 0).First();
+                    dto.BillId = bill.Id;
+                    dto.ExpiredDate = bill.ExpirationDate;
+                    dto.EffectiveDate = bill.EffectiveDate;
+                    dto.Subcription = bill.Subcription;
+                    premiumUsersDTO.Add(dto);
+                }
+                return StatusCode(StatusCodes.Status200OK, new Response(200, premiumUsersDTO, "", meta));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+
+            }
+
+        }
+
+
     }
 }

@@ -10,7 +10,7 @@ namespace SmartQuizApi.Services.Utils
         public bool isSuccess { get; set; }
         public PaginationMeta meta { get; set; }
 
-        public Response(int statusCode, [Optional] object data, [Optional] string message, [Optional] PaginationMeta meta)
+        public Response(int statusCode, [Optional] object? data, [Optional] string message, [Optional] PaginationMeta meta)
         {
             this.statusCode = statusCode;
             this.isSuccess = true;

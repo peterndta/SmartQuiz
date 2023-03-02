@@ -9,5 +9,8 @@ namespace SmartQuizApi.Data.IRepositories
         User? GetUserById(int id);
         void UpdateUser(User user);
         int GetTotalUser();
+
+        IList<User> GetAllPremiumUsers();
+
     }
 }
