@@ -12,7 +12,6 @@ const useQuestion = () => {
         if (isAuth) return post({ endpoint: '/api/questions', body: question })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 
@@ -22,7 +21,6 @@ const useQuestion = () => {
         if (isAuth) return put({ endpoint: '/api/questions', body: question })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 
@@ -32,7 +30,6 @@ const useQuestion = () => {
         if (isAuth) return remove({ endpoint: `/api/questions/${id}` })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
     const importQuestion = (formData) => {
@@ -48,7 +45,6 @@ const useQuestion = () => {
             })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 

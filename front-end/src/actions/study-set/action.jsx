@@ -24,7 +24,6 @@ const useStudySet = () => {
             })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 
@@ -37,7 +36,6 @@ const useStudySet = () => {
             })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 
@@ -47,7 +45,6 @@ const useStudySet = () => {
         if (isAuth) return post({ endpoint: '/api/studySets', body: studySet })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 
@@ -57,7 +54,6 @@ const useStudySet = () => {
         if (isAuth) return put({ endpoint: '/api/studySets', body: studySet })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 
@@ -72,7 +68,6 @@ const useStudySet = () => {
             })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 
@@ -87,7 +82,6 @@ const useStudySet = () => {
             })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 
@@ -102,7 +96,6 @@ const useStudySet = () => {
             })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
 

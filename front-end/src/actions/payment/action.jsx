@@ -11,7 +11,6 @@ const usePayment = () => {
         if (isAuth) return post({ endpoint: '/api/Bills', body: info })
         else {
             dispatch(logout())
-            window.location.reload(false)
         }
     }
     return { createBill }
