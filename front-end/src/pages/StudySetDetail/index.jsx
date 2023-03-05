@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 
 import { useParams } from 'react-router-dom'
 
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import QuestionList from '~/components/QuestionList'
+import SideBanner from '~/components/SideBanner'
 
 import Loading from '../Loading'
 import DetailHeader from './DetailHeader'
@@ -45,11 +46,11 @@ const StudySetDetail = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
-        <Box maxWidth={850} sx={{ m: '0 auto', mt: 5, mb: 9 }}>
+        <Grid container columnSpacing={6} maxWidth={1080} sx={{ m: '0 auto', mt: 5, mb: 9 }}>
             {isFirstRender ? (
                 <Loading />
             ) : (
-                <React.Fragment>
+                <Grid item xs={10} md={10} lg={10}>
                     <DetailHeader
                         info={studySetDetail}
                         id={id}
@@ -59,9 +60,12 @@ const StudySetDetail = () => {
                     <Box mt={3}>
                         <QuestionList questions={studySetDetail?.questions} />
                     </Box>
-                </React.Fragment>
+                </Grid>
             )}
-        </Box>
+            <Grid item xs={2} md={2} lg={2}>
+                <SideBanner style={{ position: 'fixed', width: 305, height: 610 }} />
+            </Grid>
+        </Grid>
     )
 }
 

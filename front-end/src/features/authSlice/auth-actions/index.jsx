@@ -50,6 +50,7 @@ const useAuthAction = () => {
                         role: user.role,
                         exp: user.exp,
                         userId: +user.userId,
+                        premium: user.premium,
                     })
                 )
             } else {
@@ -65,6 +66,7 @@ const useAuthAction = () => {
                     role: '',
                     exp: 0,
                     userId: null,
+                    premium: 'False',
                 })
             )
         }
