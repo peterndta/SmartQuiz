@@ -1,6 +1,6 @@
 ﻿namespace SmartQuizApi.Data.DTOs.ClassDTOs
 {
-    public class GetClass
+    public class GetClassDTO
     {
         public string Id { get; set; }
 
@@ -13,7 +13,5 @@
         public DateTime UpdateAt { get; set; }
 
         public string Description { get; set; }
-
-        public string UserName { get; set; }
     }
 }
