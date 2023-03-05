@@ -1,7 +1,10 @@
+import { logout } from '~/features/authSlice'
+import { useAppDispatch } from '~/hooks/redux-hooks'
 import authMiddleware from '~/middleware/auth-middleware'
 import { get, post, put, remove } from '~/utils/ApiCaller'
 
 const useStudySet = () => {
+    const dispatch = useAppDispatch()
     const getStudySetList = (filters, signal) => get({ endpoint: `/api/StudySets/filter${filters}`, signal })
 
     const getStudySet = (id, userId, signal) =>
@@ -19,7 +22,10 @@ const useStudySet = () => {
                 signal: signal,
                 params: { userId: userId, pageNumber: pageNumber, pageSize: 4 },
             })
-        else window.location.reload(false)
+        else {
+            dispatch(logout())
+            window.location.reload(false)
+        }
     }
 
     const deleteStudySet = (studySetId) => {
@@ -29,21 +35,30 @@ const useStudySet = () => {
             return remove({
                 endpoint: `/api/StudySets/${studySetId}`,
             })
-        else window.location.reload(false)
+        else {
+            dispatch(logout())
+            window.location.reload(false)
+        }
     }
 
     const createStudySet = (studySet) => {
         const isAuth = authMiddleware()
 
         if (isAuth) return post({ endpoint: '/api/studySets', body: studySet })
-        else window.location.reload(false)
+        else {
+            dispatch(logout())
+            window.location.reload(false)
+        }
     }
 
     const updateStudySet = (studySet) => {
         const isAuth = authMiddleware()
 
         if (isAuth) return put({ endpoint: '/api/studySets', body: studySet })
-        else window.location.reload(false)
+        else {
+            dispatch(logout())
+            window.location.reload(false)
+        }
     }
 
     const getStudySetExam = (id, amount, signal) => {
@@ -55,7 +70,10 @@ const useStudySet = () => {
                 signal: signal,
                 params: { amount: amount },
             })
-        else window.location.reload(false)
+        else {
+            dispatch(logout())
+            window.location.reload(false)
+        }
     }
 
     const getRecentStudySets = (userId, amount, signal) => {
@@ -67,7 +85,10 @@ const useStudySet = () => {
                 signal: signal,
                 params: { userId: userId, amount: amount },
             })
-        else window.location.reload(false)
+        else {
+            dispatch(logout())
+            window.location.reload(false)
+        }
     }
 
     const getRecommendStudySets = (userId, amount, signal) => {
@@ -79,7 +100,10 @@ const useStudySet = () => {
                 signal: signal,
                 params: { userId: userId, amount: amount },
             })
-        else window.location.reload(false)
+        else {
+            dispatch(logout())
+            window.location.reload(false)
+        }
     }
 
     return {
