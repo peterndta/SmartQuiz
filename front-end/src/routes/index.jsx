@@ -9,6 +9,7 @@ import PrivateRoute from './PrivateRoute'
 import PublicRoute from './PublicRoute'
 
 import Loading from '~/pages/Loading'
+import NotFound from '~/pages/Notfound'
 
 const publicRoutes = [
     {
@@ -117,9 +118,11 @@ const RouteList = (
                                 ({ layout, ...route }) =>
                                     layout === 'common' && <PrivateRoute key={route.name} exact={true} {...route} />
                             )}
+                            <Route path="*">
+                                <NotFound />
+                            </Route>
                         </Switch>
                     </Suspense>
-                    {/* <Redirect to="/" /> */}
                 </CommonLayout>
             </Route>
             <Route path="/admin"></Route>
