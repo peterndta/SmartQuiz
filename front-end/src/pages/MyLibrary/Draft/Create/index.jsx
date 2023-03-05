@@ -3,7 +3,7 @@ import React from 'react'
 import { Typography } from '@mui/material'
 import ListDraft from '~/components/ListDraft'
 
-const Create = ({ title, studySets }) => {
+const Create = ({ title, studySets, deleteDraftItem }) => {
     return (
         <React.Fragment>
             <Typography
@@ -19,7 +19,7 @@ const Create = ({ title, studySets }) => {
             >
                 {title}
             </Typography>
-            <ListDraft studySets={studySets} md={4} />
+            <ListDraft studySets={studySets} md={4} deleteDraftItem={deleteDraftItem} />
         </React.Fragment>
     )
 }
