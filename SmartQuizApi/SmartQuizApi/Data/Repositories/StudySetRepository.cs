@@ -100,6 +100,11 @@ namespace SmartQuizApi.Data.Repositories
             return GetAll().Count();
         }
 
+        public int GetTotalStudySetInClass(string classId)
+        {
+            return GetByCondition(x => x.ClassId == classId).Count();
+        }
+
         public void UpdateStudySet(StudySet studySet)
         {
             Update(studySet);

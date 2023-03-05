@@ -66,7 +66,7 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpPost("add-study-set")]
-        public async Task<IActionResult> AddStudySetToClass(AddStudySetToClass addStudySet)
+        public async Task<IActionResult> AddStudySetToClass(AddStudySetToClassDTO addStudySet)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace SmartQuizApi.Controllers
                 }
 
                 var listClass = await _repositoryManager.Class.GetClassByUserIdAsync(userId);
-                var listClassDTO = _mapper.Map<List<GetClass>>(listClass);
+                var listClassDTO = _mapper.Map<List<GetClassDTO>>(listClass);
                 return StatusCode(StatusCodes.Status200OK, new Response(200, listClassDTO, ""));
             }
             catch (Exception ex)
@@ -116,8 +116,8 @@ namespace SmartQuizApi.Controllers
             }
         }
 
-        [HttpGet("class-member")]
-        public async Task<IActionResult> GetClassMember(string classId)
+        [HttpGet("class-detail/{classId}")]
+        public IActionResult GetClassDetail(string classId)
         {
             try
             {
@@ -127,9 +127,10 @@ namespace SmartQuizApi.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Class id does not exsit"));
                 }
 
-                var classMember = await _repositoryManager.ClassMember.GetClassMembers(classId);
-                var classMemberDTO = _mapper.Map<List<GetClassMember>>(classMember);
-                return StatusCode(StatusCodes.Status200OK, new Response(200, classMemberDTO, ""));
+                var classDTO = _mapper.Map<GetClassDetailDTO>(getClass);
+                classDTO.TotalStudySet = _repositoryManager.StudySet.GetTotalStudySetInClass(classId);
+                classDTO.TotalMember = _repositoryManager.ClassMember.GetTotalMember(classId);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, classDTO, ""));
             }
             catch (Exception ex)
             {
@@ -162,6 +163,35 @@ namespace SmartQuizApi.Controllers
                     UpdateAt = DateTime.Now,
                 });
                 return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Join successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpGet("class-member/{classId}")]
+        public async Task<IActionResult> GetClassMember(string classId)
+        {
+            try
+            {
+                var getClass = _repositoryManager.Class.GetClassById(classId);
+                if (getClass == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Class id does not exsit"));
+                }
+
+                var classMemberList = await _repositoryManager.ClassMember.GetClassMembers(classId);
+                var classMemberDTOList = _mapper.Map<List<GetClassMemberDTO>>(classMemberList);
+                classMemberDTOList.Add(new GetClassMemberDTO
+                {
+                    Id = getClass.UserId,
+                    Name = getClass.User.Name,
+                    ImageUrl = getClass.User.ImageUrl,
+                    IsClassOwner= true,
+                });
+
+                return StatusCode(StatusCodes.Status200OK, new Response(200, classMemberDTOList, ""));
             }
             catch (Exception ex)
             {

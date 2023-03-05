@@ -95,7 +95,7 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUserInfo([FromBody] CreateUserInfor createUser)
+        public async Task<IActionResult> CreateUserInfo([FromBody] CreateUserInforDTO createUser)
         {
             try
             {
