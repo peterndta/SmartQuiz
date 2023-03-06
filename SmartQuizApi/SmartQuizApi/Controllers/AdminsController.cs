@@ -25,7 +25,7 @@ namespace SmartQuizApi.Controllers
         {
             try
             {
-                var dashBoard = new Dashboard
+                var dashBoard = new DashboardDTO
                 {
                     TotalUser = _repositoryManager.User.GetTotalUser(),
                     TotalMonthSubcription = _repositoryManager.Bill.GetTotalSubcription(1),

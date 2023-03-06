@@ -19,5 +19,10 @@ namespace SmartQuizApi.Data.Repositories
         {
             return await GetByCondition(x => x.ClassId.Equals(classId)).Include(x => x.User).ToListAsync();
         }
+
+        public int GetTotalMember(string classId)
+        {
+            return GetByCondition(x => x.ClassId == classId).Count();
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace SmartQuizApi.Data.DTOs.BiilDTOs
 {
-    public class CreateBill
+    public class CreateBillDTO
     {
         public DateTime PaymentDate { get; set; }
 

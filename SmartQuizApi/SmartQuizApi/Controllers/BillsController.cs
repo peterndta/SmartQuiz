@@ -23,7 +23,7 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBill(CreateBill createBill)
+        public async Task<IActionResult> CreateBill(CreateBillDTO createBill)
         {
             try
             {

@@ -22,7 +22,8 @@ namespace SmartQuizApi.Config
             CreateMap<StudySet, GetStudySetDetailsDTO>().ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.User.Name));
             CreateMap<Question, GetQuestionDTO>();
             CreateMap<Answer, GetAnswerDTO>();
-            CreateMap<StudySet, GetStudySetsListDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name));
+            CreateMap<StudySet, GetStudySetsListDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name))
+                                                        .ForMember(des => des.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl));
             CreateMap<CreateQuestionDTO, Question>();
             CreateMap<CreateAQuestionDTO, Question>();
             CreateMap<CreateAnwserDTO, Answer>();
@@ -35,14 +36,16 @@ namespace SmartQuizApi.Config
             CreateMap<SubjectsOfGrade, GetStudySetsListDTO>().ForMember(des => des.Id, opt => opt.Ignore())
                                                                 .ForMember(des => des.SubjectName, opt => opt.MapFrom(src => src.Subject.Name))
                                                                 .ForMember(des => des.GradeName, opt => opt.MapFrom(src => src.Grade.Name));
-            CreateMap<CreateBill, Bill>();
+            CreateMap<CreateBillDTO, Bill>();
             CreateMap<User, UserInfoDTO>().ForMember(des => des.GradeName, opt => opt.MapFrom(src => src.Grade.Name));
-            CreateMap<CreateUserInfor, User>();
+            CreateMap<CreateUserInforDTO, User>();
             CreateMap<CreateClassDTO, Class>();
             CreateMap<EditClassDTO, Class>().ForMember(des => des.Id, opt => opt.Ignore());
-            CreateMap<Class, GetClass>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name));
-            CreateMap<ClassMember, GetClassMember>().ForMember(des => des.MemberName, opt => opt.MapFrom(src => src.User.Name))
-                                                    .ForMember(des => des.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl));
+            CreateMap<Class, GetClassDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name));
+            CreateMap<Class, GetClassDetailDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name));
+            CreateMap<ClassMember, GetClassMemberDTO>().ForMember(des => des.Name, opt => opt.MapFrom(src => src.User.Name))
+                                                        .ForMember(des => des.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl))
+                                                        .ForMember(des => des.Id, opt => opt.MapFrom(src => src.UserId));
         }
     }
 }

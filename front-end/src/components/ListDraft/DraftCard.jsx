@@ -1,6 +1,7 @@
 import { useHistory } from 'react-router-dom'
 
-import { Box, CardContent, Grid, Typography } from '@mui/material'
+import { Delete } from '@mui/icons-material'
+import { Box, CardContent, Grid, IconButton, Typography } from '@mui/material'
 
 import CardLayout from '../CardLayout'
 
@@ -14,7 +15,7 @@ const CardLayoutStyle = {
     },
 }
 
-const DraftCard = ({ studySet }) => {
+const DraftCard = ({ studySet, deleteDraftItem }) => {
     const history = useHistory()
 
     return (
@@ -22,7 +23,7 @@ const DraftCard = ({ studySet }) => {
             <CardLayout style={CardLayoutStyle} onClick={() => history.replace(`/create`, studySet)}>
                 <CardContent>
                     <Box display="flex" alignItems="center" justifyContent="space-between">
-                        <Box display="flex" alignItems="center">
+                        <Box display="flex" alignItems="center" justifyContent="space-between" width="1">
                             <Typography
                                 variant="body1"
                                 fontWeight={500}
@@ -39,6 +40,9 @@ const DraftCard = ({ studySet }) => {
                             >
                                 {studySet.title}
                             </Typography>
+                            <IconButton onClick={(event) => deleteDraftItem(event, studySet.id)}>
+                                <Delete />
+                            </IconButton>
                         </Box>
                     </Box>
                     <Box display="flex" mt={1}>

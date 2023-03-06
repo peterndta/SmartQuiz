@@ -17,7 +17,7 @@ namespace SmartQuizApi.Data.Repositories
 
         public Class? GetClassById(string id)
         {
-            return GetByCondition(x => x.Id.Equals(id)).FirstOrDefault();
+            return GetByCondition(x => x.Id.Equals(id)).Include(x => x.User).FirstOrDefault();
         }
 
         public async Task<List<Class>> GetClassByUserIdAsync(int userId)

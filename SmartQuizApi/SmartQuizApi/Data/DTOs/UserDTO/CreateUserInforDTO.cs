@@ -1,6 +1,6 @@
 ﻿namespace SmartQuizApi.Data.DTOs.UserDTO
 {
-    public class CreateUserInfor
+    public class CreateUserInforDTO
     {
         public int Id { get; set; }
 

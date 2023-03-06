@@ -1,6 +1,6 @@
 ﻿namespace SmartQuizApi.Data.DTOs.AdminDTOs
 {
-    public class Dashboard
+    public class DashboardDTO
     {
         public int TotalUser { get; set; }
         public int TotalMonthSubcription { get; set; }

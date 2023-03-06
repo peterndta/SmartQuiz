@@ -35,6 +35,8 @@ public partial class User
 
     public virtual ICollection<History> Histories { get; } = new List<History>();
 
+    public virtual ICollection<StudySetRating> StudySetRatings { get; } = new List<StudySetRating>();
+
     public virtual ICollection<StudySet> StudySets { get; } = new List<StudySet>();
 
     public virtual ICollection<TestResult> TestResults { get; } = new List<TestResult>();

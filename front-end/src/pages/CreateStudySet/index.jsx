@@ -240,10 +240,10 @@ const CreateStudySet = () => {
                                 }
                                 createStudySet(studySet).then((res) => {
                                     const id = res.data.data
+                                    isSubmitSuccessfully.current = true
                                     if (state) {
                                         const drafts = LocalStorageUtils.getItem('create')
                                         const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
-                                        isSubmitSuccessfully.current = true
 
                                         LocalStorageUtils.setItem('create', {
                                             path: '/create',
@@ -281,10 +281,10 @@ const CreateStudySet = () => {
             }
             createStudySet(studySet).then((res) => {
                 const id = res.data.data
+                isSubmitSuccessfully.current = true
                 if (state) {
                     const drafts = LocalStorageUtils.getItem('create')
                     const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
-                    isSubmitSuccessfully.current = true
 
                     LocalStorageUtils.setItem('create', {
                         path: '/create',
