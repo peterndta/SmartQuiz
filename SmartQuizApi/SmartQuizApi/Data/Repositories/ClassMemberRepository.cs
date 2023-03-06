@@ -15,6 +15,16 @@ namespace SmartQuizApi.Data.Repositories
             Create(classMember);
         }
 
+        public void DeleteClassMember(ClassMember classMember)
+        {
+            Delete(classMember);
+        }
+
+        public ClassMember? GetClassMember(string classId, int userId)
+        {
+            return GetByCondition(x => x.ClassId.Equals(classId) && x.UserId == userId).FirstOrDefault();
+        }
+
         public async Task<List<ClassMember>> GetClassMembers(string classId)
         {
             return await GetByCondition(x => x.ClassId.Equals(classId)).Include(x => x.User).ToListAsync();

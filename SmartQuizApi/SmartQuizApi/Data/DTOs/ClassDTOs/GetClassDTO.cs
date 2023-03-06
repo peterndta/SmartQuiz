@@ -11,5 +11,6 @@
         public string Description { get; set; }
         public int TotalStudySet { get; set; }
         public int TotalMember { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

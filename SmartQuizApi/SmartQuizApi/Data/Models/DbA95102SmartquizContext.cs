@@ -113,6 +113,9 @@ public partial class DbA95102SmartquizContext : DbContext
             entity.Property(e => e.CreateAt)
                 .HasColumnType("date")
                 .HasColumnName("Create_at");
+            entity.Property(e => e.JoinCode)
+                .HasMaxLength(50)
+                .HasColumnName("Join_code");
             entity.Property(e => e.UpdateAt)
                 .HasColumnType("date")
                 .HasColumnName("Update_at");

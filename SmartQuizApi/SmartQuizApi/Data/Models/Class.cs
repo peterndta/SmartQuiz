@@ -17,6 +17,8 @@ public partial class Class
 
     public string Description { get; set; } = null!;
 
+    public string JoinCode { get; set; } = null!;
+
     public virtual ICollection<ClassMember> ClassMembers { get; } = new List<ClassMember>();
 
     public virtual ICollection<StudySet> StudySets { get; } = new List<StudySet>();

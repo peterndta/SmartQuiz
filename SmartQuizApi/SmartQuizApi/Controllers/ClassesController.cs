@@ -31,6 +31,7 @@ namespace SmartQuizApi.Controllers
                 newClass.CreateAt = DateTime.Now;
                 newClass.UpdateAt = DateTime.Now;
                 newClass.Id = Guid.NewGuid().ToString();
+                newClass.JoinCode = GenerateJoinCode();
                 _repositoryManager.Class.CreateClass(newClass);
                 await _repositoryManager.SaveChangesAsync();    
                 return StatusCode(StatusCodes.Status200OK, new Response(200, new
@@ -145,7 +146,7 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpPost("join")]
-        public IActionResult Join(string classId, int userId)
+        public async Task<IActionResult> Join(string classId, int userId)
         {
             try
             {
@@ -161,6 +162,16 @@ namespace SmartQuizApi.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "User id does not exsit"));
                 }
 
+                if (userId == getClass.UserId)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "You are owner"));
+                }
+
+                if (_repositoryManager.ClassMember.GetClassMember(classId, userId) != null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Already joined"));
+                }
+
                 _repositoryManager.ClassMember.CreateClassMember(new ClassMember
                 {
                     UserId = userId,
@@ -168,7 +179,55 @@ namespace SmartQuizApi.Controllers
                     CreateAt = DateTime.Now,
                     UpdateAt = DateTime.Now,
                 });
+                await _repositoryManager.SaveChangesAsync();
                 return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Join successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpDelete("leave-class")]
+        public async Task<IActionResult> LeaveClass(string classId, int userId)
+        {
+            try
+            {
+                var classMember = _repositoryManager.ClassMember.GetClassMember(classId, userId);
+                if (classMember == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "You haven't joined yet"));
+                }
+
+                _repositoryManager.ClassMember.DeleteClassMember(classMember);
+                await _repositoryManager.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Leave successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpDelete("remove-class")]
+        public async Task<IActionResult> RemoveClass(string classId, int userId)
+        {
+            try
+            {
+                var @class = _repositoryManager.Class.GetClassById(classId);
+                if (@class == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Class id is invalid"));
+                }
+
+                if (@class.UserId != userId)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "You do not have permisstion"));
+                }
+
+                _repositoryManager.Class.DeleteClass(@class);
+                await _repositoryManager.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Delete successfully"));
             }
             catch (Exception ex)
             {
@@ -203,6 +262,25 @@ namespace SmartQuizApi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
             }
+        }
+
+        private string GenerateJoinCode()
+        {
+            const string chars = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            string result;
+            while (true)
+            {
+                result = new string(
+                Enumerable.Repeat(chars, 8)
+                    .Select(s => s[random.Next(s.Length)])
+                    .ToArray());
+                if (_repositoryManager.Class.GetCodeJoin(result) == false)
+                {
+                    break;
+                }
+            }           
+            return result;
         }
     }
 }
