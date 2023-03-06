@@ -59,7 +59,6 @@ const MyInfo = () => {
 
         getUserInfo(userId, signal)
             .then((res) => {
-                console.log(res)
                 const user = res.data.data
                 const level = user.gradeId ? { value: user.gradeId, label: user.gradeName } : { ...initialValue }
                 setUser(user)
