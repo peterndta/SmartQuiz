@@ -108,6 +108,12 @@ namespace SmartQuizApi.Controllers
 
                 var listClass = await _repositoryManager.Class.GetClassByUserIdAsync(userId);
                 var listClassDTO = _mapper.Map<List<GetClassDTO>>(listClass);
+                listClassDTO.ForEach(x =>
+                {
+                    x.TotalStudySet = _repositoryManager.StudySet.GetTotalStudySetInClass(x.Id);
+                    x.TotalMember = _repositoryManager.ClassMember.GetTotalMember(x.Id);
+                });
+
                 return StatusCode(StatusCodes.Status200OK, new Response(200, listClassDTO, ""));
             }
             catch (Exception ex)
