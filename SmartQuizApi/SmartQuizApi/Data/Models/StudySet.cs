@@ -29,6 +29,8 @@ public partial class StudySet
 
     public virtual ICollection<Question> Questions { get; } = new List<Question>();
 
+    public virtual ICollection<StudySetRating> StudySetRatings { get; } = new List<StudySetRating>();
+
     public virtual SubjectsOfGrade SubjectsOfGrade { get; set; } = null!;
 
     public virtual ICollection<TestResult> TestResults { get; } = new List<TestResult>();

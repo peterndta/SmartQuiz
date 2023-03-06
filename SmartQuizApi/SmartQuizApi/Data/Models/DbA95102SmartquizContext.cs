@@ -35,6 +35,8 @@ public partial class DbA95102SmartquizContext : DbContext
 
     public virtual DbSet<StudySet> StudySets { get; set; }
 
+    public virtual DbSet<StudySetRating> StudySetRatings { get; set; }
+
     public virtual DbSet<Subject> Subjects { get; set; }
 
     public virtual DbSet<SubjectsOfGrade> SubjectsOfGrades { get; set; }
@@ -242,6 +244,26 @@ public partial class DbA95102SmartquizContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StudySets_Users");
+        });
+
+        modelBuilder.Entity<StudySetRating>(entity =>
+        {
+            entity.HasKey(e => new { e.StudySetId, e.UserId });
+
+            entity.Property(e => e.StudySetId)
+                .HasMaxLength(50)
+                .HasColumnName("Study_set_id");
+            entity.Property(e => e.UserId).HasColumnName("User_id");
+
+            entity.HasOne(d => d.StudySet).WithMany(p => p.StudySetRatings)
+                .HasForeignKey(d => d.StudySetId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StudySetRatings_StudySets");
+
+            entity.HasOne(d => d.User).WithMany(p => p.StudySetRatings)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StudySetRatings_Users");
         });
 
         modelBuilder.Entity<Subject>(entity =>
