@@ -38,7 +38,7 @@ namespace SmartQuizApi.Data.Repositories
 
         public int GetTotalMember(string classId)
         {
-            return GetByCondition(x => x.ClassId == classId).Count();
+            return GetByCondition(x => x.ClassId == classId).Count() + 1;
         }
     }
 }
