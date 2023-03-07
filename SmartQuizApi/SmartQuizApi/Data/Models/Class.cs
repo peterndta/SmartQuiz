@@ -21,7 +21,7 @@ public partial class Class
 
     public virtual ICollection<ClassMember> ClassMembers { get; } = new List<ClassMember>();
 
-    public virtual ICollection<StudySet> StudySets { get; } = new List<StudySet>();
+    public virtual ICollection<StudySetClass> StudySetClasses { get; } = new List<StudySetClass>();
 
     public virtual User User { get; set; } = null!;
 }

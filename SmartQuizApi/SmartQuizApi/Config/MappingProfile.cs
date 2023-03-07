@@ -48,6 +48,7 @@ namespace SmartQuizApi.Config
             CreateMap<ClassMember, GetClassMemberDTO>().ForMember(des => des.Name, opt => opt.MapFrom(src => src.User.Name))
                                                         .ForMember(des => des.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl))
                                                         .ForMember(des => des.Id, opt => opt.MapFrom(src => src.UserId));
+            CreateMap<Class, CheckDTO>();
         }
     }
 }

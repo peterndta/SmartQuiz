@@ -308,7 +308,8 @@ namespace SmartQuizApi.Controllers
         {
             try
             {
-                var studySetsList = await _repositoryManager.StudySet.FilterStudySetByNameAsync(name, sorttype, id);
+                var listStudySetId = _repositoryManager.StudySetClass.GetListStudySetInClass(id);
+                var studySetsList = await _repositoryManager.StudySet.FilterStudySetByNameAsync(name, sorttype, listStudySetId);
                 var studySetsListDTO = _mapper.Map<List<GetStudySetsListDTO>>(studySetsList);
                 var result = PaginatedList<GetStudySetsListDTO>.Create(studySetsListDTO, @params.pageNumber, @params.pageSize);
 
