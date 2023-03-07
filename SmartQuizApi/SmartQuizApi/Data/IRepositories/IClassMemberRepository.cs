@@ -9,5 +9,6 @@ namespace SmartQuizApi.Data.IRepositories
         int GetTotalMember(string classId);
         ClassMember? GetClassMember(string classId, int userId);
         void DeleteClassMember(ClassMember classMember);
+        Task<List<ClassMember>> GetClassMembersByUserId(int userId);
     }
 }

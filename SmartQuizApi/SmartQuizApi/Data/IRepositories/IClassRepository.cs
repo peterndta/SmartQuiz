@@ -11,5 +11,6 @@ namespace SmartQuizApi.Data.IRepositories
         Task<List<Class>> GetClassByUserIdAsync(int userId);
         bool GetCodeJoin(string code);  
         void DeleteClass(Class @class);
+        string? GetClassIdByJoinCode(string joinCode);
     }
 }

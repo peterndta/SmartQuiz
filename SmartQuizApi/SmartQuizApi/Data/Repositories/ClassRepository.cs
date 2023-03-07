@@ -30,6 +30,12 @@ namespace SmartQuizApi.Data.Repositories
             return await GetByCondition(x => x.UserId == userId).Include(x => x.User).ToListAsync();
         }
 
+        public string? GetClassIdByJoinCode(string joinCode)
+        {
+            var @class = GetByCondition(x => x.JoinCode.Equals(joinCode)).FirstOrDefault();
+            return @class == null ? null : @class.Id;
+        }
+
         public bool GetCodeJoin(string code)
         {
             return GetByCondition(x => x.JoinCode.Equals(code)).FirstOrDefault() != null;

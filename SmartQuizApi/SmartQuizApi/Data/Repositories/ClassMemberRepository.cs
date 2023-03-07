@@ -30,6 +30,12 @@ namespace SmartQuizApi.Data.Repositories
             return await GetByCondition(x => x.ClassId.Equals(classId)).Include(x => x.User).ToListAsync();
         }
 
+        public async Task<List<ClassMember>> GetClassMembersByUserId(int userId)
+        {
+            return await GetByCondition(x => x.UserId == userId).Include(x => x.Class)
+                                                                .Include(x => x.User).ToListAsync();
+        }
+
         public int GetTotalMember(string classId)
         {
             return GetByCondition(x => x.ClassId == classId).Count();

@@ -152,7 +152,7 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpGet("class-detail/{classId}")]
-        public IActionResult GetClassDetail(string classId)
+        public IActionResult GetClassDetail(string classId, int userId)
         {
             try
             {
@@ -165,6 +165,15 @@ namespace SmartQuizApi.Controllers
                 var classDTO = _mapper.Map<GetClassDetailDTO>(getClass);
                 classDTO.TotalStudySet = _repositoryManager.StudySetClass.GetTotalStudySetInClass(classId);
                 classDTO.TotalMember = _repositoryManager.ClassMember.GetTotalMember(classId);
+                if (classDTO.UserId == userId)
+                {
+                    classDTO.IsAlreadyJoin = true;
+                }
+                else
+                {
+                    classDTO.IsAlreadyJoin = _repositoryManager.ClassMember.GetClassMember(classId, userId) != null;
+                }
+                
                 return StatusCode(StatusCodes.Status200OK, new Response(200, classDTO, ""));
             }
             catch (Exception ex)
@@ -313,9 +322,55 @@ namespace SmartQuizApi.Controllers
             }
         }
 
+        [HttpGet("joined-class")]
+        public async Task<IActionResult> GetJoinedClass(int userId)
+        {
+            try
+            {
+                var classMembers = await _repositoryManager.ClassMember.GetClassMembersByUserId(userId);
+                var getClassDTO = _mapper.Map<List<GetClassDTO>>(classMembers);
+                getClassDTO.ForEach(x =>
+                {
+                    var @class = _repositoryManager.Class.GetClassById(x.Id);
+                    if (@class != null)
+                    {
+                        x.Creator = @class.User.Name;
+                        x.UserId = @class.UserId;
+                        x.ImageUrl = @class.User.ImageUrl;
+                        x.TotalMember = _repositoryManager.ClassMember.GetTotalMember(x.Id);
+                        x.TotalStudySet = _repositoryManager.StudySetClass.GetTotalStudySetInClass(x.Id);
+                    }                    
+                });
+
+                return StatusCode(StatusCodes.Status200OK, new Response(200, getClassDTO, ""));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpGet("get-class-id/{joinCode}")]
+        public IActionResult GetClassId(string joinCode)
+        {
+            try
+            {
+                var classId = _repositoryManager.Class.GetClassIdByJoinCode(joinCode);
+
+                return StatusCode(StatusCodes.Status200OK, new Response(200, new
+                {
+                    ClassId = classId
+                }, ""));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
         private string GenerateJoinCode()
         {
-            const string chars = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
             string result;
             while (true)

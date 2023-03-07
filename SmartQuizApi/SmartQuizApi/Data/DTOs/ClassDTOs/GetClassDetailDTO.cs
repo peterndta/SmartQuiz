@@ -14,5 +14,6 @@ namespace SmartQuizApi.Data.DTOs.ClassDTOs
         public string Description { get; set; }
         public string JoinCode { get; set; }
         public string? ImageUrl { get; set; }
+        public bool IsAlreadyJoin { get; set; }
     }
 }
