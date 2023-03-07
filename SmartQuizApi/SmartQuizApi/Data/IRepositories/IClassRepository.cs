@@ -9,5 +9,8 @@ namespace SmartQuizApi.Data.IRepositories
         Class? GetClassById(string id);
         void UpdateClass(Class @class);
         Task<List<Class>> GetClassByUserIdAsync(int userId);
+        bool GetCodeJoin(string code);  
+        void DeleteClass(Class @class);
+        string? GetClassIdByJoinCode(string joinCode);
     }
 }

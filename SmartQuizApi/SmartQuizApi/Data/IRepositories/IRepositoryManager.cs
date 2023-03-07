@@ -18,6 +18,7 @@
         
         IStudySetRatingRepository StudySetRating { get; }
 
+        IStudySetClassRepository StudySetClass { get; }
         Task SaveChangesAsync();
     }
 }

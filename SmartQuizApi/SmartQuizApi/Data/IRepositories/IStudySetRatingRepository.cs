@@ -5,7 +5,7 @@ namespace SmartQuizApi.Data.IRepositories
     public interface IStudySetRatingRepository
     {
 
-        void setRating(StudySetRating studySetRating);
+        void SetRating(StudySetRating studySetRating);
 
     }
 }

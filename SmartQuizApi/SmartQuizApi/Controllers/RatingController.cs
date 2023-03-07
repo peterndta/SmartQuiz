@@ -28,9 +28,9 @@ namespace SmartQuizApi.Controllers
             try
             {
                 var studySetRating = _mapper.Map<StudySetRating>(dto);
-                _repositoryManager.StudySetRating.setRating(studySetRating);
+                _repositoryManager.StudySetRating.SetRating(studySetRating);
                 await _repositoryManager.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, new Response(200, null, "Create successfully"));
+                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Create successfully"));
             }
             catch (Exception ex)
             {

@@ -22,8 +22,6 @@ namespace SmartQuizApi.Data.DTOs.StudySetDTOs
 
         public int TotalQuestions { get; set; }
 
-        public string? ClassId { get; set; }
-
         public bool IsPublic { get; set; }
 
         public DateTime CreateAt { get; set; }

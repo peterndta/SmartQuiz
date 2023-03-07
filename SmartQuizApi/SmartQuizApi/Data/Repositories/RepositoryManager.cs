@@ -22,6 +22,7 @@ namespace SmartQuizApi.Data.Repositories
         private IClassMemberRepository _classMemberRepository;
         private IStudySetRatingRepository _studySetRatingRepository;
 
+        private IStudySetClassRepository _studySetClassRepository;
         public RepositoryManager(DbA95102SmartquizContext context)
         {
             _context= context;
@@ -195,6 +196,18 @@ namespace SmartQuizApi.Data.Repositories
             }
         }
 
+
+        public IStudySetClassRepository StudySetClass
+        {
+            get
+            {
+                if (_studySetClassRepository == null)
+                {
+                    _studySetClassRepository= new StudySetClassRepository(_context);
+                }
+                return _studySetClassRepository;
+            }
+        }
 
         public async Task SaveChangesAsync()
         {

@@ -15,6 +15,11 @@ namespace SmartQuizApi.Data.Repositories
             Create(@class);
         }
 
+        public void DeleteClass(Class @class)
+        {
+            Delete(@class);
+        }
+
         public Class? GetClassById(string id)
         {
             return GetByCondition(x => x.Id.Equals(id)).Include(x => x.User).FirstOrDefault();
@@ -23,6 +28,17 @@ namespace SmartQuizApi.Data.Repositories
         public async Task<List<Class>> GetClassByUserIdAsync(int userId)
         {
             return await GetByCondition(x => x.UserId == userId).Include(x => x.User).ToListAsync();
+        }
+
+        public string? GetClassIdByJoinCode(string joinCode)
+        {
+            var @class = GetByCondition(x => x.JoinCode.Equals(joinCode)).FirstOrDefault();
+            return @class == null ? null : @class.Id;
+        }
+
+        public bool GetCodeJoin(string code)
+        {
+            return GetByCondition(x => x.JoinCode.Equals(code)).FirstOrDefault() != null;
         }
 
         public int GetTotalClass()

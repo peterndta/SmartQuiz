@@ -9,7 +9,7 @@ namespace SmartQuizApi.Data.Repositories
         {
         }
 
-        void IStudySetRatingRepository.setRating(StudySetRating studySetRating)
+        public void SetRating(StudySetRating studySetRating)
         {
             Create(studySetRating);
         }
