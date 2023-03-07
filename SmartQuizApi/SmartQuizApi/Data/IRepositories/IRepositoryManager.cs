@@ -15,6 +15,9 @@
         IFavoriteRepository Favorite { get; }
         IClassRepository Class { get; }
         IClassMemberRepository ClassMember { get; }
+        
+        IStudySetRatingRepository StudySetRating { get; }
+
         Task SaveChangesAsync();
     }
 }
