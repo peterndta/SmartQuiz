@@ -1,9 +1,9 @@
-<!-- # <img src="./front-end/src/assets/images/Logo.png" width="120" height="60" />&nbsp; SmartQuiz -->
-<div style="display: flex; align-items: center; ">
+# <img src="./docs/images/Logo-app.jpg" width="60" height="60" style="border-radius: 50%; margin-right: 15px; border: 1px solid black;"/>&nbsp; SmartQuiz
+<!-- <div style="display: flex; align-items: center; ">
   <img src="./docs/images/Logo-app.jpg" width="60" height="60" style="border-radius: 50%; margin-right: 15px; border: 1px solid black;"/>&nbsp;
   <h1>SmartQuiz</h1>
 </div>
-
+-->
 SmartQuiz is a web application that allows learners to improve their knowledge and memory through a multiple-choice learning system. With convenient features to create custom question sets and share them with others, learners can connect with peers and learn together. The application also integrates effective learning methods to help students learn more efficiently.
 
 ## Features
