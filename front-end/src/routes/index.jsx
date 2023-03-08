@@ -2,7 +2,7 @@ import { Suspense, lazy } from 'react'
 
 import { Route, Switch } from 'react-router-dom'
 
-import { CommonLayout } from '~/components/layout'
+import { AdminLayout, CommonLayout } from '~/components/layout'
 
 import HybridRoute from './HyBridRoute'
 import PrivateRoute from './PrivateRoute'
@@ -102,6 +102,29 @@ const privateRoutes = [
 const RouteList = (
     <Suspense fallback={<Loading />}>
         <Switch>
+            <Route path="/admin">
+                <AdminLayout>
+                    <Suspense fallback={<Loading />}>
+                        <Switch>
+                            {publicRoutes.map(
+                                ({ layout, ...route }) =>
+                                    layout === 'common' && <PublicRoute key={route.name} exact={true} {...route} />
+                            )}
+                            {hyBridRoutes.map(
+                                ({ layout, ...route }) =>
+                                    layout === 'common' && <HybridRoute key={route.name} exact={true} {...route} />
+                            )}
+                            {privateRoutes.map(
+                                ({ layout, ...route }) =>
+                                    layout === 'common' && <PrivateRoute key={route.name} exact={true} {...route} />
+                            )}
+                            <Route path="*">
+                                <NotFound />
+                            </Route>
+                        </Switch>
+                    </Suspense>
+                </AdminLayout>
+            </Route>
             <Route>
                 <CommonLayout>
                     <Suspense fallback={<Loading />}>
@@ -125,7 +148,6 @@ const RouteList = (
                     </Suspense>
                 </CommonLayout>
             </Route>
-            <Route path="/admin"></Route>
         </Switch>
     </Suspense>
 )
