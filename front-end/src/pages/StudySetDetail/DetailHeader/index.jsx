@@ -56,8 +56,10 @@ const DetailHeader = ({ info, id, questions, userId }) => {
         <React.Fragment>
             <LearnModal open={openLearn} handleClose={handleCloseLearn} id={id} />
             <TestModal open={openTest} handleClose={handleCloseTest} id={id} numberOfQuestion={info.questions.length} />
-            <AddModal open={openAdd} handleClose={handleCloseAdd} handleOpenAddClass={handleOpenAddClass} />
-            <CreateClassModal open={openAddClass} handleClose={handleCloseAddClass} />
+            {openAdd && (
+                <AddModal open={openAdd} handleClose={handleCloseAdd} handleOpenAddClass={handleOpenAddClass} />
+            )}
+            {openAddClass && <CreateClassModal open={openAddClass} handleClose={handleCloseAddClass} />}
             <Typography sx={{ fontWeight: 500, fontSize: 32, color: AppStyles.colors['#333333'] }}>
                 {info.name}
             </Typography>

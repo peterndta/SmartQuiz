@@ -87,7 +87,7 @@ const MyLibrary = () => {
                                     color: AppStyles.colors['#333333'],
                                 }}
                             />
-                            <Tab
+                            {/* <Tab
                                 label="Đã lưu"
                                 value={'2'}
                                 sx={{
@@ -97,7 +97,7 @@ const MyLibrary = () => {
                                     fontWeight: 500,
                                     color: AppStyles.colors['#333333'],
                                 }}
-                            />
+                            /> */}
                             <Tab
                                 label="Bản nháp"
                                 value={'3'}
@@ -116,9 +116,9 @@ const MyLibrary = () => {
                         <TabPanel value={'1'} sx={{ p: 0 }}>
                             <StudySets getMyStudySets={getMyStudySets} />
                         </TabPanel>
-                        <TabPanel value={'2'} sx={{ p: 0 }}>
+                        {/* <TabPanel value={'2'} sx={{ p: 0 }}>
                             <StudySets getMyStudySets={getMyStudySets} />
-                        </TabPanel>
+                        </TabPanel> */}
                         <TabPanel value={'3'} sx={{ p: 0 }}>
                             <Draft />
                         </TabPanel>

@@ -5,7 +5,6 @@ import { Avatar, Box, CardContent, Grid, Typography } from '@mui/material'
 import CardLayout from '../CardLayout'
 import MoreMenu from '../MoreMenu'
 
-import logo from '~/assets/images/User 5.png'
 import { AppStyles } from '~/constants/styles'
 
 const ClassCard = ({ studySet, md }) => {
@@ -22,7 +21,7 @@ const ClassCard = ({ studySet, md }) => {
                 <CardContent>
                     <Box display="flex" alignItems="center" justifyContent="space-between">
                         <Box sx={{ width: '34%' }}>
-                            <Avatar sx={{ height: 80, width: 80 }} src={logo} alt="logo" />
+                            <Avatar sx={{ height: 80, width: 80 }} src={studySet.imageUrl} alt="logo" />
                         </Box>
                         <Box sx={{ width: '66%' }}>
                             <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -44,15 +43,8 @@ const ClassCard = ({ studySet, md }) => {
                                         component={Link}
                                         to={`/class/${studySet.id}`}
                                     >
-                                        {/* {studySet?.StudySetName} */}
                                         {studySet.name}
                                     </Typography>
-                                    {/* {Math.random() < 0.5 && (
-                                        <GppGood
-                                            fontSize="small"
-                                            sx={{ ml: 1, mt: -0.5, color: AppStyles.colors['#004DFF'] }}
-                                        />
-                                    )} */}
                                 </Box>
                                 <MoreMenu />
                             </Box>
@@ -71,7 +63,7 @@ const ClassCard = ({ studySet, md }) => {
                                         userSelect: 'none',
                                     }}
                                 >
-                                    TOÁN |
+                                    {studySet.totalMember} thành viên |
                                 </Typography>
                                 <Typography
                                     ml={0.5}
@@ -79,11 +71,11 @@ const ClassCard = ({ studySet, md }) => {
                                     color="text.secondary"
                                     sx={{ fontSize: 14, userSelect: 'none' }}
                                 >
-                                    100 học phần
+                                    {studySet.totalStudySet} học phần
                                 </Typography>
                             </Box>
                             <Box display="flex" mt={3} textAlign={'left'}>
-                                <Avatar sx={{ height: 20, width: 20 }} src={logo} alt="logo" />
+                                <Avatar sx={{ height: 20, width: 20 }} src={studySet.imageUrl} alt="logo" />
                                 <Typography
                                     ml={1}
                                     sx={{
@@ -93,7 +85,7 @@ const ClassCard = ({ studySet, md }) => {
                                         userSelect: 'none',
                                     }}
                                 >
-                                    {studySet?.creator}
+                                    {studySet.creator}
                                 </Typography>
                             </Box>
                         </Box>
