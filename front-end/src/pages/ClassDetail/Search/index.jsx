@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import queryString from 'query-string'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -52,7 +52,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }))
 
-const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight }) => {
+const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight, setPage }) => {
     searchHeightValue = searchHeight
     searchWidthValue = searchWidth
 
@@ -61,12 +61,13 @@ const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight }) => {
 
     const { search: query, pathname } = useLocation()
     const history = useHistory()
-    const { studysetname, sorttype, pageNumber, gradeid, subjectid } = queryString.parse(query)
+    const { studysetname, sorttype } = queryString.parse(query)
     const [searchValue, setSearchValue] = useState(studysetname ? studysetname : '')
 
     const searchChangeHandler = (event) => {
         const searchText = event.target.value
         setSearchValue(searchText)
+        setPage(1)
     }
 
     const searchSubmitHandler = (event) => {
@@ -74,21 +75,11 @@ const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight }) => {
             let route = pathname + '?'
             if (searchValue && searchValue.trim() !== '') route += '&studysetname=' + searchValue
 
-            if (subjectid) route += `&subjectid=${subjectid}`
-
-            if (gradeid) route += `&gradeid=${gradeid}`
-
-            if (pageNumber) route += `&pageNumber=${pageNumber}`
-
             if (sorttype) route += `&sorttype=${sorttype}`
 
             history.push(route)
         }
     }
-
-    useEffect(() => {
-        setSearchValue(studysetname)
-    }, [studysetname])
 
     return (
         <SearchCompo>

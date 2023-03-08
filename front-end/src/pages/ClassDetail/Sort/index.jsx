@@ -9,10 +9,10 @@ import { FormControl, MenuItem, Select } from '@mui/material'
 
 import { AppStyles } from '~/constants/styles'
 
-const Sort = () => {
+const Sort = ({ setPage }) => {
     const history = useHistory()
     const { search: query, pathname } = useLocation()
-    const { studysetname, sorttype, pageNumber, gradeid, subjectid } = queryString.parse(query)
+    const { studysetname, sorttype } = queryString.parse(query)
     const [type, setType] = React.useState(sorttype ? sorttype : 'Newest')
 
     const handleChange = (event) => {
@@ -23,18 +23,13 @@ const Sort = () => {
         let route = pathname + '?'
         if (studysetname && studysetname.trim() !== '') route += '&studysetname=' + studysetname
 
-        if (subjectid) route += `&subjectid=${subjectid}`
-
-        if (gradeid) route += `&gradeid=${gradeid}`
-
-        if (pageNumber) route += `&pageNumber=${pageNumber}`
-
         if (!!type) route += `&sorttype=${type}`
 
         history.push(route)
     }
 
     useEffect(() => {
+        setPage(1)
         filterHandler()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [type])
