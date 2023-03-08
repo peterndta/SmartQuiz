@@ -4,7 +4,7 @@ import { CheckBox } from '@mui/icons-material'
 import { Box, Grid, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 
-import { UpgradeOptions } from '~/Mock'
+import { PremiumPrice, UpgradeOptions } from '~/Mock'
 import { AppStyles } from '~/constants/styles'
 
 const YearlyOption = () => {
@@ -37,7 +37,7 @@ const YearlyOption = () => {
                 <Box>
                     <Box display="flex">
                         <Typography sx={{ color: AppStyles.colors['#FFFFFF'], fontSize: 38, fontWeight: 800 }}>
-                            100.00
+                            {PremiumPrice.yearly.VN_Price}
                         </Typography>
                         <Typography ml={0.5} sx={{ color: AppStyles.colors['#FFFFFF'], fontSize: 38, fontWeight: 800 }}>
                             VND
@@ -53,7 +53,7 @@ const YearlyOption = () => {
                                 textDecoration: 'line-through',
                             }}
                         >
-                            240.00 VND
+                            {PremiumPrice.yearly.discount} VND
                         </Typography>
                     </Box>
                 </Box>

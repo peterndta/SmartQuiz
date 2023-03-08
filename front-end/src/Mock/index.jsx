@@ -600,6 +600,18 @@ const UpgradeOptions = [
         isPremium: true,
     },
 ]
+const PremiumPrice = {
+    yearly: {
+        US_Price: 0.42,
+        VN_Price: '10.000',
+        discount: '20.000',
+    },
+    montly: {
+        US_Price: 0.08,
+        VN_Price: '2.000',
+        discount: '',
+    },
+}
 
 export {
     universitiesName,
@@ -615,4 +627,5 @@ export {
     exampleQuestion,
     UpgradeOptions,
     membersClass,
+    PremiumPrice,
 }

@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { useSnackbar } from '~/HOC/SnackbarContext'
+import { PremiumPrice } from '~/Mock'
 import { usePayment } from '~/actions/payment'
 import { PAY_PAL } from '~/config'
 import { checkout } from '~/features/authSlice'
@@ -21,17 +22,17 @@ const Paypal = () => {
 
     const { search: query } = useLocation()
     const { mode } = queryString.parse(query)
-    const amount = useRef(mode === 'monthly' ? 0.84 : 4.2)
+    const amount = useRef(mode === 'monthly' ? PremiumPrice.montly.US_Price : PremiumPrice.yearly.US_Price)
     const subcription = useRef(mode === 'monthly' ? 1 : 12)
     const description = useRef(mode === 'monthly' ? 'SmartQuiz gói 1 tháng' : 'SmartQuiz gói 1 năm')
 
     useEffect(() => {
         if (mode === 'yearly') {
-            amount.current = 4.2
+            amount.current = PremiumPrice.yearly.US_Price
             subcription.current = 12
             description.current = 'SmartQuiz gói 1 năm'
         } else {
-            amount.current = 0.84
+            amount.current = PremiumPrice.montly.US_Price
             subcription.current = 1
             description.current = 'SmartQuiz gói 1 tháng'
         }
