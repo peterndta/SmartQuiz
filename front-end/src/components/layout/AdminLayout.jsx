@@ -1,14 +1,14 @@
 import { Box } from '@mui/material'
 
-import Footer from '../Admin/Footer'
 import Header from '../Admin/Header'
 
 const Layout = ({ children }) => {
     return (
         <Box minWidth="100vh">
             <Header />
-            {children}
-            <Footer />
+            <Box minHeight="100vh" sx={{ m: '0 auto', pt: 8 }}>
+                {children}
+            </Box>
         </Box>
     )
 }

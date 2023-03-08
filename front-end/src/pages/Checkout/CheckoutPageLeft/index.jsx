@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 
 import { Box, Divider, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
 
+import { PremiumPrice } from '~/Mock'
 import { AppStyles } from '~/constants/styles'
 
 const CheckoutPageLeft = ({ mode, year, month, day }) => {
@@ -47,7 +48,7 @@ const CheckoutPageLeft = ({ mode, year, month, day }) => {
                         }}
                     >
                         <FormControlLabel value="yearly" control={<Radio />} label="Theo năm" />
-                        <Typography sx={{ opacity: 0.5, mt: -1 }}>100.00 VND/năm</Typography>
+                        <Typography sx={{ opacity: 0.5, mt: -1 }}>{PremiumPrice.yearly.VN_Price} VND/năm</Typography>
                     </Box>
                     <Box
                         sx={{
@@ -59,7 +60,7 @@ const CheckoutPageLeft = ({ mode, year, month, day }) => {
                         mt={1}
                     >
                         <FormControlLabel value="montly" control={<Radio />} label="Theo tháng" />
-                        <Typography sx={{ opacity: 0.5, mt: -1 }}>20.000 VND/tháng</Typography>
+                        <Typography sx={{ opacity: 0.5, mt: -1 }}>{PremiumPrice.montly.VN_Price} VND/tháng</Typography>
                     </Box>
                 </RadioGroup>
             </Box>
@@ -79,7 +80,7 @@ const CheckoutPageLeft = ({ mode, year, month, day }) => {
                     {value === 'yearly' ? '1 năm' : '1 tháng'} Premium
                 </Typography>
                 <Typography sx={{ fontWeight: 600, color: AppStyles.colors['#333333'] }}>
-                    {value === 'yearly' ? '100.00 VND' : '20.000 VND'}
+                    {value === 'yearly' ? `${PremiumPrice.yearly.VN_Price} VND` : `${PremiumPrice.montly.VN_Price} VND`}
                 </Typography>
             </Box>
             <Box mt={2}>
