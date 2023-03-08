@@ -6,7 +6,7 @@ import { CheckBox } from '@mui/icons-material'
 import { Box, Grid, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 
-import { UpgradeOptions } from '~/Mock'
+import { PremiumPrice, UpgradeOptions } from '~/Mock'
 import { AppStyles } from '~/constants/styles'
 
 const MonthlyOption = () => {
@@ -37,17 +37,13 @@ const MonthlyOption = () => {
         >
             <Box display="flex" justifyContent="center" mb={9}>
                 <Typography sx={{ color: AppStyles.colors['#000F33'], fontSize: 38, fontWeight: 800 }}>
-                    20.000
+                    {PremiumPrice.montly.VN_Price}
                 </Typography>
                 <Typography ml={0.5} sx={{ color: AppStyles.colors['#000F33'], fontSize: 38, fontWeight: 800 }}>
                     VND
                 </Typography>
                 <Box display="flex" alignItems="center" mt={1}>
-                    <Typography
-                        // textAlign="revert"
-                        ml={0.5}
-                        sx={{ color: AppStyles.colors['#000F33'], fontSize: 20, fontWeight: 600 }}
-                    >
+                    <Typography ml={0.5} sx={{ color: AppStyles.colors['#000F33'], fontSize: 20, fontWeight: 600 }}>
                         / tháng
                     </Typography>
                 </Box>
