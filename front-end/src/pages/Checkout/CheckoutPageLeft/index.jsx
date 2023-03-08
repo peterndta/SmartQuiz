@@ -80,7 +80,7 @@ const CheckoutPageLeft = ({ mode, year, month, day }) => {
                     {value === 'yearly' ? '1 năm' : '1 tháng'} Premium
                 </Typography>
                 <Typography sx={{ fontWeight: 600, color: AppStyles.colors['#333333'] }}>
-                    {value === 'yearly' ? '100.00 VND' : '20.000 VND'}
+                    {value === 'yearly' ? `${PremiumPrice.yearly.VN_Price} VND` : `${PremiumPrice.montly.VN_Price} VND`}
                 </Typography>
             </Box>
             <Box mt={2}>
