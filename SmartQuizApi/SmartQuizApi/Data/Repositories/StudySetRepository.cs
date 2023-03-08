@@ -28,8 +28,7 @@ namespace SmartQuizApi.Data.Repositories
             var result = await GetByCondition(x => (name == null || x.Name.Contains(name))
                                                 && (listId.Count == 0 || listId.Contains(x.SubjectsOfGradeId))
                                                 && x.IsPublic == true).OrderByDescending(x => x.CreateAt)
-                                                                    .Include(x => x.User)
-                                                                    .Include(x => x.Class).ToListAsync();
+                                                                    .Include(x => x.User).ToListAsync();
             if (sortType == SortTypes.Oldest)
             {
                 result = result.OrderBy(x => x.CreateAt).ToList();
@@ -37,12 +36,11 @@ namespace SmartQuizApi.Data.Repositories
             return result;
         }
 
-        public async Task<List<StudySet>> FilterStudySetByNameAsync(string? name, string sortType, string classId)
+        public async Task<List<StudySet>> FilterStudySetByNameAsync(string? name, string sortType, List<string> classId)
         {
-            var result = await GetByCondition(x => x.ClassId.Equals(classId)
+            var result = await GetByCondition(x => classId.Contains(x.Id)
                                                 && name == null || x.Name.Contains(name)).Include(x => x.User)
                                                                                         .Include(x => x.SubjectsOfGrade)
-                                                                                        .Include(x => x.Class)
                                                                                         .OrderByDescending(x => x.CreateAt).ToListAsync();
             if (sortType == SortTypes.Oldest)
             {
@@ -55,7 +53,6 @@ namespace SmartQuizApi.Data.Repositories
         {
             var result = await GetByCondition(x => x.IsPublic == true).Include(x => x.User)
                                                                     .Include(x => x.SubjectsOfGrade)
-                                                                    .Include(x => x.Class)
                                                                     .OrderByDescending(x => x.CreateAt).ToListAsync();
             if (sortType == SortTypes.Oldest)
             {
@@ -68,8 +65,7 @@ namespace SmartQuizApi.Data.Repositories
         {
             return await GetByCondition(x => listStudySetId.Contains(x.Id)
                                         && x.IsPublic == true).Include(x => x.User)
-                                                            .Include(x => x.SubjectsOfGrade)
-                                                            .Include(x => x.Class).ToListAsync();
+                                                            .Include(x => x.SubjectsOfGrade).ToListAsync();
         }
 
         public async Task<List<StudySet>> GetRecommendStudySetAsync(List<int> subjectsOfGradeId, int amount)
@@ -77,32 +73,24 @@ namespace SmartQuizApi.Data.Repositories
             return await GetByCondition(x => subjectsOfGradeId.Contains(x.SubjectsOfGradeId) && x.IsPublic == true)
                                                             .Take(amount)
                                                             .Include(x => x.User)
-                                                            .Include(x => x.SubjectsOfGrade)
-                                                            .Include(x => x.Class).ToListAsync(); 
+                                                            .Include(x => x.SubjectsOfGrade).ToListAsync(); 
         }
 
         public StudySet? GetStudySetById(string id)
         {
             return GetByCondition(x => x.Id.Equals(id)).Include(x => x.User)
-                                                    .Include(x => x.SubjectsOfGrade)
-                                                    .Include(x => x.Class).FirstOrDefault();
+                                                    .Include(x => x.SubjectsOfGrade).FirstOrDefault();
         }
 
         public async Task<List<StudySet>> GetStudySetByUserIdAsync(int userId)
         {
             return await GetByCondition(x => x.UserId == userId).Include(x => x.User)
-                                                        .Include(x => x.SubjectsOfGrade)
-                                                        .Include(x => x.Class).ToListAsync();
+                                                        .Include(x => x.SubjectsOfGrade).ToListAsync();
         }
 
         public int GetTotalStudySet()
         {
             return GetAll().Count();
-        }
-
-        public int GetTotalStudySetInClass(string classId)
-        {
-            return GetByCondition(x => x.ClassId == classId).Count();
         }
 
         public void UpdateStudySet(StudySet studySet)

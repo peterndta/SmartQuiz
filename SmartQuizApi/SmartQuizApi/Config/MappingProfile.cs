@@ -4,6 +4,7 @@ using SmartQuizApi.Data.DTOs.BiilDTOs;
 using SmartQuizApi.Data.DTOs.ClassDTOs;
 using SmartQuizApi.Data.DTOs.GradeDTOs;
 using SmartQuizApi.Data.DTOs.QuestionDTOs;
+using SmartQuizApi.Data.DTOs.RatingDTOs;
 using SmartQuizApi.Data.DTOs.SchoolDTOs;
 using SmartQuizApi.Data.DTOs.StudySetDTOs;
 using SmartQuizApi.Data.DTOs.SubjectDTOs;
@@ -41,11 +42,18 @@ namespace SmartQuizApi.Config
             CreateMap<CreateUserInforDTO, User>();
             CreateMap<CreateClassDTO, Class>();
             CreateMap<EditClassDTO, Class>().ForMember(des => des.Id, opt => opt.Ignore());
-            CreateMap<Class, GetClassDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name));
-            CreateMap<Class, GetClassDetailDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name));
+            CreateMap<Class, GetClassDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name))
+                                            .ForMember(des => des.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl));
+            CreateMap<Class, GetClassDetailDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name))
+                                            .ForMember(des => des.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl));
             CreateMap<ClassMember, GetClassMemberDTO>().ForMember(des => des.Name, opt => opt.MapFrom(src => src.User.Name))
                                                         .ForMember(des => des.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl))
                                                         .ForMember(des => des.Id, opt => opt.MapFrom(src => src.UserId));
+            CreateMap<Class, CheckDTO>();
+            CreateMap<ClassMember, GetClassDTO>().ForMember(des => des.Id, opt => opt.MapFrom(src => src.ClassId))
+                                                .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Class.Name))
+                                                .ForMember(des => des.UserId, opt => opt.Ignore());
+            CreateMap<StudySetRatingDTO, StudySet>();
         }
     }
 }

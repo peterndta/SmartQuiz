@@ -35,6 +35,8 @@ public partial class DbA95102SmartquizContext : DbContext
 
     public virtual DbSet<StudySet> StudySets { get; set; }
 
+    public virtual DbSet<StudySetClass> StudySetClasses { get; set; }
+
     public virtual DbSet<StudySetRating> StudySetRatings { get; set; }
 
     public virtual DbSet<Subject> Subjects { get; set; }
@@ -113,6 +115,9 @@ public partial class DbA95102SmartquizContext : DbContext
             entity.Property(e => e.CreateAt)
                 .HasColumnType("date")
                 .HasColumnName("Create_at");
+            entity.Property(e => e.JoinCode)
+                .HasMaxLength(50)
+                .HasColumnName("Join_code");
             entity.Property(e => e.UpdateAt)
                 .HasColumnType("date")
                 .HasColumnName("Update_at");
@@ -143,7 +148,6 @@ public partial class DbA95102SmartquizContext : DbContext
 
             entity.HasOne(d => d.Class).WithMany(p => p.ClassMembers)
                 .HasForeignKey(d => d.ClassId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ClassMember_Classes");
 
             entity.HasOne(d => d.User).WithMany(p => p.ClassMembers)
@@ -218,9 +222,6 @@ public partial class DbA95102SmartquizContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_Study_set");
 
             entity.Property(e => e.Id).HasMaxLength(50);
-            entity.Property(e => e.ClassId)
-                .HasMaxLength(50)
-                .HasColumnName("Class_id");
             entity.Property(e => e.CreateAt)
                 .HasColumnType("date")
                 .HasColumnName("Create_at");
@@ -231,10 +232,6 @@ public partial class DbA95102SmartquizContext : DbContext
                 .HasColumnName("Update_at");
             entity.Property(e => e.UserId).HasColumnName("User_id");
 
-            entity.HasOne(d => d.Class).WithMany(p => p.StudySets)
-                .HasForeignKey(d => d.ClassId)
-                .HasConstraintName("FK_StudySets_Classes");
-
             entity.HasOne(d => d.SubjectsOfGrade).WithMany(p => p.StudySets)
                 .HasForeignKey(d => d.SubjectsOfGradeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -244,6 +241,29 @@ public partial class DbA95102SmartquizContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StudySets_Users");
+        });
+
+        modelBuilder.Entity<StudySetClass>(entity =>
+        {
+            entity.HasKey(e => new { e.StudySetId, e.ClassId });
+
+            entity.Property(e => e.StudySetId)
+                .HasMaxLength(50)
+                .HasColumnName("Study_set_id");
+            entity.Property(e => e.ClassId)
+                .HasMaxLength(50)
+                .HasColumnName("Class_id");
+            entity.Property(e => e.CreateDate)
+                .HasColumnType("datetime")
+                .HasColumnName("Create_date");
+
+            entity.HasOne(d => d.Class).WithMany(p => p.StudySetClasses)
+                .HasForeignKey(d => d.ClassId)
+                .HasConstraintName("FK_StudySetClasses_Classes");
+
+            entity.HasOne(d => d.StudySet).WithMany(p => p.StudySetClasses)
+                .HasForeignKey(d => d.StudySetId)
+                .HasConstraintName("FK_StudySetClasses_StudySets");
         });
 
         modelBuilder.Entity<StudySetRating>(entity =>
