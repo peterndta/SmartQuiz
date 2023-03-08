@@ -44,9 +44,8 @@ const StudySets = ({ getMyStudySets }) => {
 
     const loadMoreData = () => {
         let nextPage = page + 1
-        const controller = new AbortController()
-        const signal = controller.signal
-        getMyStudySets(userId, nextPage, signal)
+
+        getMyStudySets(userId, nextPage, {})
             .then((response) => {
                 const data = response.data.data
                 setPage(response.data.meta.currentPage)
@@ -63,9 +62,6 @@ const StudySets = ({ getMyStudySets }) => {
                     children: 'Something went wrong, please try again later.',
                 })
             })
-        return () => {
-            controller.abort()
-        }
     }
 
     useEffect(() => {
@@ -80,11 +76,14 @@ const StudySets = ({ getMyStudySets }) => {
                 setStudySet(data)
 
                 if (data?.length != 0) {
-                    getStudySet(data[0]?.id, userId, signal).then((response) => {
-                        const data = response.data.data
-                        setStudySetDetail(data)
-                        setIsFirstRender(false)
-                    })
+                    getStudySet(data[0]?.id, userId, signal)
+                        .then((response) => {
+                            const data = response.data.data
+                            setStudySetDetail(data)
+                        })
+                        .finally(() => {
+                            setIsFirstRender(false)
+                        })
                 }
             })
             .catch(() => {
@@ -232,6 +231,8 @@ const StudySets = ({ getMyStudySets }) => {
                         image={sets_empty}
                         textAbove="Bạn chưa có học phần nào"
                         textBelow="Các học phần bạn tạo sẽ hiển thị ở đây."
+                        path="/create"
+                        content="Tạo học phần"
                     />
                 </Grid>
             )}
