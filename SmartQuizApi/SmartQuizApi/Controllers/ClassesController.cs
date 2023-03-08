@@ -152,7 +152,7 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpGet("class-detail/{classId}")]
-        public IActionResult GetClassDetail(string classId, int userId)
+        public IActionResult GetClassDetail(string classId, int? userId)
         {
             try
             {
@@ -169,9 +169,13 @@ namespace SmartQuizApi.Controllers
                 {
                     classDTO.IsAlreadyJoin = true;
                 }
+                else if (userId != null)
+                {
+                    classDTO.IsAlreadyJoin = _repositoryManager.ClassMember.GetClassMember(classId, userId.Value) != null;
+                }
                 else
                 {
-                    classDTO.IsAlreadyJoin = _repositoryManager.ClassMember.GetClassMember(classId, userId) != null;
+                    classDTO.IsAlreadyJoin = null;
                 }
                 
                 return StatusCode(StatusCodes.Status200OK, new Response(200, classDTO, ""));
