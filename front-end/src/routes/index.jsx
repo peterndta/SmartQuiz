@@ -106,7 +106,7 @@ const privateRoutes = [
         role: 'user',
     },
     {
-        component: lazy(() => import('~/pages/join')),
+        component: lazy(() => import('~/pages/Join')),
         path: '/study-sets/join/:id',
         name: 'join',
         layout: 'common',
