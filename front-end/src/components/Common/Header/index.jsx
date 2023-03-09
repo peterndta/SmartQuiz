@@ -52,7 +52,7 @@ const Header = () => {
 
     return (
         <AppBar position="fixed" sx={{ backgroundColor: AppStyles.colors['#FAFBFF'], boxShadow: 'none' }}>
-            <CreateClassModal open={openClass} handleClose={handleCloseClass} />
+            {openClass && <CreateClassModal open={openClass} handleClose={handleCloseClass} />}
             <Toolbar disableGutters>
                 <Box
                     display="flex"
