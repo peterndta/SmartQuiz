@@ -58,8 +58,8 @@ const useClass = () => {
                 params: {
                     studySetId: studySetId,
                     userId: userId,
-                    signal: signal,
                 },
+                signal: signal,
             })
         else {
             dispatch(logout())

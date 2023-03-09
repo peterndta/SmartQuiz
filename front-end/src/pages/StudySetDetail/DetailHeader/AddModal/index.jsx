@@ -1,8 +1,18 @@
-import { Add, Remove } from '@mui/icons-material'
-import { Box, Modal, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
+
+import { useParams } from 'react-router-dom'
+
+import { HighlightOffOutlined } from '@mui/icons-material'
+import { Box, IconButton, Modal, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 
+import Classes from './Classes'
+import LoadingClasses from './LoadingClasses'
+
+import { useSnackbar } from '~/HOC/SnackbarContext'
+import { useClass } from '~/actions/class'
 import { AppStyles } from '~/constants/styles'
+import { useAppSelector } from '~/hooks/redux-hooks'
 
 const EndButton = {
     width: '100%',
@@ -19,13 +29,82 @@ const EndButton = {
     },
 }
 const AddModal = ({ open, handleClose, handleOpenAddClass }) => {
+    const { checkStudySetToAdd, addStudySetToClass, removeStudySetOfClass } = useClass()
+    const { id } = useParams()
+    const { userId } = useAppSelector((state) => state.auth)
+    const [isFirstLoading, setIsFirstLoading] = useState(true)
+    const [classes, setClasses] = useState([])
+    const [classesAdded, setClassesAdded] = useState([])
+    const [actionLoading, setActionLoading] = useState({ classId: '', loading: false })
+    const showSnackbar = useSnackbar()
+
+    useEffect(() => {
+        const controller = new AbortController()
+        const signal = controller.signal
+        checkStudySetToAdd(id, userId, signal)
+            .then((res) => {
+                const getClasses = res.data.data
+                const addedClasses = getClasses.filter((currentClass) => currentClass.alreadyAdd)
+                const addedClassesId = addedClasses.map((currentClass) => currentClass.id)
+                setClassesAdded(addedClassesId)
+                setClasses(getClasses)
+            })
+            .finally(() => {
+                setIsFirstLoading(false)
+            })
+
+        return () => {
+            controller.abort()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const addStudySet = (classId, studySetId) => {
+        const newStudySet = { classId: classId, studySetId: studySetId }
+        setActionLoading({ classId: classId, loading: true })
+        addStudySetToClass(newStudySet)
+            .then(() => {
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Bạn đã thêm học phần vào lớp học này thành công',
+                })
+                setClassesAdded((prev) => [...prev, classId])
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+            .finally(() => {
+                setActionLoading({ classId: '', loading: false })
+            })
+    }
+
+    const removeStudySet = (classId, studySetId) => {
+        setActionLoading({ classId: classId, loading: true })
+        removeStudySetOfClass(classId, studySetId)
+            .then(() => {
+                const updatedAddedClass = classesAdded.filter((currentClass) => currentClass !== classId)
+                setClassesAdded(updatedAddedClass)
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Bạn đã xóa học phần vào lớp học này thành công',
+                })
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+            .finally(() => {
+                setActionLoading({ classId: '', loading: false })
+            })
+    }
+
     return (
-        <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
+        <Modal open={open} onClose={handleClose}>
             <Box
                 sx={{
                     position: 'absolute',
@@ -38,93 +117,35 @@ const AddModal = ({ open, handleClose, handleOpenAddClass }) => {
                     borderRadius: 3,
                 }}
             >
-                <Typography sx={{ fontSize: 32, mb: 3, fontWeight: 600, color: AppStyles.colors['#333333'] }}>
-                    Thêm vào lớp học
-                </Typography>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                    <Typography sx={{ fontSize: 32, fontWeight: 600, color: AppStyles.colors['#333333'] }}>
+                        Thêm vào lớp học
+                    </Typography>
+                    <IconButton onClick={handleClose}>
+                        <HighlightOffOutlined />
+                    </IconButton>
+                </Box>
                 <ButtonCompo variant="outlined" style={EndButton} onClick={handleOpenAddClass}>
                     + Tạo một lớp học mới
                 </ButtonCompo>
 
-                <Box mt={3} mb={5}>
-                    <Box
-                        display="flex"
-                        borderRadius={2}
-                        sx={{
-                            width: '100%',
-                            py: 1,
-                            px: 2,
-                            ':hover': {
-                                bgcolor: AppStyles.colors['#EEF2FF'],
-                                color: 'white',
-                            },
-                        }}
-                        justifyContent="space-between"
-                    >
-                        <Typography
-                            sx={{
-                                color: AppStyles.colors['#333333'],
-                                opacity: 0.6,
-                                fontWeight: 500,
-                                userSelect: 'none',
-                            }}
-                        >
-                            Lớp thầy Hoàng
-                        </Typography>
-                        <Remove sx={{ color: AppStyles.colors['#333333'], opacity: 0.3, cursor: 'pointer' }} />
+                {isFirstLoading ? (
+                    <LoadingClasses />
+                ) : (
+                    <Box mt={3} mb={5}>
+                        {classes.map((getClass) => (
+                            <Classes
+                                {...getClass}
+                                key={getClass.id}
+                                classesAdded={classesAdded}
+                                addStudySet={addStudySet}
+                                removeStudySet={removeStudySet}
+                                studySetId={id}
+                                actionLoading={actionLoading}
+                            />
+                        ))}
                     </Box>
-                    <Box
-                        display="flex"
-                        borderRadius={2}
-                        sx={{
-                            width: '100%',
-                            py: 1,
-                            px: 2,
-                            ':hover': {
-                                bgcolor: AppStyles.colors['#EEF2FF'],
-                                color: 'white',
-                            },
-                        }}
-                        justifyContent="space-between"
-                    >
-                        <Typography
-                            sx={{
-                                color: AppStyles.colors['#333333'],
-                                opacity: 0.6,
-                                userSelect: 'none',
-                                fontWeight: 500,
-                            }}
-                        >
-                            Lớp thầy Phương
-                        </Typography>
-                        <Add sx={{ color: AppStyles.colors['#333333'], opacity: 0.3, cursor: 'pointer' }} />
-                    </Box>
-                    <Box
-                        display="flex"
-                        borderRadius={2}
-                        sx={{
-                            width: '100%',
-                            py: 1,
-                            px: 2,
-                            ':hover': {
-                                bgcolor: AppStyles.colors['#EEF2FF'],
-                                color: 'white',
-                            },
-                        }}
-                        justifyContent="space-between"
-                    >
-                        <Typography
-                            sx={{
-                                color: AppStyles.colors['#333333'],
-                                opacity: 0.6,
-                                userSelect: 'none',
-                                fontWeight: 500,
-                            }}
-                        >
-                            Lớp cô Vân
-                        </Typography>
-                        <Add sx={{ color: AppStyles.colors['#333333'], opacity: 0.3, cursor: 'pointer' }} />
-                    </Box>
-                </Box>
+                )}
             </Box>
         </Modal>
     )

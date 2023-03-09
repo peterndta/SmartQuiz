@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { Box, Dialog, DialogContent, DialogTitle, TextField, Typography } from '@mui/material'
+import { HighlightOffOutlined } from '@mui/icons-material'
+import { Box, Dialog, DialogContent, DialogTitle, IconButton, TextField, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
@@ -61,9 +62,14 @@ const CreateClassModal = ({ open, handleClose }) => {
     return (
         <Dialog open={open} onClose={handleClose} disableEscapeKeyDown={false} fullWidth maxWidth="sm">
             <DialogTitle>
-                <Typography sx={{ fontSize: 32, fontWeight: 600, color: AppStyles.colors['#333333'] }}>
-                    Tạo lớp mới
-                </Typography>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                    <Typography sx={{ fontSize: 32, fontWeight: 600, color: AppStyles.colors['#333333'] }}>
+                        Tạo lớp mới
+                    </Typography>
+                    <IconButton onClick={handleClose}>
+                        <HighlightOffOutlined />
+                    </IconButton>
+                </Box>
                 <Typography sx={{ fontSize: 16, color: AppStyles.colors['#333333'], opacity: 0.6, mt: 1 }}>
                     Sắp xếp tài liệu học của bạn và chia sẻ chúng với bạn học của bạn.
                 </Typography>
