@@ -185,6 +185,18 @@ const useClass = () => {
             dispatch(logout())
         }
     }
+    const getMemberOfClass = (classId, signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth)
+            return get({
+                endpoint: `/api/Classes/class-member/${classId}`,
+                signal: signal,
+            })
+        else {
+            dispatch(logout())
+        }
+    }
 
     return {
         createClass,
@@ -201,6 +213,7 @@ const useClass = () => {
         getClassHasJoined,
         getClassIdByJoinedCode,
         getStudySetOfClass,
+        getMemberOfClass,
     }
 }
 

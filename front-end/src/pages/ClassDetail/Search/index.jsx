@@ -67,7 +67,6 @@ const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight, setPage })
     const searchChangeHandler = (event) => {
         const searchText = event.target.value
         setSearchValue(searchText)
-        setPage(1)
     }
 
     const searchSubmitHandler = (event) => {
@@ -77,6 +76,7 @@ const Search = ({ searchHeight, searchWidth, inputWidth, inputHeight, setPage })
 
             if (sorttype) route += `&sorttype=${sorttype}`
 
+            setPage(1)
             history.push(route)
         }
     }
