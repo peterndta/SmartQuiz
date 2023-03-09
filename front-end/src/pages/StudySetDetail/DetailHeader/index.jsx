@@ -35,7 +35,6 @@ const DetailHeader = ({ info, id, questions, userId }) => {
 
     const handleOpenAddClass = () => {
         setOpenAddClass(true)
-        handleCloseAdd()
     }
     const handleCloseAddClass = () => setOpenAddClass(false)
 
