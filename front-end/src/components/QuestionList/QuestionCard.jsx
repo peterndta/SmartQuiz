@@ -1,4 +1,4 @@
-import { CardContent, Typography } from '@mui/material'
+import { Box, CardContent, Typography } from '@mui/material'
 import CardLayout from '~/components/CardLayout'
 
 import Answer from './Answer'
@@ -17,9 +17,23 @@ const QuestionCard = ({ question, index }) => {
     return (
         <CardLayout style={CardLayoutStyle}>
             <CardContent>
-                <Typography sx={{ mb: 5, fontSize: 20, fontWeight: 500 }}>
-                    {index + 1}. {question.name}
-                </Typography>
+                <Box sx={{ mb: 5 }}>
+                    <Typography sx={{ fontSize: 20, fontWeight: 500 }}>
+                        {index + 1}. {question.name}
+                    </Typography>
+                    {question.imageUrl ? (
+                        <Box
+                            mt={2}
+                            component="img"
+                            alt="question_image"
+                            src={question.imageUrl}
+                            sx={{
+                                objectFit: 'contain',
+                                maxHeight: 250,
+                            }}
+                        />
+                    ) : null}
+                </Box>
                 <Typography sx={{ mb: 2, fontWeight: 500 }}>Câu trả lời</Typography>
                 {question.answers.map((question, index) => (
                     <Answer
