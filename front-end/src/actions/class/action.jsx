@@ -82,10 +82,17 @@ const useClass = () => {
         }
     }
 
-    const joinClass = (join) => {
+    const joinClass = (classId, userId) => {
         const isAuth = authMiddleware()
 
-        if (isAuth) return post({ endpoint: '/api/classes/join', body: join })
+        if (isAuth)
+            return post({
+                endpoint: '/api/classes/join',
+                params: {
+                    classId: classId,
+                    userId: userId,
+                },
+            })
         else {
             dispatch(logout())
         }
