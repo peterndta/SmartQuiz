@@ -36,8 +36,8 @@ const authSlice = createSlice({
             state.token = ''
             state.vip = false
         },
-        checkout: (state, action) => {
-            state.vip = action.payload
+        checkout: (state) => {
+            state.vip = true
         },
     },
 })
