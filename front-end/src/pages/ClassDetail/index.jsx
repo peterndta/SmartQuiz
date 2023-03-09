@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import queryString from 'query-string'
 import { useLocation, useParams } from 'react-router-dom'
+import { Waypoint } from 'react-waypoint'
 
 import { Box, Grid, Skeleton, Tab, Tabs } from '@mui/material'
+import ButtonCompo from '~/components/ButtonCompo'
 
 import Loading from '../Loading'
 import ClassDetailHeader from './ClassDetailHeader'
@@ -15,8 +17,8 @@ import Search from './Search'
 import Sort from './Sort'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
-import { Mock_Data, membersClass } from '~/Mock'
 import { useClass } from '~/actions/class'
+import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
 function TabPanel(props) {
@@ -48,11 +50,11 @@ function a11yProps(index) {
     }
 }
 
-const filterStringGenerator = ({ studysetname, sorttype, page }) => {
+const filterStringGenerator = ({ studysetname, sorttype, pageNumber }) => {
     let filterString = '?'
-    if (studysetname && studysetname.trim() !== '') filterString += '&StudySetName=' + studysetname
+    if (studysetname && studysetname.trim() !== '') filterString += '&name=' + studysetname
 
-    if (page !== undefined) filterString += `&pageNumber=${page}`
+    if (pageNumber !== undefined) filterString += `&pageNumber=${pageNumber}`
 
     filterString += `&pageSize=${4}`
 
@@ -60,19 +62,37 @@ const filterStringGenerator = ({ studysetname, sorttype, page }) => {
 
     return filterString
 }
+const ButtonStyle = {
+    mt: 2,
+    color: AppStyles.colors['#FFFFFF'],
+    textTransform: 'none',
+    height: 40,
+    backgroundColor: AppStyles.colors['#3CCFCF'],
+    border: '1px solid #3CCFCF',
+    borderRadius: 1,
+    ':hover': {
+        bgcolor: AppStyles.colors['#28A7A7'],
+        border: '1px solid #28A7A7',
+        color: 'white',
+    },
+}
 
 const ClassDetail = () => {
     const { id } = useParams()
     const { search: query } = useLocation()
-    const { getClassDetail, getStudySetOfClass } = useClass()
+    const { getClassDetail, getStudySetOfClass, getMemberOfClass } = useClass()
     const { userId } = useAppSelector((state) => state.auth)
     const { studysetname = '', sorttype = 'Newest' } = queryString.parse(query)
     const [value, setValue] = useState(0)
     const [isFirstRender, setIsFirstRender] = useState(true)
+    const [isSkeleton, setIsSkeleton] = useState(false)
     const [classes, setClasses] = useState({})
     const [page, setPage] = useState(1)
+    const [memberPage, setMemberPage] = useState(1)
     const [hasNextPage, setHasNextPage] = useState(false)
+    const [hasNextMemberPage, setHasNextMemberPage] = useState(false)
     const [studySet, setStudySet] = useState([])
+    const [member, setMember] = useState([])
     const showSnackbar = useSnackbar()
 
     const handleChange = (_, newValue) => {
@@ -80,7 +100,57 @@ const ClassDetail = () => {
         if (newValue === 1) setPage(1)
     }
 
-    const loadMoreHandler = () => {}
+    const loadMoreHandler = () => {
+        let pageNumber = page + 1
+        const params = filterStringGenerator({ studysetname, sorttype, pageNumber })
+        getStudySetOfClass(id, params).then((response) => {
+            const data = response.data.data
+            setPage(response.data.meta.currentPage)
+            setHasNextPage(response.data.meta.hasNext)
+            const cloneStudySet = studySet
+            const newStudySet = [...cloneStudySet, ...data]
+            setStudySet(newStudySet)
+            setIsFirstRender(false)
+        })
+    }
+
+    const loadMoreMemberHandler = () => {
+        let pageNumber = memberPage + 1
+        getMemberOfClass(
+            id,
+            // , pageNumber
+            {}
+        ).then((response) => {
+            const data = response.data.data
+            // setMemberPage(response.data.meta.currentPage)
+            // setHasNextMemberPage(response.data.meta.hasNext)
+            const cloneMember = member
+            const newMember = [...cloneMember, ...data]
+            setMember(newMember)
+            setIsFirstRender(false)
+        })
+    }
+
+    useEffect(() => {
+        setIsSkeleton(true)
+        const controller = new AbortController()
+        const signal = controller.signal
+
+        getMemberOfClass(id, signal)
+            .then((res) => {
+                const data = res.data.data
+                // setHasNextMemberPage(response.data.meta.hasNext)
+                setMember(data)
+            })
+            .finally(() => {
+                setIsSkeleton(false)
+            })
+
+        return () => {
+            controller.abort()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
         const controller = new AbortController()
@@ -100,20 +170,42 @@ const ClassDetail = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
+    console.log(member)
     useEffect(() => {
         if (page === 1) {
+            setIsSkeleton(true)
             const params = filterStringGenerator({ studysetname, sorttype, page })
-            getStudySetOfClass(id, params).then(() => {})
+            getStudySetOfClass(id, params)
+                .then((response) => {
+                    const data = response.data.data
+                    setHasNextPage(response.data.meta.hasNext)
+                    setStudySet(data)
+                })
+                .catch(() => {
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Something went wrong, please try again later.',
+                    })
+                })
+                .finally(() => {
+                    setIsSkeleton(false)
+                })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page])
+    }, [studysetname, sorttype])
 
     return isFirstRender ? (
         <Loading />
     ) : (
         <Box sx={{ width: 1100, m: '0 auto', mt: 4, mb: 10 }}>
-            <ClassDetailHeader />
+            <ClassDetailHeader className={classes.name} />
+            <ButtonCompo
+                style={{ ...ButtonStyle }}
+                variant="outlined"
+                // onClick={}
+            >
+                Tham gia lớp học
+            </ButtonCompo>
             <Box mt={3} sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     <Tab label="Các học phần" {...a11yProps(0)} />
@@ -133,7 +225,7 @@ const ClassDetail = () => {
                             />
                             <Sort setPage={setPage} />
                         </Box>
-                        {isFirstRender ? (
+                        {isFirstRender || isSkeleton ? (
                             <React.Fragment>
                                 <Skeleton sx={{ height: 120 }} animation="wave" variant="rounded" />
                                 <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
@@ -142,21 +234,21 @@ const ClassDetail = () => {
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
-                                <ListStudySetsVertical studySets={Mock_Data.recent} />
-                                {/* {hasNextPage && (
-                                    <Waypoint onEnter={loadMoreData}>
+                                <ListStudySetsVertical studySets={studySet} />
+                                {hasNextPage && (
+                                    <Waypoint onEnter={loadMoreHandler}>
                                         <Box>
                                             <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
                                             <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
                                             <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
                                         </Box>
                                     </Waypoint>
-                                )} */}
+                                )}
                             </React.Fragment>
                         )}
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        {isFirstRender ? (
+                        {isFirstRender || isSkeleton ? (
                             <React.Fragment>
                                 <Skeleton sx={{ height: 93 }} animation="wave" variant="rounded" />
                                 <Skeleton sx={{ height: 93, mt: 4 }} animation="wave" variant="rounded" />
@@ -164,7 +256,18 @@ const ClassDetail = () => {
                                 <Skeleton sx={{ height: 93, mt: 4 }} animation="wave" variant="rounded" />
                             </React.Fragment>
                         ) : (
-                            <ListMembersClass members={membersClass} />
+                            <React.Fragment>
+                                <ListMembersClass members={member} />
+                                {hasNextMemberPage && (
+                                    <Waypoint onEnter={loadMoreMemberHandler}>
+                                        <Box>
+                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
+                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
+                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
+                                        </Box>
+                                    </Waypoint>
+                                )}
+                            </React.Fragment>
                         )}
                     </TabPanel>
                 </Grid>

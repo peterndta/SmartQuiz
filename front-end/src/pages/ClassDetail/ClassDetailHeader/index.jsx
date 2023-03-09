@@ -3,11 +3,11 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material'
 
 import { AppStyles } from '~/constants/styles'
 
-const ClassDetailHeader = () => {
+const ClassDetailHeader = ({ className }) => {
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography sx={{ color: AppStyles.colors['#333333'], fontSize: 38, fontWeight: 600 }}>
-                Đây là tên của lớp học
+                {className}
             </Typography>
             <Box display="flex">
                 <Tooltip title="Sửa thông tin" placement="bottom">
