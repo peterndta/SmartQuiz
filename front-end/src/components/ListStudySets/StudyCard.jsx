@@ -6,7 +6,6 @@ import { Avatar, Box, CardContent, Grid, Typography } from '@mui/material'
 import CardLayout from '../CardLayout'
 import MoreMenu from '../MoreMenu'
 
-import logo from '~/assets/images/User 5.png'
 import { AppStyles } from '~/constants/styles'
 
 const CardLayoutStyle = {
@@ -69,7 +68,7 @@ const StudyCard = ({ studySet, md }) => {
                         </Typography>
                     </Box>
                     <Box display="flex" mt={3} textAlign={'left'}>
-                        <Avatar sx={{ height: 20, width: 20 }} src={logo} alt="logo" />
+                        <Avatar sx={{ height: 20, width: 20 }} src={studySet.imageUrl} alt="logo" />
                         <Typography
                             ml={1}
                             sx={{
