@@ -1,6 +1,6 @@
 # <img src="./docs/images/Logo-app.jpg" width="40" height="40" style="border-radius: 50%;border: 1px solid black;"/>&nbsp; SmartQuiz
 
-[![Facebook Badge](https://img.shields.io/badge/Facebook-SmartQuiz-blue?style=for-the-badge&logo=facebook)](https://www.facebook.com/profile.php?id=100090442244649) [![TikTok Badge](https://img.shields.io/badge/TikTok-SmartQuiz-red?style=for-the-badge&logo=tiktok)](https://www.tiktok.com/@smartqu1z)
+[![SmartQuiz](https://img.shields.io/badge/follow-smartquiz-blue?style=flat&logo=facebook)](https://www.facebook.com/profile.php?id=100090442244649) [![SmartQuiz](https://img.shields.io/badge/follow-smartquiz-blue?style=flat&logo=Twitter)](https://twitter.com/SmartQu1z)
 
 
 SmartQuiz is a web application that allows learners to improve their knowledge and memory through a multiple-choice learning system. With convenient features to create custom question sets and share them with others, learners can connect with peers and learn together. The application also integrates effective learning methods to help students learn more efficiently.
