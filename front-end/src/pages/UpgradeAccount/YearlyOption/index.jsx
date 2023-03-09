@@ -58,16 +58,12 @@ const YearlyOption = () => {
                     </Box>
                 </Box>
                 <Box display="flex" mt={2}>
-                    <Typography
-                        // textAlign="revert"
-                        ml={0.5}
-                        sx={{ color: AppStyles.colors['#CCDBFF'], fontSize: 20, fontWeight: 600 }}
-                    >
+                    <Typography ml={0.5} sx={{ color: AppStyles.colors['#CCDBFF'], fontSize: 20, fontWeight: 600 }}>
                         / năm
                     </Typography>
                 </Box>
             </Box>
-            {UpgradeOptions.map((option, index) => (
+            {UpgradeOptions.map((option) => (
                 <Box display="flex" alignItems="center" key={option.id} mb={1}>
                     <Grid container spacing={3}>
                         <Grid item xs={1} md={1} lg={1}>

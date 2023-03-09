@@ -14,6 +14,7 @@ import ListStudySetsVertical from './ListStudySetsVertical'
 import Search from './Search'
 import Sort from './Sort'
 
+import { useSnackbar } from '~/HOC/SnackbarContext'
 import { Mock_Data, membersClass } from '~/Mock'
 import { useClass } from '~/actions/class'
 import { useAppSelector } from '~/hooks/redux-hooks'
@@ -71,6 +72,8 @@ const ClassDetail = () => {
     const [classes, setClasses] = useState({})
     const [page, setPage] = useState(1)
     const [hasNextPage, setHasNextPage] = useState(false)
+    const [studySet, setStudySet] = useState([])
+    const showSnackbar = useSnackbar()
 
     const handleChange = (_, newValue) => {
         setValue(newValue)
@@ -171,6 +174,7 @@ const ClassDetail = () => {
                         totalMem={classes.totalMember}
                         totalStudySet={classes.totalStudySet}
                         joinedCode={classes.joinCode}
+                        showSnackbar={showSnackbar}
                     />
                 </Grid>
             </Grid>

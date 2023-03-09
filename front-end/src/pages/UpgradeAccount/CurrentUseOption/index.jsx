@@ -34,7 +34,7 @@ const CurrentUseOption = () => {
                     VND
                 </Typography>
             </Box>
-            {UpgradeOptions.map((option, index) => (
+            {UpgradeOptions.map((option) => (
                 <Box display="flex" alignItems="center" key={option.id} mb={1}>
                     <Grid container spacing={3}>
                         <Grid item xs={1} md={1} lg={1}>

@@ -1,3 +1,5 @@
+import CopyToClipboard from 'react-copy-to-clipboard'
+
 import { FilterNone, InfoOutlined, PersonOutline } from '@mui/icons-material'
 import { Box, Button, InputBase, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
@@ -36,7 +38,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         color: AppStyles.colors['#000F33'],
     },
 }))
-const ClassDetailRight = ({ description, totalMem, totalStudySet, joinedCode }) => {
+const ClassDetailRight = ({ description, totalMem, totalStudySet, joinedCode, showSnackbar }) => {
+    const textClipBoard = `${window.location.origin}/join/${joinedCode}`
+
+    const copyClipBoardHander = () => {
+        showSnackbar({
+            severity: 'success',
+            children: 'Bạn đã copy thành công.',
+        })
+    }
+
     return (
         <Box mt={6}>
             <Typography
@@ -51,27 +62,25 @@ const ClassDetailRight = ({ description, totalMem, totalStudySet, joinedCode }) 
             </Typography>
             <Box display="flex" mt={2}>
                 <InputCompo>
-                    <StyledInputBase
-                        inputProps={{ 'aria-label': 'link' }}
-                        value={`${window.location.origin}/join/${joinedCode}`}
-                    />
+                    <StyledInputBase inputProps={{ 'aria-label': 'link' }} value={textClipBoard} />
                 </InputCompo>
-
-                <Button
-                    sx={{
-                        borderRadius: 2,
-                        px: 1,
-                        backgroundColor: AppStyles.colors['#004DFF'],
-                        color: 'white',
-                        textTransform: 'none',
-                        ':hover': {
-                            bgcolor: AppStyles.colors['#0045e5'],
+                <CopyToClipboard text={textClipBoard} onCopy={copyClipBoardHander}>
+                    <Button
+                        sx={{
+                            borderRadius: 2,
+                            px: 1,
+                            backgroundColor: AppStyles.colors['#004DFF'],
                             color: 'white',
-                        },
-                    }}
-                >
-                    Sao chép
-                </Button>
+                            textTransform: 'none',
+                            ':hover': {
+                                bgcolor: AppStyles.colors['#0045e5'],
+                                color: 'white',
+                            },
+                        }}
+                    >
+                        Sao chép
+                    </Button>
+                </CopyToClipboard>
             </Box>
             <Typography
                 sx={{
