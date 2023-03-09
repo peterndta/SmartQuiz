@@ -3,7 +3,7 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material'
 
 import { AppStyles } from '~/constants/styles'
 
-const ClassDetailHeader = ({ className }) => {
+const ClassDetailHeader = ({ className, leaveHandler }) => {
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography sx={{ color: AppStyles.colors['#333333'], fontSize: 38, fontWeight: 600 }}>
@@ -25,7 +25,7 @@ const ClassDetailHeader = ({ className }) => {
                         <Edit fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
                     </IconButton>
                 </Tooltip>
-                <Tooltip title="Rời khỏi lớp" placement="bottom">
+                <Tooltip title="Rời khỏi lớp" placement="bottom" onClick={leaveHandler}>
                     <IconButton
                         aria-label="create"
                         size="small"

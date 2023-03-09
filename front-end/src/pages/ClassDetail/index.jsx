@@ -80,7 +80,7 @@ const ButtonStyle = {
 const ClassDetail = () => {
     const { id } = useParams()
     const { search: query } = useLocation()
-    const { getClassDetail, getStudySetOfClass, getMemberOfClass } = useClass()
+    const { getClassDetail, getStudySetOfClass, getMemberOfClass, joinClass, leaveClass } = useClass()
     const { userId } = useAppSelector((state) => state.auth)
     const { studysetname = '', sorttype = 'Newest' } = queryString.parse(query)
     const [value, setValue] = useState(0)
@@ -93,11 +93,32 @@ const ClassDetail = () => {
     const [hasNextMemberPage, setHasNextMemberPage] = useState(false)
     const [studySet, setStudySet] = useState([])
     const [member, setMember] = useState([])
+    const [hasJoined, setHasJoined] = useState(false)
     const showSnackbar = useSnackbar()
 
     const handleChange = (_, newValue) => {
         setValue(newValue)
         if (newValue === 1) setPage(1)
+    }
+
+    const joinHandler = () => {
+        joinClass(id, userId).then(() => {
+            setHasJoined(true)
+            showSnackbar({
+                severity: 'success',
+                children: 'Tham gia lớp học thành công.',
+            })
+        })
+    }
+
+    const leaveHandler = () => {
+        leaveClass(id, userId).then(() => {
+            setHasJoined(false)
+            showSnackbar({
+                severity: 'success',
+                children: 'Rời lớp học thành công.',
+            })
+        })
     }
 
     const loadMoreHandler = () => {
@@ -170,7 +191,7 @@ const ClassDetail = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-    console.log(member)
+
     useEffect(() => {
         if (page === 1) {
             setIsSkeleton(true)
@@ -198,14 +219,12 @@ const ClassDetail = () => {
         <Loading />
     ) : (
         <Box sx={{ width: 1100, m: '0 auto', mt: 4, mb: 10 }}>
-            <ClassDetailHeader className={classes.name} />
-            <ButtonCompo
-                style={{ ...ButtonStyle }}
-                variant="outlined"
-                // onClick={}
-            >
-                Tham gia lớp học
-            </ButtonCompo>
+            <ClassDetailHeader className={classes.name} leaveHandler={leaveHandler} />
+            {userId !== classes.userId && !classes.isAlreadyJoin && !hasJoined ? (
+                <ButtonCompo style={{ ...ButtonStyle }} variant="outlined" onClick={joinHandler}>
+                    Tham gia lớp học
+                </ButtonCompo>
+            ) : null}
             <Box mt={3} sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     <Tab label="Các học phần" {...a11yProps(0)} />
