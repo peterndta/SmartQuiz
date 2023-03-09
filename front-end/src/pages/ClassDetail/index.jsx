@@ -88,9 +88,7 @@ const ClassDetail = () => {
     const [isSkeleton, setIsSkeleton] = useState(false)
     const [classes, setClasses] = useState({})
     const [page, setPage] = useState(1)
-    const [memberPage, setMemberPage] = useState(1)
     const [hasNextPage, setHasNextPage] = useState(false)
-    const [hasNextMemberPage, setHasNextMemberPage] = useState(false)
     const [studySet, setStudySet] = useState([])
     const [member, setMember] = useState([])
     const [hasJoined, setHasJoined] = useState(false)
@@ -135,23 +133,6 @@ const ClassDetail = () => {
         })
     }
 
-    const loadMoreMemberHandler = () => {
-        let pageNumber = memberPage + 1
-        getMemberOfClass(
-            id,
-            // , pageNumber
-            {}
-        ).then((response) => {
-            const data = response.data.data
-            // setMemberPage(response.data.meta.currentPage)
-            // setHasNextMemberPage(response.data.meta.hasNext)
-            const cloneMember = member
-            const newMember = [...cloneMember, ...data]
-            setMember(newMember)
-            setIsFirstRender(false)
-        })
-    }
-
     useEffect(() => {
         setIsSkeleton(true)
         const controller = new AbortController()
@@ -160,7 +141,6 @@ const ClassDetail = () => {
         getMemberOfClass(id, signal)
             .then((res) => {
                 const data = res.data.data
-                // setHasNextMemberPage(response.data.meta.hasNext)
                 setMember(data)
             })
             .finally(() => {
@@ -277,15 +257,6 @@ const ClassDetail = () => {
                         ) : (
                             <React.Fragment>
                                 <ListMembersClass members={member} />
-                                {hasNextMemberPage && (
-                                    <Waypoint onEnter={loadMoreMemberHandler}>
-                                        <Box>
-                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
-                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
-                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
-                                        </Box>
-                                    </Waypoint>
-                                )}
                             </React.Fragment>
                         )}
                     </TabPanel>

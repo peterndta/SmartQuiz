@@ -189,6 +189,7 @@ const UpdateStudySet = () => {
                     return {
                         quest: question.name,
                         id: question.id,
+                        image: question.imageUrl,
                         ans: question.answers.map((answer) => {
                             return {
                                 name: answer.name,
