@@ -8,6 +8,7 @@ import PopularTable from './PopularTable'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
 import { Mock_Data } from '~/Mock'
+import { useClass } from '~/actions/class'
 import { useStudySet } from '~/actions/study-set'
 import { useAppSelector } from '~/hooks/redux-hooks'
 import StudySetCards from '~/pages/Home/StudySetCards'
@@ -17,7 +18,9 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [recentStudySets, setRecentStudySet] = useState([])
     const [recommendStudySets, setRecommendedStudySets] = useState([])
+    const [joinedClass, setJoinedClass] = useState([])
     const { getRecentStudySets, getRecommendStudySets } = useStudySet()
+    const { getClassHasJoined } = useClass()
     const showSnackBar = useSnackbar()
 
     useEffect(() => {
@@ -25,15 +28,20 @@ const Home = () => {
         const firstSignal = firstController.signal
         const secondController = new AbortController()
         const secondSignal = secondController.signal
+        const thirdController = new AbortController()
+        const thirdSignal = thirdController.signal
 
         const getRecent = getRecentStudySets(userId, 6, firstSignal)
         const getRecommended = getRecommendStudySets(userId, 3, secondSignal)
+        const getJoinedClass = getClassHasJoined(userId, thirdSignal)
 
-        Promise.all([getRecent, getRecommended])
+        Promise.all([getRecent, getRecommended, getJoinedClass])
             .then((res) => {
                 const recent = res[0].data.data
                 const recommend = res[1].data.data
+                const classes = res[2].data.data
 
+                setJoinedClass(classes)
                 setRecentStudySet(recent)
                 setRecommendedStudySets(recommend)
             })
@@ -72,8 +80,9 @@ const Home = () => {
                 />
                 <ClassList
                     title="Lớp học"
-                    studySets={Mock_Data.yourSet}
+                    classes={joinedClass}
                     isLoading={isLoading}
+                    loadType={Mock_Data.yourSet}
                     emptyTextAbove="Bạn chưa tham gia lớp học nào"
                     emptyTextBelow="Các lớp học bạn tham gia sẽ hiển thị ở đây."
                 />
