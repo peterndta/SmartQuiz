@@ -5,9 +5,9 @@ import { useParams } from 'react-router-dom'
 import { HighlightOffOutlined } from '@mui/icons-material'
 import { Box, IconButton, Modal, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
+import LoadingClasses from '~/components/LoadingClasses'
 
 import Classes from './Classes'
-import LoadingClasses from './LoadingClasses'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
 import { useClass } from '~/actions/class'

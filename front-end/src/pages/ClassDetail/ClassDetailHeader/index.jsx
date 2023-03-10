@@ -1,16 +1,24 @@
+import { useState } from 'react'
+
 import { Delete, Edit, Remove } from '@mui/icons-material'
 import { Box, IconButton, Tooltip, Typography } from '@mui/material'
+import UpdateClassModal from '~/components/UpdateClassModal'
 
 import { AppStyles } from '~/constants/styles'
 
-const ClassDetailHeader = ({ className, leaveHandler }) => {
+const ClassDetailHeader = ({ className, leaveHandler, classId, updateClassDetailHandler }) => {
+    const [openEditModal, setOpenEditModal] = useState(false)
+
+    const handleOpen = () => setOpenEditModal(true)
+    const handleClose = () => setOpenEditModal(false)
+
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography sx={{ color: AppStyles.colors['#333333'], fontSize: 38, fontWeight: 600 }}>
                 {className}
             </Typography>
             <Box display="flex">
-                <Tooltip title="Sửa thông tin" placement="bottom">
+                <Tooltip title="Sửa thông tin" placement="bottom" onClick={handleOpen}>
                     <IconButton
                         aria-label="create"
                         size="small"
@@ -55,6 +63,14 @@ const ClassDetailHeader = ({ className, leaveHandler }) => {
                     </IconButton>
                 </Tooltip>
             </Box>
+            {openEditModal && (
+                <UpdateClassModal
+                    open={openEditModal}
+                    handleClose={handleClose}
+                    classId={classId}
+                    updateClassDetailHandler={updateClassDetailHandler}
+                />
+            )}
         </Box>
     )
 }

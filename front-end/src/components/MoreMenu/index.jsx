@@ -7,7 +7,14 @@ import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/mat
 
 import { AppStyles } from '~/constants/styles'
 
-const MoreMenu = ({ studySetId, saveButtonOn, color, deleteButtonOn, deleteStudySetHandler, removeButtonOn }) => {
+const MoreMenu = ({
+    studySetId,
+    saveButtonOn = false,
+    color,
+    deleteButtonOn = false,
+    deleteStudySetHandler,
+    removeButtonOn = false,
+}) => {
     const ref = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
 

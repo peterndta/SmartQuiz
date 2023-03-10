@@ -10,7 +10,7 @@ const CardLayoutStyle = {
     },
 }
 
-const MemberCard = ({ member }) => {
+const MemberCard = ({ member, kickHandler }) => {
     return (
         <Grid item>
             <CardLayout style={CardLayoutStyle}>
@@ -54,6 +54,7 @@ const MemberCard = ({ member }) => {
                             </Box>
                         </Box>
                         <Box
+                            onClick={() => kickHandler(member.id)}
                             borderRadius={2}
                             sx={{
                                 cursor: 'pointer',
