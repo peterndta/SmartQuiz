@@ -10,7 +10,7 @@ const CardLayoutStyle = {
     },
 }
 
-const MemberCard = ({ member, kickHandler }) => {
+const MemberCard = ({ member, kickHandler, userId }) => {
     return (
         <Grid item>
             <CardLayout style={CardLayoutStyle}>
@@ -53,20 +53,22 @@ const MemberCard = ({ member, kickHandler }) => {
                                 </Typography>
                             </Box>
                         </Box>
-                        <Box
-                            onClick={() => kickHandler(member.id)}
-                            borderRadius={2}
-                            sx={{
-                                cursor: 'pointer',
-                                ':hover': {
-                                    backgroundColor: '#fcf1f1',
-                                },
-                            }}
-                        >
-                            <Typography color="error" fontWeight={500} sx={{ p: 1 }}>
-                                Xóa
-                            </Typography>
-                        </Box>
+                        {!member.isClassOwner && userId !== member.id && (
+                            <Box
+                                onClick={() => kickHandler(member.id)}
+                                borderRadius={2}
+                                sx={{
+                                    cursor: 'pointer',
+                                    ':hover': {
+                                        backgroundColor: '#fcf1f1',
+                                    },
+                                }}
+                            >
+                                <Typography color="error" fontWeight={500} sx={{ p: 1 }}>
+                                    Xóa
+                                </Typography>
+                            </Box>
+                        )}
                     </Box>
                 </CardContent>
             </CardLayout>

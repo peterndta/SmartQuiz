@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 
 import { useHistory } from 'react-router-dom'
 
-import { Add, BookmarkAdd, CheckBox, Description, Edit, Star } from '@mui/icons-material'
+import { Add, BookmarkAdd, CheckBox, Delete, Description, Edit, Star } from '@mui/icons-material'
 import { Avatar, Box, Button, Divider, IconButton, Tooltip, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
+import AlertConfirm from '~/components/ConfirmDialog'
 import CreateClassModal from '~/components/CreateClassModal'
 import QuestionCard from '~/components/QuestionList/QuestionCard'
 
@@ -17,17 +18,20 @@ import logo from '~/assets/images/User 5.png'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
-const DetailHeader = ({ info, id, questions, userId }) => {
+const DetailHeader = ({ info, id, questions, userId, deleteStudySetHandler }) => {
+    const { userId: idUser } = useAppSelector((state) => state.auth)
     const [openLearn, setOpenLearn] = useState(false)
     const [openTest, setOpenTest] = useState(false)
     const [openAdd, setOpenAdd] = useState(false)
     const [openAddClass, setOpenAddClass] = useState(false)
     const [openRate, setOpenRate] = useState(false)
-
-    const { userId: idUser } = useAppSelector((state) => state.auth)
+    const [openConfirm, setOpenConfirm] = useState(false)
 
     const handleOpenLearn = () => setOpenLearn(true)
     const handleCloseLearn = () => setOpenLearn(false)
+
+    const handleOpenConfirm = () => setOpenConfirm(true)
+    const handleCloseConfirm = () => setOpenConfirm(false)
 
     const handleOpenTest = () => setOpenTest(true)
     const handleCloseTest = () => setOpenTest(false)
@@ -120,15 +124,26 @@ const DetailHeader = ({ info, id, questions, userId }) => {
                         </IconButton>
                     </Tooltip>
                     {idUser === userId && (
-                        <Tooltip title="Sửa" placement="bottom">
-                            <IconButton
-                                size="large"
-                                sx={{ border: '1px solid #767680' }}
-                                onClick={() => history.push(`/study-sets/${id}/update`)}
-                            >
-                                <Edit fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
-                            </IconButton>
-                        </Tooltip>
+                        <React.Fragment>
+                            <Tooltip title="Sửa" placement="bottom">
+                                <IconButton
+                                    size="large"
+                                    sx={{ border: '1px solid #767680', mr: 2 }}
+                                    onClick={() => history.push(`/study-sets/${id}/update`)}
+                                >
+                                    <Edit fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Xóa" placement="bottom">
+                                <IconButton
+                                    size="large"
+                                    sx={{ border: '1px solid #767680', mr: 2 }}
+                                    onClick={handleOpenConfirm}
+                                >
+                                    <Delete fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
+                                </IconButton>
+                            </Tooltip>
+                        </React.Fragment>
                     )}
                 </Box>
             </Box>
@@ -155,6 +170,17 @@ const DetailHeader = ({ info, id, questions, userId }) => {
                     ({info.questions.length})
                 </Typography>
             </Box>
+            {openConfirm && (
+                <AlertConfirm
+                    title="Xóa học phần"
+                    open={openConfirm}
+                    onClose={handleCloseConfirm}
+                    btnConfirmText="Delete"
+                    onConfirm={deleteStudySetHandler}
+                >
+                    Bạn có muốn xóa học phần này không?
+                </AlertConfirm>
+            )}
         </React.Fragment>
     )
 }

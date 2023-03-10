@@ -2,15 +2,20 @@ import { useState } from 'react'
 
 import { Delete, Edit, Remove } from '@mui/icons-material'
 import { Box, IconButton, Tooltip, Typography } from '@mui/material'
+import AlertConfirm from '~/components/ConfirmDialog'
 import UpdateClassModal from '~/components/UpdateClassModal'
 
 import { AppStyles } from '~/constants/styles'
 
-const ClassDetailHeader = ({ className, leaveHandler, classId, updateClassDetailHandler }) => {
+const ClassDetailHeader = ({ className, leaveHandler, classId, updateClassDetailHandler, deleteClassHandler }) => {
+    const [openConfirm, setOpenConfirm] = useState(false)
     const [openEditModal, setOpenEditModal] = useState(false)
 
     const handleOpen = () => setOpenEditModal(true)
     const handleClose = () => setOpenEditModal(false)
+
+    const handleOpenConfirm = () => setOpenConfirm(true)
+    const handleCloseConfirm = () => setOpenConfirm(false)
 
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -58,6 +63,7 @@ const ClassDetailHeader = ({ className, leaveHandler, classId, updateClassDetail
                             backgroundColor: AppStyles.colors['#FAFBFF'],
                             border: '1px solid #767680',
                         }}
+                        onClick={handleOpenConfirm}
                     >
                         <Delete fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
                     </IconButton>
@@ -70,6 +76,17 @@ const ClassDetailHeader = ({ className, leaveHandler, classId, updateClassDetail
                     classId={classId}
                     updateClassDetailHandler={updateClassDetailHandler}
                 />
+            )}
+            {openConfirm && (
+                <AlertConfirm
+                    title="Xóa lớp học"
+                    open={openConfirm}
+                    onClose={handleCloseConfirm}
+                    btnConfirmText="Delete"
+                    onConfirm={deleteClassHandler}
+                >
+                    Bạn có chắc chắn muốn xóa lớp học này?
+                </AlertConfirm>
             )}
         </Box>
     )

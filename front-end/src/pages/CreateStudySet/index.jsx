@@ -31,7 +31,7 @@ const CreateStudySet = () => {
     const { state } = useLocation()
     const showSnackbar = useSnackbar()
     const isSubmitSuccessfully = useRef(false)
-    const openId = useRef(1)
+    const openId = useRef(uuid())
     const history = useHistory()
     const { createStudySet } = useStudySet()
     const { userId } = useAppSelector((state) => state.auth)

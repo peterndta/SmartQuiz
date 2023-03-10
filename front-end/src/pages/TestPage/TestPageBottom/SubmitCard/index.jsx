@@ -82,7 +82,7 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time, correc
 
     const leftTime = Math.floor((minuteGenerator(time) - countDown.current) / 1000)
 
-    const percentage = (correctAns * 100) / 10
+    const percentage = (correctAns * 100) / questionLength
 
     useEffect(() => {
         if (isSubmit) {
