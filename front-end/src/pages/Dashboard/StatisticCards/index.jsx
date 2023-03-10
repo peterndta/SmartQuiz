@@ -167,7 +167,7 @@ const StatisticCards = ({ statis }) => {
                                         }}
                                         fontSize="1.6rem"
                                     >
-                                        44
+                                        25.000 VND
                                     </Typography>
                                 </Box>
                             </Grid>
