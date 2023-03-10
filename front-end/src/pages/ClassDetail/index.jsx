@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import PropTypes from 'prop-types'
 import queryString from 'query-string'
-import { useLocation, useParams } from 'react-router-dom'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 import { Waypoint } from 'react-waypoint'
 
 import { Box, Grid, Skeleton, Tab, Tabs } from '@mui/material'
@@ -80,7 +80,9 @@ const ButtonStyle = {
 const ClassDetail = () => {
     const { id } = useParams()
     const { search: query } = useLocation()
-    const { getClassDetail, getStudySetOfClass, getMemberOfClass, joinClass, leaveClass, updateClass } = useClass()
+    const history = useHistory()
+    const { getClassDetail, getStudySetOfClass, getMemberOfClass, joinClass, leaveClass, updateClass, removeClass } =
+        useClass()
     const { userId } = useAppSelector((state) => state.auth)
     const { studysetname = '', sorttype = 'Newest' } = queryString.parse(query)
     const [value, setValue] = useState(0)
@@ -132,6 +134,16 @@ const ClassDetail = () => {
         })
     }
 
+    const deleteClassHandler = () => {
+        removeClass(id, userId).then(() => {
+            showSnackbar({
+                severity: 'success',
+                children: 'Xóa lớp học thành công.',
+            })
+            history.push('/my-library')
+        })
+    }
+
     const loadMoreHandler = () => {
         let pageNumber = page + 1
         const params = filterStringGenerator({ studysetname, sorttype, pageNumber })
@@ -171,7 +183,7 @@ const ClassDetail = () => {
 
         getMemberOfClass(id, signal)
             .then((res) => {
-                const data = res.data.data
+                const data = res.data.data.reverse()
                 setMember(data)
             })
             .finally(() => {
@@ -236,6 +248,7 @@ const ClassDetail = () => {
                 leaveHandler={leaveHandler}
                 classId={id}
                 updateClassDetailHandler={updateClassDetailHandler}
+                deleteClassHandler={deleteClassHandler}
             />
             {userId !== classes.userId && !classes.isAlreadyJoin && !hasJoined ? (
                 <ButtonCompo style={{ ...ButtonStyle }} variant="outlined" onClick={joinHandler}>
@@ -293,7 +306,7 @@ const ClassDetail = () => {
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
-                                <ListMembersClass members={member} kickHandler={kickHandler} />
+                                <ListMembersClass members={member} kickHandler={kickHandler} userId={userId} />
                             </React.Fragment>
                         )}
                     </TabPanel>

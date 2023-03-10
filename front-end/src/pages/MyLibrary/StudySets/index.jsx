@@ -107,9 +107,6 @@ const StudySets = ({ getMyStudySets }) => {
             const data = response.data.data
             setStudySetDetail(data)
         })
-        return () => {
-            controller.abort()
-        }
     }
 
     const deleteStudySetHandler = (studySetId) => {
@@ -120,11 +117,17 @@ const StudySets = ({ getMyStudySets }) => {
 
                 const newStudySet = cloneStudySet.filter((studySet) => studySet.id !== studySetId)
 
-                setIsFirstRender(false)
-                setStudySet(newStudySet)
+                getStudySet(newStudySet[0]?.id, userId, {})
+                    .then((response) => {
+                        const data = response.data.data
+                        setStudySetDetail(data)
+                        setStudySet(newStudySet)
+                    })
+                    .finally(() => {
+                        setIsFirstRender(false)
+                    })
             })
             .catch(() => {
-                setIsFirstRender(false)
                 showSnackbar({
                     severity: 'error',
                     children: 'Something went wrong, please try again later.',
