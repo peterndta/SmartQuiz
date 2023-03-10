@@ -1,3 +1,5 @@
+import CopyToClipboard from 'react-copy-to-clipboard'
+
 import { FilterNone, InfoOutlined, PersonOutline } from '@mui/icons-material'
 import { Box, Button, InputBase, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
@@ -13,10 +15,10 @@ const InputCompo = styled('div')(({ theme }) => ({
         backgroundColor: AppStyles.colors['#E6EDFF'],
     },
     marginRight: 12,
-    height: '100%', // searchHeight
+    height: '100%',
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-        width: 230, // searchWidth
+        width: 230,
     },
 }))
 
@@ -36,7 +38,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         color: AppStyles.colors['#000F33'],
     },
 }))
-const ClassDetailRight = () => {
+const ClassDetailRight = ({ description, totalMem, totalStudySet, joinedCode, showSnackbar }) => {
+    const textClipBoard = `${window.location.origin}/join/${joinedCode}`
+
+    const copyClipBoardHander = () => {
+        showSnackbar({
+            severity: 'success',
+            children: 'Bạn đã copy thành công.',
+        })
+    }
+
     return (
         <Box mt={6}>
             <Typography
@@ -51,27 +62,25 @@ const ClassDetailRight = () => {
             </Typography>
             <Box display="flex" mt={2}>
                 <InputCompo>
-                    <StyledInputBase
-                        inputProps={{ 'aria-label': 'link' }}
-                        value={'https://quizlet.com/join/CjXSTcQrq'}
-                    />
+                    <StyledInputBase inputProps={{ 'aria-label': 'link' }} value={textClipBoard} />
                 </InputCompo>
-
-                <Button
-                    sx={{
-                        borderRadius: 2,
-                        px: 1,
-                        backgroundColor: AppStyles.colors['#004DFF'],
-                        color: 'white',
-                        textTransform: 'none',
-                        ':hover': {
-                            bgcolor: AppStyles.colors['#0045e5'],
+                <CopyToClipboard text={textClipBoard} onCopy={copyClipBoardHander}>
+                    <Button
+                        sx={{
+                            borderRadius: 2,
+                            px: 1,
+                            backgroundColor: AppStyles.colors['#004DFF'],
                             color: 'white',
-                        },
-                    }}
-                >
-                    Sao chép
-                </Button>
+                            textTransform: 'none',
+                            ':hover': {
+                                bgcolor: AppStyles.colors['#0045e5'],
+                                color: 'white',
+                            },
+                        }}
+                    >
+                        Sao chép
+                    </Button>
+                </CopyToClipboard>
             </Box>
             <Typography
                 sx={{
@@ -95,7 +104,7 @@ const ClassDetailRight = () => {
                             fontWeight: 600,
                         }}
                     >
-                        1 học phần
+                        {totalStudySet} học phần
                     </Typography>
                 </Box>
                 <Box display="flex" alignItems="center" mt={2}>
@@ -108,7 +117,7 @@ const ClassDetailRight = () => {
                             fontWeight: 600,
                         }}
                     >
-                        3 thành viên
+                        {totalMem} thành viên
                     </Typography>
                 </Box>
                 <Box display="flex" mt={2}>
@@ -121,7 +130,7 @@ const ClassDetailRight = () => {
                             fontWeight: 600,
                         }}
                     >
-                        Đây là lớp Mác Lê Nin của Trường Đại học FPT Hồ Chí Minh
+                        {description === '' ? 'Unknown' : description}
                     </Typography>
                 </Box>
             </Box>

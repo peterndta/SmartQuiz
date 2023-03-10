@@ -1,8 +1,6 @@
 import { Avatar, Box, CardContent, Grid, Typography } from '@mui/material'
 import CardLayout from '~/components/CardLayout'
 
-import user from '~/assets/images/User 5.png'
-
 const CardLayoutStyle = {
     borderRadius: 1,
     boxShadow: '0px 1px 2px rgba(0, 46, 153, 0.3), 0px 1px 3px 1px rgba(0, 46, 153, 0.15)',
@@ -19,7 +17,7 @@ const MemberCard = ({ member }) => {
                 <CardContent>
                     <Box display="flex" alignItems="center" justifyContent="space-between">
                         <Box display="flex" alignItems="center">
-                            <Avatar sx={{ height: 50, width: 50 }} src={user} alt="logo" />
+                            <Avatar sx={{ height: 50, width: 50 }} src={member.imageUrl} alt="logo" />
                             <Box mt={1} ml={2}>
                                 <Typography
                                     variant="body1"
@@ -51,7 +49,7 @@ const MemberCard = ({ member }) => {
                                         fontSize: 14,
                                     }}
                                 >
-                                    {member.role}
+                                    {member.isClassOwner ? 'Quản trị viên' : 'Thành viên'}
                                 </Typography>
                             </Box>
                         </Box>

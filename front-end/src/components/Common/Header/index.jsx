@@ -52,7 +52,7 @@ const Header = () => {
 
     return (
         <AppBar position="fixed" sx={{ backgroundColor: AppStyles.colors['#FAFBFF'], boxShadow: 'none' }}>
-            <CreateClassModal open={openClass} handleClose={handleCloseClass} />
+            {openClass && <CreateClassModal open={openClass} handleClose={handleCloseClass} />}
             <Toolbar disableGutters>
                 <Box
                     display="flex"
@@ -280,42 +280,24 @@ const Header = () => {
                                 </Menu>
                             </React.Fragment>
                         ) : (
-                            <React.Fragment>
-                                <Button
-                                    sx={{
-                                        color: AppStyles.colors['#000F33'],
-                                        textTransform: 'none',
-                                        borderRadius: 2.5,
-                                        ml: 5,
-                                        ':hover': {
-                                            bgcolor: 'none',
-                                            color: AppStyles.colors['#004DFF'],
-                                        },
-                                    }}
-                                    component={Link}
-                                    to="/register"
-                                >
-                                    <Typography>Đăng ký</Typography>
-                                </Button>
-                                <Button
-                                    sx={{
-                                        color: '#fefefe',
-                                        backgroundColor: AppStyles.colors['#FFAF00'],
-                                        p: 1,
-                                        borderRadius: 2.5,
-                                        ml: 2,
-                                        textTransform: 'none',
-                                        ':hover': {
-                                            bgcolor: AppStyles.colors['#E59D00'],
-                                            color: 'white',
-                                        },
-                                    }}
-                                    component={Link}
-                                    to="/login"
-                                >
-                                    <Typography>Đăng nhập</Typography>
-                                </Button>
-                            </React.Fragment>
+                            <Button
+                                sx={{
+                                    color: '#fefefe',
+                                    backgroundColor: AppStyles.colors['#FFAF00'],
+                                    p: 1,
+                                    borderRadius: 2.5,
+                                    ml: 2,
+                                    textTransform: 'none',
+                                    ':hover': {
+                                        bgcolor: AppStyles.colors['#E59D00'],
+                                        color: 'white',
+                                    },
+                                }}
+                                component={Link}
+                                to="/login"
+                            >
+                                <Typography>Đăng nhập</Typography>
+                            </Button>
                         )}
                     </Box>
                 </Box>

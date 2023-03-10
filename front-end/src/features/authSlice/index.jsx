@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    userId: '',
+    userId: null,
     token: '',
     email: '',
     username: '',
@@ -36,8 +36,8 @@ const authSlice = createSlice({
             state.token = ''
             state.vip = false
         },
-        checkout: (state, action) => {
-            state.vip = action.payload
+        checkout: (state) => {
+            state.vip = true
         },
     },
 })

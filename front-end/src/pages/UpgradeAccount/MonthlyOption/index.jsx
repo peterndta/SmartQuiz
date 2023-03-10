@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useHistory } from 'react-router-dom'
 
 import { CheckBox } from '@mui/icons-material'
@@ -48,7 +46,7 @@ const MonthlyOption = () => {
                     </Typography>
                 </Box>
             </Box>
-            {UpgradeOptions.map((option, index) => (
+            {UpgradeOptions.map((option) => (
                 <Box display="flex" alignItems="center" key={option.id} mb={1}>
                     <Grid container spacing={3}>
                         <Grid item xs={1} md={1} lg={1}>

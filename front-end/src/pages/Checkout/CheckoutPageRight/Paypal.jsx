@@ -50,7 +50,7 @@ const Paypal = () => {
         }
         createBill(info)
             .then(() => {
-                dispatch(checkout(true))
+                dispatch(checkout())
                 showSnackbar({
                     severity: 'success',
                     children: 'Giao dịch thành công.',

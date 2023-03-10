@@ -47,6 +47,7 @@ const privateRoutes = [
         path: '/',
         name: 'home',
         layout: 'common',
+        role: 'user',
     },
     {
         component: lazy(() => import('~/pages/CreateStudySet')),
@@ -60,42 +61,63 @@ const privateRoutes = [
         path: '/my-library',
         name: 'my-library',
         layout: 'common',
+        role: 'user',
     },
     {
         component: lazy(() => import('~/pages/UpgradeAccount')),
         path: '/upgrade',
         name: 'upgrade',
         layout: 'common',
+        role: 'user',
     },
     {
         component: lazy(() => import('~/pages/Checkout')),
         path: '/checkout',
         name: 'checkout',
         layout: 'common',
+        role: 'user',
     },
     {
         component: lazy(() => import('~/pages/Settings')),
         path: '/settings',
         name: 'settings',
         layout: 'common',
+        role: 'user',
     },
     {
         component: lazy(() => import('~/pages/UpdateStudySet')),
         path: '/study-sets/:id/update',
         name: 'update',
         layout: 'common',
+        role: 'user',
     },
     {
         component: lazy(() => import('~/pages/TestPage')),
         path: '/study-sets/:id/test',
         name: 'test',
         layout: 'common',
+        role: 'user',
     },
     {
         component: lazy(() => import('~/pages/LearnPage')),
         path: '/study-sets/:id/learn',
         name: 'learn',
         layout: 'common',
+        role: 'user',
+    },
+    {
+        component: lazy(() => import('~/pages/Join')),
+        path: '/join/:id',
+        name: 'join',
+        layout: 'common',
+        role: 'user',
+    },
+    {
+        component: lazy(() => import('~/pages/Dashboard')),
+        path: '/admin',
+        name: 'dashboard',
+        layout: 'admin',
+        role: 'admin',
     },
 ]
 
@@ -108,15 +130,15 @@ const RouteList = (
                         <Switch>
                             {publicRoutes.map(
                                 ({ layout, ...route }) =>
-                                    layout === 'common' && <PublicRoute key={route.name} exact={true} {...route} />
+                                    layout === 'admin' && <PublicRoute key={route.name} exact={true} {...route} />
                             )}
                             {hyBridRoutes.map(
                                 ({ layout, ...route }) =>
-                                    layout === 'common' && <HybridRoute key={route.name} exact={true} {...route} />
+                                    layout === 'admin' && <HybridRoute key={route.name} exact={true} {...route} />
                             )}
                             {privateRoutes.map(
                                 ({ layout, ...route }) =>
-                                    layout === 'common' && <PrivateRoute key={route.name} exact={true} {...route} />
+                                    layout === 'admin' && <PrivateRoute key={route.name} exact={true} {...route} />
                             )}
                             <Route path="*">
                                 <NotFound />

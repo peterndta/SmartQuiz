@@ -2,14 +2,15 @@ import React, { useState } from 'react'
 
 import { useHistory } from 'react-router-dom'
 
-import { Add, BookmarkAdd, CheckBox, Description, Edit } from '@mui/icons-material'
-import { Avatar, Box, Divider, IconButton, Tooltip, Typography } from '@mui/material'
+import { Add, BookmarkAdd, CheckBox, Description, Edit, Star } from '@mui/icons-material'
+import { Avatar, Box, Button, Divider, IconButton, Tooltip, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 import CreateClassModal from '~/components/CreateClassModal'
 import QuestionCard from '~/components/QuestionList/QuestionCard'
 
 import AddModal from './AddModal'
 import LearnModal from './LearnModal'
+import RateModal from './RateModal'
 import TestModal from './TestModal'
 
 import logo from '~/assets/images/User 5.png'
@@ -21,6 +22,7 @@ const DetailHeader = ({ info, id, questions, userId }) => {
     const [openTest, setOpenTest] = useState(false)
     const [openAdd, setOpenAdd] = useState(false)
     const [openAddClass, setOpenAddClass] = useState(false)
+    const [openRate, setOpenRate] = useState(false)
 
     const { userId: idUser } = useAppSelector((state) => state.auth)
 
@@ -35,9 +37,11 @@ const DetailHeader = ({ info, id, questions, userId }) => {
 
     const handleOpenAddClass = () => {
         setOpenAddClass(true)
-        handleCloseAdd()
     }
     const handleCloseAddClass = () => setOpenAddClass(false)
+
+    const handleOpenRate = () => setOpenRate(true)
+    const handleCloseRate = () => setOpenRate(false)
 
     const history = useHistory()
     const ButtonStyle = {
@@ -56,11 +60,37 @@ const DetailHeader = ({ info, id, questions, userId }) => {
         <React.Fragment>
             <LearnModal open={openLearn} handleClose={handleCloseLearn} id={id} />
             <TestModal open={openTest} handleClose={handleCloseTest} id={id} numberOfQuestion={info.questions.length} />
-            <AddModal open={openAdd} handleClose={handleCloseAdd} handleOpenAddClass={handleOpenAddClass} />
-            <CreateClassModal open={openAddClass} handleClose={handleCloseAddClass} />
+            {openAdd && (
+                <AddModal open={openAdd} handleClose={handleCloseAdd} handleOpenAddClass={handleOpenAddClass} />
+            )}
+            <RateModal open={openRate} handleClose={handleCloseRate} id={id} numberOfQuestion={info.questions.length} />
+            {openAddClass && <CreateClassModal open={openAddClass} handleClose={handleCloseAddClass} />}
             <Typography sx={{ fontWeight: 500, fontSize: 32, color: AppStyles.colors['#333333'] }}>
                 {info.name}
             </Typography>
+            <Button
+                sx={{
+                    textTransform: 'none',
+                    ':hover': {
+                        bgcolor: '#eef2ff',
+                    },
+                }}
+                onClick={handleOpenRate}
+            >
+                <Star fontSize="small" sx={{ color: AppStyles.colors['#FFAF00'] }} />
+                <Typography
+                    sx={{
+                        mt: 0.5,
+                        ml: 1,
+                        color: AppStyles.colors['#586380'],
+                        fontSize: 15,
+                        fontWeight: 500,
+                    }}
+                >
+                    4.5 (17 đánh giá)
+                </Typography>
+            </Button>
+
             <Divider
                 sx={{ mt: 2, borderBottomWidth: 2, backgroundColor: AppStyles.colors['#000F33'], opacity: '30%' }}
             />

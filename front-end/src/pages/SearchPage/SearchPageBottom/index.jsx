@@ -16,7 +16,7 @@ import { AppStyles } from '~/constants/styles'
 
 const filterStringGenerator = ({ studysetname, sorttype, pageNumber, gradeid, subjectid }) => {
     let filterString = '?'
-    if (studysetname && studysetname.trim() !== '') filterString += 'StudySetName=' + studysetname
+    if (studysetname && studysetname.trim() !== '') filterString += '&StudySetName=' + studysetname
 
     if (subjectid !== undefined) filterString += `&SubjectId=${subjectid}`
 

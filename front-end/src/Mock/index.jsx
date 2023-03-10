@@ -602,9 +602,9 @@ const UpgradeOptions = [
 ]
 const PremiumPrice = {
     yearly: {
-        US_Price: 0.42,
-        VN_Price: '10.000',
-        discount: '20.000',
+        US_Price: 2.5,
+        VN_Price: '60.000',
+        discount: '120.000',
     },
     montly: {
         US_Price: 0.08,

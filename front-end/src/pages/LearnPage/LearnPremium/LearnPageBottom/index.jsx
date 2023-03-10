@@ -63,13 +63,13 @@ const LearnPageBottom = ({ start }) => {
         if (index > 0 && index % 3 === 0) {
             const updatedSetIds = clone(setIds)
 
-            let random = Math.floor(Math.random() * (index - 1))
+            let random = Math.floor(Math.random() * index)
             let getQuestionAtPosition = cloneDeep(studySetDetail.questions[random])
             let flag = true
 
             while (flag) {
                 if (updatedSetIds.has(getQuestionAtPosition.id)) {
-                    random = Math.floor(Math.random() * (index - 1))
+                    random = Math.floor(Math.random() * index)
                     getQuestionAtPosition = cloneDeep(studySetDetail.questions[random])
                 } else {
                     updatedSetIds.add(getQuestionAtPosition.id)
