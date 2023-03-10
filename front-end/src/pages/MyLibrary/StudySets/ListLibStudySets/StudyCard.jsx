@@ -44,12 +44,6 @@ const StudyCard = ({ studySet, studySets, setClickIndex, clickIndex, index, dele
                             >
                                 {studySet.name}
                             </Typography>
-                            {/* {Math.random() < 0.5 && (
-                                <GppGood
-                                    fontSize="small"
-                                    sx={{ ml: 1, mt: -0.5, color: AppStyles.colors['#004DFF'] }}
-                                />
-                            )} */}
                         </Box>
 
                         <MoreMenu

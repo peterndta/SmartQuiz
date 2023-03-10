@@ -80,7 +80,7 @@ const ButtonStyle = {
 const ClassDetail = () => {
     const { id } = useParams()
     const { search: query } = useLocation()
-    const { getClassDetail, getStudySetOfClass, getMemberOfClass, joinClass, leaveClass } = useClass()
+    const { getClassDetail, getStudySetOfClass, getMemberOfClass, joinClass, leaveClass, updateClass } = useClass()
     const { userId } = useAppSelector((state) => state.auth)
     const { studysetname = '', sorttype = 'Newest' } = queryString.parse(query)
     const [value, setValue] = useState(0)
@@ -111,7 +111,20 @@ const ClassDetail = () => {
 
     const leaveHandler = () => {
         leaveClass(id, userId).then(() => {
+            const newMembers = member.filter((mem) => mem.id !== userId)
+            setMember(newMembers)
             setHasJoined(false)
+            showSnackbar({
+                severity: 'success',
+                children: 'Rời lớp học thành công.',
+            })
+        })
+    }
+
+    const kickHandler = (memberId) => {
+        leaveClass(id, memberId).then(() => {
+            const newMembers = member.filter((mem) => mem.id !== memberId)
+            setMember(newMembers)
             showSnackbar({
                 severity: 'success',
                 children: 'Rời lớp học thành công.',
@@ -131,6 +144,24 @@ const ClassDetail = () => {
             setStudySet(newStudySet)
             setIsFirstRender(false)
         })
+    }
+
+    const updateClassDetailHandler = (classDetail, handleClose) => {
+        updateClass(classDetail)
+            .then(() => {
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Bạn đã tạo lớp học thành công',
+                })
+                setClasses((prev) => ({ ...prev, name: classDetail.name, description: classDetail.description }))
+                handleClose()
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Something went wrong, try again later!',
+                })
+            })
     }
 
     useEffect(() => {
@@ -175,7 +206,8 @@ const ClassDetail = () => {
     useEffect(() => {
         if (page === 1) {
             setIsSkeleton(true)
-            const params = filterStringGenerator({ studysetname, sorttype, page })
+            const pageNumber = page
+            const params = filterStringGenerator({ studysetname, sorttype, pageNumber })
             getStudySetOfClass(id, params)
                 .then((response) => {
                     const data = response.data.data
@@ -199,7 +231,12 @@ const ClassDetail = () => {
         <Loading />
     ) : (
         <Box sx={{ width: 1100, m: '0 auto', mt: 4, mb: 10 }}>
-            <ClassDetailHeader className={classes.name} leaveHandler={leaveHandler} />
+            <ClassDetailHeader
+                className={classes.name}
+                leaveHandler={leaveHandler}
+                classId={id}
+                updateClassDetailHandler={updateClassDetailHandler}
+            />
             {userId !== classes.userId && !classes.isAlreadyJoin && !hasJoined ? (
                 <ButtonCompo style={{ ...ButtonStyle }} variant="outlined" onClick={joinHandler}>
                     Tham gia lớp học
@@ -256,7 +293,7 @@ const ClassDetail = () => {
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
-                                <ListMembersClass members={member} />
+                                <ListMembersClass members={member} kickHandler={kickHandler} />
                             </React.Fragment>
                         )}
                     </TabPanel>
