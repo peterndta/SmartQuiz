@@ -57,7 +57,7 @@ namespace SmartQuizApi.Controllers
             {
                 HttpOnly = true
             });
-            return Redirect($"http://localhost:3000/login?token={accessToken}");
+            return Redirect($"https://smart-quiz.vercel.app/login?token={accessToken}");
         }
 
         [HttpPost]
