@@ -14,8 +14,6 @@ SmartQuiz is a web application that allows learners to improve their knowledge a
 - Customizable settings for learners to adjust to their learning style
 - Clean and modern user interface for ease of use
 
-## Getting Started
-
 ## Technology
 - Frontend
   - React - A JavaScript library for building user interfaces
