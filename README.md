@@ -16,6 +16,16 @@ SmartQuiz is a web application that allows learners to improve their knowledge a
 
 ## Getting Started
 
+## Technology
+- Frontend
+  - React - A JavaScript library for building user interfaces
+  - Redux-toolkit - State Management
+  - Mui - Material UI design
+- Backend
+  - Firebase - Storage.
+  - Microsoft SQL Server - Database Engine/Server.
+  - ORM - Entity Framework with DB First Approach
+
 To run SmartQuiz locally, you will need to have the following tools installed:
 
 - Node.js
