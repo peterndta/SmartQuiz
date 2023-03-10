@@ -5,13 +5,19 @@ import { AppStyles } from './../../../../constants/styles'
 
 import { useAppSelector } from '~/hooks/redux-hooks'
 
-const QuestionAction = ({ index, id, deleteQuestionDraft, openEditModal }) => {
+const QuestionAction = ({ index, id, deleteQuestionDraft, openEditModal, question, updateImageHandler }) => {
     const { vip } = useAppSelector((state) => state.auth)
     return (
         <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography fontWeight={700}>{index + 1}.</Typography>
             <Stack direction="row" spacing={3}>
-                <input accept="image/*" style={{ display: 'none' }} id={`contained-button-file${id}`} type="file" />
+                <input
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    id={`contained-button-file${id}`}
+                    type="file"
+                    onChange={(e) => updateImageHandler(e, question)}
+                />
                 <IconButton disabled={!vip}>
                     <label htmlFor={`contained-button-file${id}`}>
                         <Badge

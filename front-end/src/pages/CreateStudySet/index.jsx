@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { cloneDeep } from 'lodash'
@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid'
 import { AddBox, Article, ImportExport } from '@mui/icons-material'
 import { Box, Button, Container, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
+import ProgressActionLoading from '~/components/ProgressActionLoading'
 
 import QuestionsExample from './Example'
 import ImportExportModal from './ImportExportModal'
@@ -34,8 +35,8 @@ const CreateStudySet = () => {
     const history = useHistory()
     const { createStudySet } = useStudySet()
     const { userId } = useAppSelector((state) => state.auth)
-    const [classLevel, setClassLevel] = useState(state ? state.classLevel : grades[0])
     const { importQuestion } = useQuestion()
+    const [classLevel, setClassLevel] = useState(state ? state.classLevel : grades[0])
     const [subject, setSubject] = useState(state ? state.subject : initialValue)
     const [title, setTitle] = useState(state ? state.title : '')
     const [questions, setQuestions] = useState(state ? state.questions : [])
@@ -185,6 +186,7 @@ const CreateStudySet = () => {
     }
 
     const submitStudySetHandler = (event) => {
+        setLoad(true)
         event.preventDefault()
         if (images.length > 0) {
             const imageUrls = []
@@ -201,8 +203,9 @@ const CreateStudySet = () => {
                     () => {
                         showSnackbar({
                             severity: 'error',
-                            children: 'Something went wrong, cannot upload event poster.',
+                            children: 'Something went wrong, cannot upload question image.',
                         })
+                        setLoad(false)
                     },
                     () => {
                         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
@@ -238,20 +241,31 @@ const CreateStudySet = () => {
                                     isPublic: true,
                                     questions: formatQuestions,
                                 }
-                                createStudySet(studySet).then((res) => {
-                                    const id = res.data.data
-                                    isSubmitSuccessfully.current = true
-                                    if (state) {
-                                        const drafts = LocalStorageUtils.getItem('create')
-                                        const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
+                                createStudySet(studySet)
+                                    .then((res) => {
+                                        const id = res.data.data
+                                        isSubmitSuccessfully.current = true
+                                        if (state) {
+                                            const drafts = LocalStorageUtils.getItem('create')
+                                            const updateDrafts = drafts.studySet.filter(
+                                                (draft) => draft.id !== state.id
+                                            )
 
-                                        LocalStorageUtils.setItem('create', {
-                                            path: '/create',
-                                            studySet: updateDrafts,
+                                            LocalStorageUtils.setItem('create', {
+                                                path: '/create',
+                                                studySet: updateDrafts,
+                                            })
+                                        }
+                                        setLoad(false)
+                                        history.replace(`/study-sets/${id}`)
+                                    })
+                                    .catch(() => {
+                                        showSnackbar({
+                                            severity: 'error',
+                                            children: 'Something went wrong, cannot upload question image.',
                                         })
-                                    }
-                                    history.replace(`/study-sets/${id}`)
-                                })
+                                        setLoad(false)
+                                    })
                             }
                         })
                     }
@@ -279,20 +293,29 @@ const CreateStudySet = () => {
                 isPublic: true,
                 questions: formatQuestions,
             }
-            createStudySet(studySet).then((res) => {
-                const id = res.data.data
-                isSubmitSuccessfully.current = true
-                if (state) {
-                    const drafts = LocalStorageUtils.getItem('create')
-                    const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
+            createStudySet(studySet)
+                .then((res) => {
+                    const id = res.data.data
+                    isSubmitSuccessfully.current = true
+                    if (state) {
+                        const drafts = LocalStorageUtils.getItem('create')
+                        const updateDrafts = drafts.studySet.filter((draft) => draft.id !== state.id)
 
-                    LocalStorageUtils.setItem('create', {
-                        path: '/create',
-                        studySet: updateDrafts,
+                        LocalStorageUtils.setItem('create', {
+                            path: '/create',
+                            studySet: updateDrafts,
+                        })
+                    }
+                    setLoad(false)
+                    history.replace(`/study-sets/${id}`)
+                })
+                .catch(() => {
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Something went wrong, cannot upload question image.',
                     })
-                }
-                history.replace(`/study-sets/${id}`)
-            })
+                    setLoad(false)
+                })
         }
     }
 
@@ -344,141 +367,148 @@ const CreateStudySet = () => {
     }, [title, subject.value, JSON.stringify(questions)])
 
     return (
-        <Box component="form" onSubmit={submitStudySetHandler}>
-            <ImportExportModal
-                open={openImportExport}
-                handleClose={handleCloseImportExport}
-                handleUpload={handleUpload}
-                onInputChange={onInputChange}
-                files={files}
-            />
+        <React.Fragment>
+            {load && <ProgressActionLoading />}
+            <Box component="form" onSubmit={submitStudySetHandler}>
+                <ImportExportModal
+                    open={openImportExport}
+                    handleClose={handleCloseImportExport}
+                    handleUpload={handleUpload}
+                    onInputChange={onInputChange}
+                    files={files}
+                />
 
-            <Container maxWidth="xl">
-                <NewStudySet infoStudySetHandler={infoStudySetHandler} infoStudySet={infoStudySet} />
-                <Box display="flex" justifyContent="flex-end" mt={2} alignItems="center">
-                    {load && (
-                        <Box mr={1}>
-                            <Typography sx={{ fontSize: 16, color: AppStyles.colors['#333333'], fontWeight: 500 }}>
-                                Tệp đang được tải lên
-                            </Typography>
-                            <Box display="flex" justifyContent="flex-end" mt={1}>
-                                <LinearProgress sx={{ width: 120 }} />
+                <Container maxWidth="xl">
+                    <NewStudySet infoStudySetHandler={infoStudySetHandler} infoStudySet={infoStudySet} />
+                    <Box display="flex" justifyContent="flex-end" mt={2} alignItems="center">
+                        {load && (
+                            <Box mr={1}>
+                                <Typography sx={{ fontSize: 16, color: AppStyles.colors['#333333'], fontWeight: 500 }}>
+                                    Tệp đang được tải lên
+                                </Typography>
+                                <Box display="flex" justifyContent="flex-end" mt={1}>
+                                    <LinearProgress sx={{ width: 120 }} />
+                                </Box>
                             </Box>
-                        </Box>
-                    )}
+                        )}
 
-                    <Tooltip title="Tải lên câu hỏi bằng Excel">
-                        <IconButton
-                            aria-label="create"
-                            size="medium"
-                            sx={{ border: '1px solid #767680' }}
-                            onClick={handleOpenImportExport}
-                        >
-                            <ImportExport fontSize="medium" sx={{ color: AppStyles.colors['#767680'] }} />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-                {(() => {
-                    switch (modalMode) {
-                        case 'create':
-                            return (
-                                <Modal
-                                    onClose={closeModalHandler}
-                                    submitQuestionHandler={mutateQuestionHandler}
-                                    open={openModal}
-                                    openId={openId}
-                                />
-                            )
-                        case 'edit':
-                            return (
-                                openModal && (
-                                    <ModalUpdate
+                        <Tooltip title="Tải lên câu hỏi bằng Excel">
+                            <IconButton
+                                aria-label="create"
+                                size="medium"
+                                sx={{ border: '1px solid #767680' }}
+                                onClick={handleOpenImportExport}
+                            >
+                                <ImportExport fontSize="medium" sx={{ color: AppStyles.colors['#767680'] }} />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    {(() => {
+                        switch (modalMode) {
+                            case 'create':
+                                return (
+                                    <Modal
                                         onClose={closeModalHandler}
                                         submitQuestionHandler={mutateQuestionHandler}
                                         open={openModal}
-                                        question={question}
+                                        openId={openId}
                                     />
                                 )
-                            )
-                    }
-                })()}
-                {questions.length > 0 ? (
-                    <Questions
-                        quest={JSON.stringify(questions)}
-                        deleteQuestionDraft={deleteQuestionDraft}
-                        openEditModal={openEditModal}
-                        images={images}
-                        onImageChange={onImageChange}
-                    />
-                ) : (
-                    <QuestionsExample />
-                )}
-                <Box display="flex">
-                    <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        mt={3}
-                        py={4}
-                        sx={{
-                            borderRadius: 4,
-                            backgroundColor: AppStyles.colors['#185CFF'],
-                            transition: 'all 0.3s linear',
-                            cursor: 'pointer',
-                            '&:hover': {
-                                opacity: 0.75,
-                            },
-                            flex: 1,
-                            mr: 2,
-                        }}
-                        onClick={openModalHandler}
-                    >
-                        <AddBox sx={{ color: AppStyles.colors['#FFFFFF'] }} />
-                        <Typography fontWeight={600} variant="h6" sx={{ ml: 1, color: AppStyles.colors['#FFFFFF'] }}>
-                            Thêm thẻ mới
-                        </Typography>
-                    </Box>
-                    <Button
-                        variant="contained"
-                        sx={{ borderRadius: 3, px: 5, mt: 3, backgroundColor: AppStyles.colors['#CCDBFF'] }}
-                        color="primary"
-                    >
-                        <Article sx={{ color: AppStyles.colors['#000F33'] }} />
-                    </Button>
-                </Box>
-            </Container>
-            <Box sx={{ backgroundColor: AppStyles.colors['#FAFBFF'], mt: 3 }}>
-                <Container maxWidth="xl">
-                    <Box display="flex" justifyContent="space-between" py={3} alignItems="center">
-                        <Box display="flex" alignItems="baseline">
-                            <Typography variant="h6" sx={{ color: '#000000', mr: 2, fontWeight: 600 }}>
-                                Tổng câu hỏi
-                            </Typography>
-                            <Typography variant="h5" sx={{ color: '#000000', fontWeight: 600 }}>
-                                {questions.length}
+                            case 'edit':
+                                return (
+                                    openModal && (
+                                        <ModalUpdate
+                                            onClose={closeModalHandler}
+                                            submitQuestionHandler={mutateQuestionHandler}
+                                            open={openModal}
+                                            question={question}
+                                        />
+                                    )
+                                )
+                        }
+                    })()}
+                    {questions.length > 0 ? (
+                        <Questions
+                            quest={JSON.stringify(questions)}
+                            deleteQuestionDraft={deleteQuestionDraft}
+                            openEditModal={openEditModal}
+                            images={images}
+                            onImageChange={onImageChange}
+                        />
+                    ) : (
+                        <QuestionsExample />
+                    )}
+                    <Box display="flex">
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            mt={3}
+                            py={4}
+                            sx={{
+                                borderRadius: 4,
+                                backgroundColor: AppStyles.colors['#185CFF'],
+                                transition: 'all 0.3s linear',
+                                cursor: 'pointer',
+                                '&:hover': {
+                                    opacity: 0.75,
+                                },
+                                flex: 1,
+                                mr: 2,
+                            }}
+                            onClick={openModalHandler}
+                        >
+                            <AddBox sx={{ color: AppStyles.colors['#FFFFFF'] }} />
+                            <Typography
+                                fontWeight={600}
+                                variant="h6"
+                                sx={{ ml: 1, color: AppStyles.colors['#FFFFFF'] }}
+                            >
+                                Thêm thẻ mới
                             </Typography>
                         </Box>
-                        <Box display="flex">
-                            <ButtonCompo
-                                variant="outlined"
-                                style={{ backgroundColor: AppStyles.colors['#CCDBFF'], mr: 2 }}
-                                onClick={saveDraft}
-                            >
-                                Lưu nháp
-                            </ButtonCompo>
-                            <ButtonCompo
-                                variant="contained"
-                                style={{ backgroundColor: AppStyles.colors['#004DFF'] }}
-                                type="submit"
-                                disable={questions.length === 0}
-                            >
-                                Tạo học phần
-                            </ButtonCompo>
-                        </Box>
+                        <Button
+                            variant="contained"
+                            sx={{ borderRadius: 3, px: 5, mt: 3, backgroundColor: AppStyles.colors['#CCDBFF'] }}
+                            color="primary"
+                        >
+                            <Article sx={{ color: AppStyles.colors['#000F33'] }} />
+                        </Button>
                     </Box>
                 </Container>
+                <Box sx={{ backgroundColor: AppStyles.colors['#FAFBFF'], mt: 3 }}>
+                    <Container maxWidth="xl">
+                        <Box display="flex" justifyContent="space-between" py={3} alignItems="center">
+                            <Box display="flex" alignItems="baseline">
+                                <Typography variant="h6" sx={{ color: '#000000', mr: 2, fontWeight: 600 }}>
+                                    Tổng câu hỏi
+                                </Typography>
+                                <Typography variant="h5" sx={{ color: '#000000', fontWeight: 600 }}>
+                                    {questions.length}
+                                </Typography>
+                            </Box>
+                            <Box display="flex">
+                                <ButtonCompo
+                                    variant="outlined"
+                                    style={{ backgroundColor: AppStyles.colors['#CCDBFF'], mr: 2 }}
+                                    onClick={saveDraft}
+                                >
+                                    Lưu nháp
+                                </ButtonCompo>
+                                <ButtonCompo
+                                    variant="contained"
+                                    style={{ backgroundColor: AppStyles.colors['#004DFF'] }}
+                                    type="submit"
+                                    disable={questions.length === 0}
+                                >
+                                    Tạo học phần
+                                </ButtonCompo>
+                            </Box>
+                        </Box>
+                    </Container>
+                </Box>
             </Box>
-        </Box>
+        </React.Fragment>
     )
 }
 
