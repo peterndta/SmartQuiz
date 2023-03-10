@@ -9,6 +9,11 @@ namespace SmartQuizApi.Data.Repositories
         {
         }
 
+        public double GetRating(string studySetId)
+        {
+            return GetByCondition(x => x.StudySetId.Equals(studySetId)).Average(x => x.Rating);
+        }
+
         public void SetRating(StudySetRating studySetRating)
         {
             Create(studySetRating);

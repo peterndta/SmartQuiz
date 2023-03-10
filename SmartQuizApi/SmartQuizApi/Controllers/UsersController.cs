@@ -6,6 +6,7 @@ using SmartQuizApi.Data.DTOs.UserDTO;
 using SmartQuizApi.Data.IRepositories;
 using SmartQuizApi.Data.Models;
 using SmartQuizApi.Services.Utils;
+using System.Collections;
 
 namespace SmartQuizApi.Controllers
 {
@@ -125,6 +126,49 @@ namespace SmartQuizApi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
             }
-        } 
+        }
+
+        [HttpGet]
+        [Route("premium")]
+        public IActionResult GetPagedPremiumUsers([FromQuery] PaginationParams para, [FromQuery] string sortOption)
+        {
+            try
+            {
+                var premiumUsers = _repositoryManager.User.GetAllPremiumUsers();
+                switch (sortOption)
+                {
+                    case "Oldest":
+                        premiumUsers = premiumUsers.OrderBy(u => u.Id).ToList();
+                        break;
+                    case "Newest":
+                        premiumUsers = premiumUsers.OrderByDescending(u => u.Id).ToList();
+                        break;
+                }
+
+                var result = PaginatedList<User>.Create(premiumUsers, para.pageNumber, para.pageSize);
+                var premiumUsersDTO = new List<PremiumUserDTO>();
+
+                foreach (var user in result)
+                {
+                    var dto = new PremiumUserDTO();
+                    dto.Email = user.Email;
+                    dto.Name = user.Name;
+                    //extract bill
+                    var bill = user.Bills.Where(b => DateTime.Compare(b.EffectiveDate, DateTime.Now) <= 0 && DateTime.Compare(DateTime.Now, b.ExpirationDate) <= 0).First();
+                    dto.BillId = bill.Id;
+                    dto.ExpiredDate = bill.ExpirationDate;
+                    dto.EffectiveDate = bill.EffectiveDate;
+                    dto.Subcription = bill.Subcription;
+                    premiumUsersDTO.Add(dto);
+                }
+                return StatusCode(StatusCodes.Status200OK, new Response(200, premiumUsersDTO, "", result.Meta));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+
+            }
+
+        }
     }
 }

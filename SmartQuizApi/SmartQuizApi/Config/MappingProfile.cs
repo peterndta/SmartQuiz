@@ -54,6 +54,8 @@ namespace SmartQuizApi.Config
                                                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Class.Name))
                                                 .ForMember(des => des.UserId, opt => opt.Ignore());
             CreateMap<StudySetRatingDTO, StudySet>();
+            CreateMap<User, PremiumUserDTO>();
+            CreateMap<Bill, PremiumUserDTO>();
         }
     }
 }

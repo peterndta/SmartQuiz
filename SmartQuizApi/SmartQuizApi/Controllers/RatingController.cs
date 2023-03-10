@@ -21,12 +21,17 @@ namespace SmartQuizApi.Controllers
             _mapper = mapper;
         }
 
-        [Route("/studyset")]
-        [HttpPost]
+        [HttpPost("/studyset")]
         public async Task<IActionResult> SetStudySetRating([FromBody] StudySetRatingDTO dto)
         {
             try
             {
+                var studySet = _repositoryManager.StudySet.GetStudySetById(dto.StudySetId);
+                var user = _repositoryManager.User.GetUserById(dto.UserId);
+                if (studySet == null || user == null) 
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "", "Some id is invalid"));
+                }
                 var studySetRating = _mapper.Map<StudySetRating>(dto);
                 _repositoryManager.StudySetRating.SetRating(studySetRating);
                 await _repositoryManager.SaveChangesAsync();
@@ -34,7 +39,7 @@ namespace SmartQuizApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex));
             }
         }
 
