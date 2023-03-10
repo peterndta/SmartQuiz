@@ -210,7 +210,11 @@ const Header = () => {
                             <React.Fragment>
                                 <Tooltip title="">
                                     <IconButton onClick={handleClick} size="medium" sx={{ ml: 3 }}>
-                                        <Avatar src={image} sx={{ width: 40, height: 40 }} />
+                                        <Avatar
+                                            src={image}
+                                            sx={{ width: 40, height: 40 }}
+                                            referrerPolicy="no-referrer"
+                                        />
                                     </IconButton>
                                 </Tooltip>
 
@@ -253,7 +257,12 @@ const Header = () => {
                                         alignItems="center"
                                         mb={1}
                                     >
-                                        <Avatar alt="avatar" src={image} sx={{ width: 80, height: 80, mb: 2 }} />
+                                        <Avatar
+                                            alt="avatar"
+                                            src={image}
+                                            sx={{ width: 80, height: 80, mb: 2 }}
+                                            referrerPolicy="no-referrer"
+                                        />
                                         <Typography variant="body1" fontWeight={700} textAlign="center">
                                             {username}
                                         </Typography>
