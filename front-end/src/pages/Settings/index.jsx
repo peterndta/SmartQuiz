@@ -40,17 +40,6 @@ const Settings = () => {
                                 color: AppStyles.colors['#333333'],
                             }}
                         />
-                        <Tab
-                            label="Đổi mật khẩu"
-                            value={'1'}
-                            sx={{
-                                minWidth: 100,
-                                textTransform: 'none',
-                                fontSize: 16,
-                                fontWeight: 500,
-                                color: AppStyles.colors['#333333'],
-                            }}
-                        />
                     </TabList>
                     <TabPanel value={'0'} sx={{ p: 0 }}>
                         <Box
@@ -63,16 +52,6 @@ const Settings = () => {
                             }}
                         >
                             <MyInfo />
-                        </Box>
-                    </TabPanel>
-                    <TabPanel value={'1'} sx={{ p: 0 }}>
-                        <Box
-                            sx={{
-                                backgroundColor: '#eef2ff',
-                                position: 'absolute',
-                            }}
-                        >
-                            Hello world
                         </Box>
                     </TabPanel>
                 </TabContext>

@@ -5,8 +5,8 @@ import { cloneDeep } from 'lodash'
 import { useHistory, useLocation } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 
-import { AddBox, Article, ImportExport } from '@mui/icons-material'
-import { Box, Button, Container, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
+import { AddBox, ImportExport } from '@mui/icons-material'
+import { Box, Container, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 import ProgressActionLoading from '~/components/ProgressActionLoading'
 
@@ -467,13 +467,6 @@ const CreateStudySet = () => {
                                 Thêm thẻ mới
                             </Typography>
                         </Box>
-                        <Button
-                            variant="contained"
-                            sx={{ borderRadius: 3, px: 5, mt: 3, backgroundColor: AppStyles.colors['#CCDBFF'] }}
-                            color="primary"
-                        >
-                            <Article sx={{ color: AppStyles.colors['#000F33'] }} />
-                        </Button>
                     </Box>
                 </Container>
                 <Box sx={{ backgroundColor: AppStyles.colors['#FAFBFF'], mt: 3 }}>

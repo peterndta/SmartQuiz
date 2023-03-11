@@ -33,7 +33,7 @@ const MyInfo = () => {
     const [classLevel, setClassLevel] = useState(initialValue)
     const grades = useAppSelector((state) => state.grades)
     const subjects = useAppSelector((state) => state.subjects)
-    const [listSubject, setListSubject] = useState({ value: [] })
+    const [listSubject, setListSubject] = useState({ name: [] })
     const showSnackbar = useSnackbar()
 
     const handleChangeName = (event) => {
@@ -41,15 +41,14 @@ const MyInfo = () => {
         setUserName(name)
     }
 
-    // const handleChangeHandler = (event) => {
-    //     const {
-    //         target: { value },
-    //       } = event;
-    //       setPersonName(
-    //         // On autofill we get a stringified value.
-    //         typeof value === 'string' ? value.split(',') : value,
-    //       );
-    //   }
+    const handleChangeHandler = (event) => {
+        const {
+            target: { value },
+        } = event
+        setListSubject({
+            name: typeof value === 'string' ? value.split(',') : value,
+        })
+    }
 
     const classChangeHandler = (name, value) => setClassLevel(() => ({ label: name, value: value }))
 
@@ -116,7 +115,7 @@ const MyInfo = () => {
                     <SelectMultiCompo
                         selectStyle={selectStyle}
                         formControlStyle={FormControlStyle}
-                        onChange={classChangeHandler}
+                        onChange={handleChangeHandler}
                         value={listSubject}
                         data={
                             classLevel.value === '' || classLevel.value < 3
@@ -125,8 +124,12 @@ const MyInfo = () => {
                                 ? subjects.highSchoolSubjects
                                 : subjects.universitySubjects
                         }
+                        isDisable={!classLevel.value}
                     />
                 </Box>
+            </Box>
+            <Box mt={3}>
+                <ButtonCompo>Cập nhật thông tin</ButtonCompo>
             </Box>
         </Box>
     )
