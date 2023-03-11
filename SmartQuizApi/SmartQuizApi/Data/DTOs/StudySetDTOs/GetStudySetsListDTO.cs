@@ -30,7 +30,9 @@ namespace SmartQuizApi.Data.DTOs.StudySetDTOs
 
         public string? ImageUrl { get; set; }
 
-        public double Rating { get; set; }     
+        public double Rating { get; set; }
+
+        public int TotalRatings { get; set; }
 
         [JsonIgnore]
         public int SubjectsOfGradeId { get; set; }

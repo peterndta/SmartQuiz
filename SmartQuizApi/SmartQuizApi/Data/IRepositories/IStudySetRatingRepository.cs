@@ -6,5 +6,6 @@ namespace SmartQuizApi.Data.IRepositories
     {
         void SetRating(StudySetRating studySetRating);
         double GetRating(string studySetId);
+        int GetTotalRating(string studySetId);
     }
 }

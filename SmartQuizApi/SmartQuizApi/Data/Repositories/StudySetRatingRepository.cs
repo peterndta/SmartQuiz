@@ -20,6 +20,11 @@ namespace SmartQuizApi.Data.Repositories
             return 0;
         }
 
+        public int GetTotalRating(string studySetId)
+        {
+            return GetByCondition(x => x.StudySetId.Equals(studySetId)).Count();
+        }
+
         public void SetRating(StudySetRating studySetRating)
         {
             Create(studySetRating);
