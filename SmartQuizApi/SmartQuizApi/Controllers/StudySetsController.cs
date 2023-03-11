@@ -70,6 +70,7 @@ namespace SmartQuizApi.Controllers
 
                 var studySetDTO = _mapper.Map<GetStudySetDetailsDTO>(studySet);
                 var subjectsOfGrade = _repositoryManager.SubjectsOfGrade.GetSubjectsOfGrade(studySet.SubjectsOfGradeId);
+                studySetDTO.Rating = _repositoryManager.StudySetRating.GetRating(id);
                 _mapper.Map(subjectsOfGrade, studySetDTO);
 
                 var questionsList = await _repositoryManager.Question.GetQuestionsByStudySetIdAsync(studySet.Id);
@@ -328,6 +329,7 @@ namespace SmartQuizApi.Controllers
             {
                 x.TotalQuestions = _repositoryManager.Question.GetTotalQuestionByStudySetId(x.Id);
                 var subjectsOfGrade = _repositoryManager.SubjectsOfGrade.GetSubjectsOfGrade(x.SubjectsOfGradeId);
+                x.Rating = _repositoryManager.StudySetRating.GetRating(x.Id);
                 _mapper.Map(subjectsOfGrade, x);
             });
             return list;
