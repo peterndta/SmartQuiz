@@ -27,7 +27,12 @@ namespace SmartQuizApi.Data.DTOs.StudySetDTOs
         public DateTime CreateAt { get; set; }
 
         public DateTime UpdateAt { get; set; }
+
         public string? ImageUrl { get; set; }
+
+        public double Rating { get; set; }
+
+        public int TotalRatings { get; set; }
 
         [JsonIgnore]
         public int SubjectsOfGradeId { get; set; }
