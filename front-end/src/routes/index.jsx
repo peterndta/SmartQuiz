@@ -33,12 +33,6 @@ const hyBridRoutes = [
         name: 'detail',
         layout: 'common',
     },
-    {
-        component: lazy(() => import('~/pages/ClassDetail')),
-        path: '/class/:id',
-        name: 'settings',
-        layout: 'common',
-    },
 ]
 
 const privateRoutes = [
@@ -111,6 +105,12 @@ const privateRoutes = [
         name: 'join',
         layout: 'common',
         role: 'user',
+    },
+    {
+        component: lazy(() => import('~/pages/ClassDetail')),
+        path: '/class/:id',
+        name: 'settings',
+        layout: 'common',
     },
     {
         component: lazy(() => import('~/pages/Dashboard')),

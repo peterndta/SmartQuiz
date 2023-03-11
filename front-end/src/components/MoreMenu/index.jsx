@@ -5,11 +5,25 @@ import { Link as RouterLink } from 'react-router-dom'
 import { BookmarkAdd, BorderColor, Delete, MoreVert, RemoveCircleOutline } from '@mui/icons-material'
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
 
+import AlertConfirm from '../ConfirmDialog'
+
 import { AppStyles } from '~/constants/styles'
 
-const MoreMenu = ({ studySetId, saveButtonOn, color, deleteButtonOn, deleteStudySetHandler, removeButtonOn }) => {
+const MoreMenu = ({
+    studySetId,
+    saveButtonOn = false,
+    color,
+    deleteButtonOn = false,
+    deleteStudySetHandler,
+    removeButtonOn = false,
+}) => {
     const ref = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
+
+    const [openConfirm, setOpenConfirm] = useState(false)
+
+    const handleOpenConfirm = () => setOpenConfirm(true)
+    const handleCloseConfirm = () => setOpenConfirm(false)
 
     const deleteHandler = () => {
         deleteStudySetHandler(studySetId)
@@ -51,7 +65,7 @@ const MoreMenu = ({ studySetId, saveButtonOn, color, deleteButtonOn, deleteStudy
                     <ListItemText primary="Sửa" primaryTypographyProps={{ variant: 'body2' }} />
                 </MenuItem>
                 {deleteButtonOn && (
-                    <MenuItem sx={{ color: 'text.secondary' }} onClick={deleteHandler}>
+                    <MenuItem sx={{ color: 'text.secondary' }} onClick={handleOpenConfirm}>
                         <ListItemIcon>
                             <Delete fontSize="small" color="error" />
                         </ListItemIcon>
@@ -70,6 +84,17 @@ const MoreMenu = ({ studySetId, saveButtonOn, color, deleteButtonOn, deleteStudy
                     </MenuItem>
                 )}
             </Menu>
+            {openConfirm && (
+                <AlertConfirm
+                    title="Xóa học phần"
+                    open={openConfirm}
+                    onClose={handleCloseConfirm}
+                    btnConfirmText="Delete"
+                    onConfirm={deleteHandler}
+                >
+                    Bạn có muốn xóa học phần này không?
+                </AlertConfirm>
+            )}
         </React.Fragment>
     )
 }

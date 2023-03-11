@@ -16,7 +16,7 @@ const CardLayoutStyle = {
     },
 }
 
-const StudyCard = ({ studySet, md }) => {
+const StudyCard = ({ studySet, md, isMine = false }) => {
     return (
         <Grid item md={md}>
             <CardLayout style={CardLayoutStyle}>
@@ -42,7 +42,7 @@ const StudyCard = ({ studySet, md }) => {
                                 {studySet.name}
                             </Typography>
                         </Box>
-                        <MoreMenu saveButtonOn={true} />
+                        {isMine && <MoreMenu saveButtonOn={true} studySetId={studySet.id} />}
                     </Box>
                     <Box display="flex">
                         <Typography
