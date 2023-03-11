@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useHistory } from 'react-router-dom'
 
 import { AddBox } from '@mui/icons-material'
 import {
@@ -33,6 +33,7 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null)
     const { logoutHandler } = useAuthAction()
     const open = Boolean(anchorEl)
+    const history = useHistory()
 
     const { email, username, image, vip } = useAppSelector((state) => state.auth)
 
@@ -282,6 +283,9 @@ const Header = () => {
 
                                     <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={handleOpenClass}>
                                         <Typography ml={1}>Tạo lớp học</Typography>
+                                    </MenuItem>
+                                    <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={() => history.push('/settings')}>
+                                        <Typography ml={1}>Cài Đặt</Typography>
                                     </MenuItem>
                                     <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={handleClickLogout}>
                                         <Typography ml={1}>Đăng xuất</Typography>
