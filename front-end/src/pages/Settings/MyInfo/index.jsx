@@ -25,15 +25,15 @@ const FormControlStyle = {
 }
 
 const MyInfo = () => {
-    const { userId } = useAppSelector((state) => state.auth)
-    const [user, setUser] = useState(null)
-    const [isFirstLoading, setIsLoading] = useState(true)
-    const { getUserInfo } = useUser()
-    const [userName, setUserName] = useState('')
-    const [classLevel, setClassLevel] = useState(initialValue)
+    const { userId, image } = useAppSelector((state) => state.auth)
     const grades = useAppSelector((state) => state.grades)
     const subjects = useAppSelector((state) => state.subjects)
-    const [listSubject, setListSubject] = useState({ value: [] })
+    const [user, setUser] = useState(null)
+    const [isFirstLoading, setIsLoading] = useState(true)
+    const { getUserInfo, updateUserInfo } = useUser()
+    const [userName, setUserName] = useState('')
+    const [classLevel, setClassLevel] = useState(initialValue)
+    const [listSubject, setListSubject] = useState({ name: [] })
     const showSnackbar = useSnackbar()
 
     const handleChangeName = (event) => {
@@ -41,15 +41,41 @@ const MyInfo = () => {
         setUserName(name)
     }
 
-    // const handleChangeHandler = (event) => {
-    //     const {
-    //         target: { value },
-    //       } = event;
-    //       setPersonName(
-    //         // On autofill we get a stringified value.
-    //         typeof value === 'string' ? value.split(',') : value,
-    //       );
-    //   }
+    const handleChangeHandler = (event) => {
+        const {
+            target: { value },
+        } = event
+        setListSubject({
+            name: typeof value === 'string' ? value.split(',') : value,
+        })
+    }
+
+    const updateUserInfoHandler = () => {
+        const updatedSubjects = subjects.all
+            .filter((sub) => listSubject.name.includes(sub.label))
+            .map((item) => item.value)
+        const user = {
+            id: userId,
+            name: userName,
+            phoneNumber: null,
+            imageUrl: image,
+            gradeId: classLevel.value,
+            listSubjectsId: updatedSubjects,
+        }
+        updateUserInfo(user)
+            .then(() => {
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Cập nhật thông tin thành công.',
+                })
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+    }
 
     const classChangeHandler = (name, value) => setClassLevel(() => ({ label: name, value: value }))
 
@@ -59,11 +85,14 @@ const MyInfo = () => {
 
         getUserInfo(userId, signal)
             .then((res) => {
+                const subjects = []
                 const user = res.data.data
+                res.data.data.favoriteSubjects.forEach((sub) => subjects.push(sub.name))
                 const level = user.gradeId ? { value: user.gradeId, label: user.gradeName } : { ...initialValue }
                 setUser(user)
                 setUserName(user.name)
                 setClassLevel(level)
+                setListSubject({ name: subjects })
             })
             .catch(() => {
                 showSnackbar({
@@ -116,7 +145,7 @@ const MyInfo = () => {
                     <SelectMultiCompo
                         selectStyle={selectStyle}
                         formControlStyle={FormControlStyle}
-                        onChange={classChangeHandler}
+                        onChange={handleChangeHandler}
                         value={listSubject}
                         data={
                             classLevel.value === '' || classLevel.value < 3
@@ -125,8 +154,12 @@ const MyInfo = () => {
                                 ? subjects.highSchoolSubjects
                                 : subjects.universitySubjects
                         }
+                        isDisable={!classLevel.value}
                     />
                 </Box>
+            </Box>
+            <Box mt={3}>
+                <ButtonCompo onClick={updateUserInfoHandler}>Cập nhật thông tin</ButtonCompo>
             </Box>
         </Box>
     )
