@@ -20,7 +20,8 @@ namespace SmartQuizApi.Config
             CreateMap<CreateStudySetDTO, StudySet>();
             CreateMap<Grade, GetAllGradesDTO>();
             CreateMap<Subject, GetSubjectsDTO>();
-            CreateMap<StudySet, GetStudySetDetailsDTO>().ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.User.Name));
+            CreateMap<StudySet, GetStudySetDetailsDTO>().ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.User.Name))
+                                                        .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.User.ImageUrl));
             CreateMap<Question, GetQuestionDTO>();
             CreateMap<Answer, GetAnswerDTO>();
             CreateMap<StudySet, GetStudySetsListDTO>().ForMember(des => des.Creator, opt => opt.MapFrom(src => src.User.Name))
@@ -53,7 +54,9 @@ namespace SmartQuizApi.Config
             CreateMap<ClassMember, GetClassDTO>().ForMember(des => des.Id, opt => opt.MapFrom(src => src.ClassId))
                                                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Class.Name))
                                                 .ForMember(des => des.UserId, opt => opt.Ignore());
-            CreateMap<StudySetRatingDTO, StudySet>();
+            CreateMap<StudySetRatingDTO, StudySetRating>();
+            CreateMap<User, PremiumUserDTO>();
+            CreateMap<Bill, PremiumUserDTO>();
         }
     }
 }
