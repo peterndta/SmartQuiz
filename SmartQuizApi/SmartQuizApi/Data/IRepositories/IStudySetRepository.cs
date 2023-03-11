@@ -1,4 +1,5 @@
-﻿using SmartQuizApi.Data.Models;
+﻿using SmartQuizApi.Data.DTOs.AdminDTOs;
+using SmartQuizApi.Data.Models;
 
 namespace SmartQuizApi.Data.IRepositories
 {
@@ -15,5 +16,6 @@ namespace SmartQuizApi.Data.IRepositories
         Task<List<StudySet>> GetRecommendStudySetAsync(List<int> subjectsOfGradeId, int amount);
         int GetTotalStudySet();
         Task<List<StudySet>> FilterStudySetByNameAsync(string? name, string sortType, List<string> classId);
+        List<TopUserDTO> GetTopTotalStudySet();
     }
 }

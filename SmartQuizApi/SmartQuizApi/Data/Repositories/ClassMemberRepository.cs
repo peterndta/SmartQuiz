@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartQuizApi.Data.DTOs.AdminDTOs;
 using SmartQuizApi.Data.IRepositories;
 using SmartQuizApi.Data.Models;
 
@@ -34,6 +35,31 @@ namespace SmartQuizApi.Data.Repositories
         {
             return await GetByCondition(x => x.UserId == userId).Include(x => x.Class)
                                                                 .Include(x => x.User).ToListAsync();
+        }
+
+        public List<TopClassDTO> GetTopClass()
+        {
+            var result = GetAll().GroupBy(x => x.ClassId).OrderByDescending(x => x.Count()).Take(5).Select(x => new
+            {
+                ClassName = x.Select(x => x.Class).First().Name,
+                ClassId = x.Key,
+                TotalMember = x.Count(),
+                Creator = x.Select(x => x.Class).Select(x => x.User).First().Name,
+                ImageUrl = x.Select(x => x.Class).Select(x => x.User).First().ImageUrl,
+            }).ToList();
+            var resultList = new List<TopClassDTO>();
+            result.ForEach(x =>
+            {
+                resultList.Add(new TopClassDTO
+                {
+                    ClassName = x.ClassName,
+                    ClassId = x.ClassId,
+                    TotalMember = x.TotalMember,
+                    Creator = x.Creator,
+                    ImageUrl = x.ImageUrl,
+                });
+            });
+            return resultList;
         }
 
         public int GetTotalMember(string classId)
