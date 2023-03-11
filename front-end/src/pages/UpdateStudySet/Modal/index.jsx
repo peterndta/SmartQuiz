@@ -55,7 +55,7 @@ const Modal = ({ open, onClose, submitQuestionHandler }) => {
     }
 
     const handleSubmit = () => {
-        const question = { quest: questionName, ans: answers, id: uuid() }
+        const question = { quest: questionName, ans: answers, id: uuid(), image: null }
         submitQuestionHandler(question)
         handleReset()
     }

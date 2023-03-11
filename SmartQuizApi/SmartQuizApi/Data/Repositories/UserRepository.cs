@@ -36,5 +36,12 @@ namespace SmartQuizApi.Data.Repositories
         {
             Update(user);
         }
+
+        public List<User> GetAllPremiumUsers()
+        {
+            return GetAll()
+                .Include(u => u.Bills)
+                .Where(u => u.Bills.Where(b => DateTime.Compare(b.EffectiveDate, DateTime.Now) <= 0 && DateTime.Compare(DateTime.Now, b.ExpirationDate) <= 0).Count() > 0).ToList();
+        }
     }
 }

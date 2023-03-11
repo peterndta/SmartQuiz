@@ -24,6 +24,12 @@ namespace SmartQuizApi.Data.DTOs.StudySetDTOs
 
         public bool IsPublic { get; set; }
 
+        public string? ImageUrl { get; set; }
+
+        public double Rating { get; set; }
+
+        public int TotalRatings { get; set; }     
+
         public List<GetQuestionDTO>? Questions { get; set; }
     }
 }

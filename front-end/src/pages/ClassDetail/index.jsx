@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import PropTypes from 'prop-types'
 import queryString from 'query-string'
-import { useLocation, useParams } from 'react-router-dom'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 import { Waypoint } from 'react-waypoint'
 
 import { Box, Grid, Skeleton, Tab, Tabs } from '@mui/material'
@@ -80,7 +80,9 @@ const ButtonStyle = {
 const ClassDetail = () => {
     const { id } = useParams()
     const { search: query } = useLocation()
-    const { getClassDetail, getStudySetOfClass, getMemberOfClass, joinClass, leaveClass } = useClass()
+    const history = useHistory()
+    const { getClassDetail, getStudySetOfClass, getMemberOfClass, joinClass, leaveClass, updateClass, removeClass } =
+        useClass()
     const { userId } = useAppSelector((state) => state.auth)
     const { studysetname = '', sorttype = 'Newest' } = queryString.parse(query)
     const [value, setValue] = useState(0)
@@ -88,9 +90,7 @@ const ClassDetail = () => {
     const [isSkeleton, setIsSkeleton] = useState(false)
     const [classes, setClasses] = useState({})
     const [page, setPage] = useState(1)
-    const [memberPage, setMemberPage] = useState(1)
     const [hasNextPage, setHasNextPage] = useState(false)
-    const [hasNextMemberPage, setHasNextMemberPage] = useState(false)
     const [studySet, setStudySet] = useState([])
     const [member, setMember] = useState([])
     const [hasJoined, setHasJoined] = useState(false)
@@ -113,11 +113,34 @@ const ClassDetail = () => {
 
     const leaveHandler = () => {
         leaveClass(id, userId).then(() => {
+            const newMembers = member.filter((mem) => mem.id !== userId)
+            setMember(newMembers)
             setHasJoined(false)
             showSnackbar({
                 severity: 'success',
                 children: 'Rời lớp học thành công.',
             })
+        })
+    }
+
+    const kickHandler = (memberId) => {
+        leaveClass(id, memberId).then(() => {
+            const newMembers = member.filter((mem) => mem.id !== memberId)
+            setMember(newMembers)
+            showSnackbar({
+                severity: 'success',
+                children: 'Rời lớp học thành công.',
+            })
+        })
+    }
+
+    const deleteClassHandler = () => {
+        removeClass(id, userId).then(() => {
+            showSnackbar({
+                severity: 'success',
+                children: 'Xóa lớp học thành công.',
+            })
+            history.push('/my-library')
         })
     }
 
@@ -135,21 +158,22 @@ const ClassDetail = () => {
         })
     }
 
-    const loadMoreMemberHandler = () => {
-        let pageNumber = memberPage + 1
-        getMemberOfClass(
-            id,
-            // , pageNumber
-            {}
-        ).then((response) => {
-            const data = response.data.data
-            // setMemberPage(response.data.meta.currentPage)
-            // setHasNextMemberPage(response.data.meta.hasNext)
-            const cloneMember = member
-            const newMember = [...cloneMember, ...data]
-            setMember(newMember)
-            setIsFirstRender(false)
-        })
+    const updateClassDetailHandler = (classDetail, handleClose) => {
+        updateClass(classDetail)
+            .then(() => {
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Bạn đã tạo lớp học thành công',
+                })
+                setClasses((prev) => ({ ...prev, name: classDetail.name, description: classDetail.description }))
+                handleClose()
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Something went wrong, try again later!',
+                })
+            })
     }
 
     useEffect(() => {
@@ -159,8 +183,7 @@ const ClassDetail = () => {
 
         getMemberOfClass(id, signal)
             .then((res) => {
-                const data = res.data.data
-                // setHasNextMemberPage(response.data.meta.hasNext)
+                const data = res.data.data.reverse()
                 setMember(data)
             })
             .finally(() => {
@@ -195,7 +218,8 @@ const ClassDetail = () => {
     useEffect(() => {
         if (page === 1) {
             setIsSkeleton(true)
-            const params = filterStringGenerator({ studysetname, sorttype, page })
+            const pageNumber = page
+            const params = filterStringGenerator({ studysetname, sorttype, pageNumber })
             getStudySetOfClass(id, params)
                 .then((response) => {
                     const data = response.data.data
@@ -219,7 +243,13 @@ const ClassDetail = () => {
         <Loading />
     ) : (
         <Box sx={{ width: 1100, m: '0 auto', mt: 4, mb: 10 }}>
-            <ClassDetailHeader className={classes.name} leaveHandler={leaveHandler} />
+            <ClassDetailHeader
+                className={classes.name}
+                leaveHandler={leaveHandler}
+                classId={id}
+                updateClassDetailHandler={updateClassDetailHandler}
+                deleteClassHandler={deleteClassHandler}
+            />
             {userId !== classes.userId && !classes.isAlreadyJoin && !hasJoined ? (
                 <ButtonCompo style={{ ...ButtonStyle }} variant="outlined" onClick={joinHandler}>
                     Tham gia lớp học
@@ -276,16 +306,7 @@ const ClassDetail = () => {
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
-                                <ListMembersClass members={member} />
-                                {hasNextMemberPage && (
-                                    <Waypoint onEnter={loadMoreMemberHandler}>
-                                        <Box>
-                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
-                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
-                                            <Skeleton sx={{ height: 120, mt: 4 }} animation="wave" variant="rounded" />
-                                        </Box>
-                                    </Waypoint>
-                                )}
+                                <ListMembersClass members={member} kickHandler={kickHandler} userId={userId} />
                             </React.Fragment>
                         )}
                     </TabPanel>

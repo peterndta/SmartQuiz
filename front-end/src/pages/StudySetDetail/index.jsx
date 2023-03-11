@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 
 import { Box, Grid } from '@mui/material'
 import QuestionList from '~/components/QuestionList'
@@ -15,7 +15,8 @@ import { useAppSelector } from '~/hooks/redux-hooks'
 
 const StudySetDetail = () => {
     const { id } = useParams()
-    const { getStudySet } = useStudySet()
+    const history = useHistory()
+    const { getStudySet, deleteStudySet } = useStudySet()
     const showSnackbar = useSnackbar()
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
@@ -45,6 +46,17 @@ const StudySetDetail = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const deleteStudySetHandler = () => {
+        deleteStudySet(id).then(() => {
+            showSnackbar({
+                severity: 'success',
+                children: 'Xóa học phần thành công.',
+            })
+            history.push('/my-library')
+        })
+    }
+
     return (
         <Grid container columnSpacing={6} maxWidth={1080} sx={{ m: '0 auto', mt: 5, mb: 9 }}>
             {isFirstRender ? (
@@ -56,6 +68,7 @@ const StudySetDetail = () => {
                         id={id}
                         questions={studySetDetail.questions}
                         userId={studySetDetail.userId}
+                        deleteStudySetHandler={deleteStudySetHandler}
                     />
                     <Box mt={3}>
                         <QuestionList questions={studySetDetail?.questions} />

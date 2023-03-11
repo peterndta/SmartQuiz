@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { useHistory, useParams } from 'react-router-dom'
+import { v4 as uuid } from 'uuid'
 
 import { AddBox } from '@mui/icons-material'
 import { Box, Container, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
+import ProgressActionLoading from '~/components/ProgressActionLoading'
 
 import Loading from '../Loading'
 import Modal from './Modal'
@@ -18,6 +21,7 @@ import { useQuestion } from '~/actions/question'
 import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
+import { storage } from '~/utils/Firebase'
 
 const UpdateStudySet = () => {
     const { id } = useParams()
@@ -34,15 +38,17 @@ const UpdateStudySet = () => {
     const { getStudySet, updateStudySet } = useStudySet()
     const { updateQuestion, createQuestion, removeQuestion } = useQuestion()
     const showSnackbar = useSnackbar()
+    const isFirstRender = useRef(true)
 
     const mutateQuestionHandler = (question) => {
-        const { id: questId, quest } = question
+        setIsLoading(true)
+        const { id: questId, quest, image } = question
         const formatAnswers = question.ans.map((answer) => ({
             name: answer.name,
             isCorrectAnswer: answer.isCorrect,
         }))
         if (modalMode === 'create') {
-            const formatQuestion = { name: quest, answers: formatAnswers, studySetId: id }
+            const formatQuestion = { name: quest, answers: formatAnswers, studySetId: id, imageUrl: null }
             createQuestion(formatQuestion)
                 .then((res) => {
                     const newQuestion = res.data.data
@@ -58,9 +64,14 @@ const UpdateStudySet = () => {
                         quest: newQuestion.name,
                         id: newQuestion.id,
                         ans: formattedAnswers,
+                        image: null,
                     }
 
                     setQuestions((prev) => [...prev, { ...formattedQuestion }])
+                    showSnackbar({
+                        severity: 'success',
+                        children: 'Tạo câu hỏi thành công!',
+                    })
                 })
                 .catch(() => {
                     showSnackbar({
@@ -68,8 +79,11 @@ const UpdateStudySet = () => {
                         children: 'Học phần này có thể đã bị xóa, vui lòng tải lại trang!',
                     })
                 })
+                .finally(() => {
+                    setIsLoading(false)
+                })
         } else if (modalMode === 'edit') {
-            const formatQuestion = { id: questId, name: quest, answers: formatAnswers }
+            const formatQuestion = { id: questId, name: quest, answers: formatAnswers, imageUrl: image }
             updateQuestion(formatQuestion)
                 .then((res) => {
                     const updatedQuestion = res.data.data
@@ -86,15 +100,23 @@ const UpdateStudySet = () => {
                         quest: updatedQuestion.name,
                         id: updatedQuestion.id,
                         ans: formattedAnswers,
+                        image,
                     }
                     updatedQuestions.splice(questionIndex, 1, formattedQuestion)
                     setQuestions(updatedQuestions)
+                    showSnackbar({
+                        severity: 'success',
+                        children: 'Thay đổi câu hỏi thành công!',
+                    })
                 })
                 .catch(() => {
                     showSnackbar({
                         severity: 'error',
                         children: 'Học phần này có thể đã bị xóa, vui lòng tải lại trang!',
                     })
+                })
+                .finally(() => {
+                    setIsLoading(false)
                 })
             setQuestion({})
             closeModalHandler()
@@ -115,6 +137,78 @@ const UpdateStudySet = () => {
         setQuestion(questionSelected)
         setModalMode('edit')
         setOpenModal(true)
+    }
+
+    const updateImageHandler = (e, question) => {
+        const file = e.target.files[0]
+        if (!file) return
+
+        const { type } = file
+        if (!(type.endsWith('jpeg') || !type.endsWith('png') || !type.endsWith('jpg'))) {
+            showSnackbar({
+                severity: 'error',
+                children: 'Event poster can only be jpeg, png and jpg file.',
+            })
+            return
+        }
+
+        if (file) {
+            setIsLoading(true)
+            let fileType = 'png'
+            if (file.type.endsWith('jpg')) fileType = 'jpg'
+            else if (file.type.endsWith('jpeg')) fileType = 'jpeg'
+            const storageRef = ref(storage, `images/${file.name + uuid()}.${fileType}`)
+            const uploadTask = uploadBytesResumable(storageRef, file)
+            uploadTask.on(
+                'state_changed',
+                () => {},
+                () => {
+                    showSnackbar({
+                        severity: 'error',
+                        children: 'Something went wrong, cannot upload question image.',
+                    })
+                    setIsLoading(true)
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+                        const { id: questId, quest } = question
+                        const formatAnswers = question.ans.map((answer) => ({
+                            name: answer.name,
+                            isCorrectAnswer: answer.isCorrect,
+                        }))
+                        const formatQuestion = { id: questId, name: quest, answers: formatAnswers, imageUrl: url }
+                        updateQuestion(formatQuestion)
+                            .then((res) => {
+                                const updatedQuestion = res.data.data
+                                const questionIndex = questions.findIndex((quest) => quest.id === question.id)
+                                const updatedQuestions = JSON.parse(JSON.stringify(questions))
+                                const formattedAnswers = updatedQuestion.answers.map((answer) => {
+                                    return {
+                                        name: answer.name,
+                                        isCorrect: answer.isCorrectAnswer,
+                                        id: answer.id,
+                                    }
+                                })
+                                const formattedQuestion = {
+                                    quest: updatedQuestion.name,
+                                    id: updatedQuestion.id,
+                                    ans: formattedAnswers,
+                                    image: updatedQuestion.imageUrl,
+                                }
+                                updatedQuestions.splice(questionIndex, 1, formattedQuestion)
+                                setQuestions(updatedQuestions)
+                                showSnackbar({
+                                    severity: 'success',
+                                    children: 'Thay đổi hình ảnh thành công!',
+                                })
+                            })
+                            .finally(() => {
+                                setIsLoading(false)
+                            })
+                    })
+                }
+            )
+        }
     }
 
     const titleChangeHandler = ({ target: { value } }) => setTitle(value)
@@ -157,6 +251,7 @@ const UpdateStudySet = () => {
     }
 
     const submitStudySetHandler = (event) => {
+        setIsLoading(true)
         event.preventDefault()
         const studySet = {
             id: id,
@@ -176,6 +271,9 @@ const UpdateStudySet = () => {
                     children: 'Học phần này có thể đã bị xóa, vui lòng tải lại trang!',
                 })
             })
+            .finally(() => {
+                setIsLoading(false)
+            })
     }
 
     useEffect(() => {
@@ -189,6 +287,7 @@ const UpdateStudySet = () => {
                     return {
                         quest: question.name,
                         id: question.id,
+                        image: question.imageUrl,
                         ans: question.answers.map((answer) => {
                             return {
                                 name: answer.name,
@@ -205,6 +304,7 @@ const UpdateStudySet = () => {
             })
             .finally(() => {
                 setIsLoading(false)
+                isFirstRender.current = false
             })
         return () => {
             controller.abort()
@@ -218,94 +318,102 @@ const UpdateStudySet = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [classLevel.value])
 
-    return isLoading ? (
+    return isLoading && isFirstRender.current ? (
         <Loading />
     ) : (
-        <Box component="form" onSubmit={submitStudySetHandler}>
-            <Container maxWidth="xl">
-                <NewStudySet infoStudySetHandler={infoStudySetHandler} infoStudySet={infoStudySet} />
-                {(() => {
-                    switch (modalMode) {
-                        case 'create':
-                            return (
-                                openModal && (
-                                    <Modal
-                                        onClose={closeModalHandler}
-                                        submitQuestionHandler={mutateQuestionHandler}
-                                        open={openModal}
-                                    />
-                                )
-                            )
-                        case 'edit':
-                            return (
-                                openModal && (
-                                    <ModalUpdate
-                                        onClose={closeModalHandler}
-                                        submitQuestionHandler={mutateQuestionHandler}
-                                        open={openModal}
-                                        question={question}
-                                    />
-                                )
-                            )
-                    }
-                })()}
-                <Questions
-                    quest={JSON.stringify(questions)}
-                    deleteQuestionDraft={deleteQuestionDraft}
-                    openEditModal={openEditModal}
-                />
-                <Box display="flex">
-                    <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        mt={3}
-                        py={4}
-                        sx={{
-                            borderRadius: 4,
-                            backgroundColor: AppStyles.colors['#185CFF'],
-                            transition: 'all 0.3s linear',
-                            cursor: 'pointer',
-                            '&:hover': {
-                                opacity: 0.75,
-                            },
-                            flex: 1,
-                            mr: 2,
-                        }}
-                        onClick={openModalHandler}
-                    >
-                        <AddBox sx={{ color: AppStyles.colors['#FFFFFF'] }} />
-                        <Typography fontWeight={600} variant="h6" sx={{ ml: 1, color: AppStyles.colors['#FFFFFF'] }}>
-                            Thêm thẻ mới
-                        </Typography>
-                    </Box>
-                </Box>
-            </Container>
-            <Box sx={{ backgroundColor: AppStyles.colors['#FAFBFF'], mt: 3 }}>
+        <React.Fragment>
+            {isLoading && !isFirstRender.current && <ProgressActionLoading />}
+            <Box component="form" onSubmit={submitStudySetHandler}>
                 <Container maxWidth="xl">
-                    <Box display="flex" justifyContent="space-between" py={3} alignItems="center">
-                        <Box display="flex" alignItems="baseline">
-                            <Typography variant="h6" sx={{ color: '#000000', mr: 2, fontWeight: 600 }}>
-                                Tổng câu hỏi
-                            </Typography>
-                            <Typography variant="h5" sx={{ color: '#000000', fontWeight: 600 }}>
-                                {questions.length}
-                            </Typography>
-                        </Box>
-                        <Box display="flex">
-                            <ButtonCompo
-                                variant="contained"
-                                style={{ backgroundColor: AppStyles.colors['#004DFF'] }}
-                                type="submit"
-                                disable={questions.length === 0}
+                    <NewStudySet infoStudySetHandler={infoStudySetHandler} infoStudySet={infoStudySet} />
+                    {(() => {
+                        switch (modalMode) {
+                            case 'create':
+                                return (
+                                    openModal && (
+                                        <Modal
+                                            onClose={closeModalHandler}
+                                            submitQuestionHandler={mutateQuestionHandler}
+                                            open={openModal}
+                                        />
+                                    )
+                                )
+                            case 'edit':
+                                return (
+                                    openModal && (
+                                        <ModalUpdate
+                                            onClose={closeModalHandler}
+                                            submitQuestionHandler={mutateQuestionHandler}
+                                            open={openModal}
+                                            question={question}
+                                        />
+                                    )
+                                )
+                        }
+                    })()}
+                    <Questions
+                        quest={JSON.stringify(questions)}
+                        deleteQuestionDraft={deleteQuestionDraft}
+                        openEditModal={openEditModal}
+                        updateImageHandler={updateImageHandler}
+                    />
+                    <Box display="flex">
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            mt={3}
+                            py={4}
+                            sx={{
+                                borderRadius: 4,
+                                backgroundColor: AppStyles.colors['#185CFF'],
+                                transition: 'all 0.3s linear',
+                                cursor: 'pointer',
+                                '&:hover': {
+                                    opacity: 0.75,
+                                },
+                                flex: 1,
+                                mr: 2,
+                            }}
+                            onClick={openModalHandler}
+                        >
+                            <AddBox sx={{ color: AppStyles.colors['#FFFFFF'] }} />
+                            <Typography
+                                fontWeight={600}
+                                variant="h6"
+                                sx={{ ml: 1, color: AppStyles.colors['#FFFFFF'] }}
                             >
-                                Lưu học phần
-                            </ButtonCompo>
+                                Thêm thẻ mới
+                            </Typography>
                         </Box>
                     </Box>
                 </Container>
+                <Box sx={{ backgroundColor: AppStyles.colors['#FAFBFF'], mt: 3 }}>
+                    <Container maxWidth="xl">
+                        <Box display="flex" justifyContent="space-between" py={3} alignItems="center">
+                            <Box display="flex" alignItems="baseline">
+                                <Typography variant="h6" sx={{ color: '#000000', mr: 2, fontWeight: 600 }}>
+                                    Tổng câu hỏi
+                                </Typography>
+                                <Typography variant="h5" sx={{ color: '#000000', fontWeight: 600 }}>
+                                    {questions.length}
+                                </Typography>
+                            </Box>
+                            <Box display="flex">
+                                <ButtonCompo
+                                    variant="contained"
+                                    style={{ backgroundColor: AppStyles.colors['#004DFF'] }}
+                                    type="submit"
+                                    disable={questions.length === 0}
+                                >
+                                    Lưu học phần
+                                </ButtonCompo>
+                            </Box>
+                        </Box>
+                    </Container>
+                </Box>
             </Box>
-        </Box>
+        </React.Fragment>
     )
 }
 

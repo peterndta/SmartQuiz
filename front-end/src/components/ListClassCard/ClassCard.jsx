@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { Avatar, Box, CardContent, Grid, Typography } from '@mui/material'
 
 import CardLayout from '../CardLayout'
-import MoreMenu from '../MoreMenu'
 
 import { AppStyles } from '~/constants/styles'
 
@@ -46,7 +45,6 @@ const ClassCard = ({ studySet, md }) => {
                                         {studySet.name}
                                     </Typography>
                                 </Box>
-                                <MoreMenu />
                             </Box>
                             <Box display="flex">
                                 <Typography
