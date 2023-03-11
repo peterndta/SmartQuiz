@@ -25,14 +25,14 @@ const FormControlStyle = {
 }
 
 const MyInfo = () => {
-    const { userId } = useAppSelector((state) => state.auth)
-    const [user, setUser] = useState(null)
-    const [isFirstLoading, setIsLoading] = useState(true)
-    const { getUserInfo } = useUser()
-    const [userName, setUserName] = useState('')
-    const [classLevel, setClassLevel] = useState(initialValue)
+    const { userId, image } = useAppSelector((state) => state.auth)
     const grades = useAppSelector((state) => state.grades)
     const subjects = useAppSelector((state) => state.subjects)
+    const [user, setUser] = useState(null)
+    const [isFirstLoading, setIsLoading] = useState(true)
+    const { getUserInfo, updateUserInfo } = useUser()
+    const [userName, setUserName] = useState('')
+    const [classLevel, setClassLevel] = useState(initialValue)
     const [listSubject, setListSubject] = useState({ name: [] })
     const showSnackbar = useSnackbar()
 
@@ -50,6 +50,33 @@ const MyInfo = () => {
         })
     }
 
+    const updateUserInfoHandler = () => {
+        const updatedSubjects = subjects.all
+            .filter((sub) => listSubject.name.includes(sub.label))
+            .map((item) => item.value)
+        const user = {
+            id: userId,
+            name: userName,
+            phoneNumber: null,
+            imageUrl: image,
+            gradeId: classLevel.value,
+            listSubjectsId: updatedSubjects,
+        }
+        updateUserInfo(user)
+            .then(() => {
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Cập nhật thông tin thành công.',
+                })
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+    }
+
     const classChangeHandler = (name, value) => setClassLevel(() => ({ label: name, value: value }))
 
     useEffect(() => {
@@ -58,11 +85,14 @@ const MyInfo = () => {
 
         getUserInfo(userId, signal)
             .then((res) => {
+                const subjects = []
                 const user = res.data.data
+                res.data.data.favoriteSubjects.forEach((sub) => subjects.push(sub.name))
                 const level = user.gradeId ? { value: user.gradeId, label: user.gradeName } : { ...initialValue }
                 setUser(user)
                 setUserName(user.name)
                 setClassLevel(level)
+                setListSubject({ name: subjects })
             })
             .catch(() => {
                 showSnackbar({
@@ -129,7 +159,7 @@ const MyInfo = () => {
                 </Box>
             </Box>
             <Box mt={3}>
-                <ButtonCompo>Cập nhật thông tin</ButtonCompo>
+                <ButtonCompo onClick={updateUserInfoHandler}>Cập nhật thông tin</ButtonCompo>
             </Box>
         </Box>
     )
