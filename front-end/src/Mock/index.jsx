@@ -612,6 +612,70 @@ const PremiumPrice = {
         discount: '',
     },
 }
+const Dashboard = [
+    {
+        name: 'Gì đóasdasdsadasdasda',
+        totalPost: 2,
+    },
+    {
+        name: 'ABE',
+        totalPost: 5,
+    },
+    {
+        name: 'CDF',
+        totalPost: 8,
+    },
+    {
+        name: 'SHG',
+        totalPost: 10,
+    },
+    {
+        name: 'LMN',
+        totalPost: 4,
+    },
+]
+const PremiumBuyer = [
+    {
+        id: 1248462181,
+        name: 'Trường Anh',
+        email: 'anhndtse150640@fpt.edu.vn',
+        premium: 1,
+        paydate: '20/06/2001',
+        expdate: '20/06/2001',
+    },
+    {
+        id: 23232323233,
+        name: 'Trường Anh',
+        email: 'anhndtse150640@fpt.edu.vn',
+        premium: 1,
+        paydate: '20/06/2001',
+        expdate: '20/06/2001',
+    },
+    {
+        id: 44444444444,
+        name: 'Trường Anh',
+        email: 'anhndtse150640@fpt.edu.vn',
+        premium: 1,
+        paydate: '20/06/2001',
+        expdate: '20/06/2001',
+    },
+    {
+        id: 55555555555,
+        name: 'Trường Anh',
+        email: 'anhndtse150640@fpt.edu.vn',
+        premium: 1,
+        paydate: '20/06/2001',
+        expdate: '20/06/2001',
+    },
+    {
+        id: 6666666666666,
+        name: 'Trường Anh',
+        email: 'anhndtse150640@fpt.edu.vn',
+        premium: 1,
+        paydate: '20/06/2001',
+        expdate: '20/06/2001',
+    },
+]
 
 export {
     universitiesName,
@@ -628,4 +692,6 @@ export {
     UpgradeOptions,
     membersClass,
     PremiumPrice,
+    Dashboard,
+    PremiumBuyer,
 }

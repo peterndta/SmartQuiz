@@ -1,42 +1,97 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
+import { blueGrey } from '@mui/material/colors'
 
+import Chart from './Chart'
+import PremiumTable from './PremiumTable'
 import StatisticCards from './StatisticCards'
 
-import { AppStyles } from '~/constants/styles'
+import { useSnackbar } from '~/HOC/SnackbarContext'
+import { useAdmin } from '~/actions/admin'
+import Loading from '~/pages/Loading'
 
 const Dashboard = () => {
+    const [topUser, settopUser] = useState([])
+    const [topClasses, settopClasses] = useState([])
+
+    const adminAction = useAdmin()
+    const showSnackBar = useSnackbar()
+    const [isLoadingMostUser, setIsLoadingMostUser] = useState(true)
+    const [isLoadingMostClasses, setIsLoadingMostClasses] = useState(true)
+    useEffect(() => {
+        const controller = new AbortController()
+        const signal = controller.signal
+
+        adminAction
+            .getTopUsers(signal)
+            .then((res) => {
+                const datas = res.data.data
+
+                settopUser(datas)
+            })
+            .catch(() => {
+                showSnackBar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+        // .finally(() => {
+        //     setIsLoadingMostUser(false)
+        // })
+        return () => {
+            controller.abort()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    useEffect(() => {
+        const controller = new AbortController()
+        const signal = controller.signal
+
+        adminAction
+            .getTopClasses(signal)
+            .then((res) => {
+                const datas = res.data.data
+
+                settopClasses(datas)
+            })
+            .catch(() => {
+                showSnackBar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+            .finally(() => {
+                setIsLoadingMostClasses(false)
+            })
+
+        return () => {
+            controller.abort()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    if (isLoadingMostClasses) {
+        return <Loading />
+    }
     return (
-        <Box maxWidth={1660} sx={{ m: '0 auto' }}>
-            <Box mb={4.5} mt={4}>
-                <Typography component="span" variant="h4" sx={{ color: AppStyles.colors['#FFAF00'], fontWeight: 500 }}>
+        <Box maxWidth={1450} sx={{ m: '0 auto' }}>
+            <Box mb={4.5} mt={6}>
+                <Typography component="span" variant="h4" sx={{ color: blueGrey[800], fontWeight: 500 }}>
                     Dashboard
                 </Typography>
             </Box>
-            <StatisticCards statis={1} />
-            {/* <Chart statis={statis} />
-            <Grid mt={1} container spacing={3}>
-                <Grid item xs={12} md={6} lg={6.5}>
-                    <Paper elevation={3} sx={{ borderRadius: 4, height: '100%' }}>
-                        <Doughnut statis={statis} />
-                    </Paper>
-                </Grid>
-                <Grid item xs={12} md={6} lg={5.5}>
-                    <Paper elevation={3} sx={{ borderRadius: 2, height: '100%' }}>
-                        <LatestAccounts statis={statis} />
-                    </Paper>
-                </Grid>
-            </Grid> */}
-            {/* <Box mt={4} display="flex" alignItems="center" justifyContent="center">
-    <Paper
-        elevation={3}
-        sx={{ borderRadius: 4 }}
-        style={{ width: 500, height: 550 }}
-    >
-        <Doughnut />
-    </Paper>
-</Box> */}
+            <StatisticCards />
+            <Box mt={6}>
+                <Chart
+                    topUser={topUser}
+                    topClasses={topClasses}
+                    isLoadingMostUser={isLoadingMostUser}
+                    isLoadingMostClasses={isLoadingMostClasses}
+                />
+            </Box>
+            <Box mt={8} mb={11}>
+                <PremiumTable />
+            </Box>
         </Box>
     )
 }
