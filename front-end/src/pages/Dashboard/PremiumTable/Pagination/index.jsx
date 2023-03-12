@@ -8,7 +8,7 @@ import { TablePagination } from '@mui/material'
 const Paging = ({ lengthRow }) => {
     const history = useHistory()
     const { search: query, pathname } = useLocation()
-    const { sortOption, pageNumber } = queryString.parse(query)
+    const { sortOption = 'Newest', pageNumber } = queryString.parse(query)
     const [page, setPage] = useState(pageNumber ? pageNumber - 1 : 0)
     // const [page, setPage] = useState(pageNumber ? +pageNumber : 1)
     const rowsPerPage = 10

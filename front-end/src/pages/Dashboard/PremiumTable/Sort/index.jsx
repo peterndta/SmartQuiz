@@ -23,9 +23,7 @@ const Sort = () => {
 
         if (pageNumber) route += `&pageNumber=${pageNumber}`
 
-        console.log(type)
         if (!!type) route += `&sortOption=${type}`
-        console.log(route)
         history.push(route)
     }
 
@@ -35,7 +33,7 @@ const Sort = () => {
     }, [type])
 
     return (
-        <FormControl sx={{ minWidth: 100 }}>
+        <FormControl sx={{ minWidth: 120 }}>
             <Select
                 value={type}
                 variant="outlined"

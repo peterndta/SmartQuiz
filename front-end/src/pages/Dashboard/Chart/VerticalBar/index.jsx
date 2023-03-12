@@ -5,7 +5,7 @@ import { Bar } from 'react-chartjs-2'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-const VerticalBar = ({ userMostPost }) => {
+const VerticalBar = ({ userMostPost, text }) => {
     return (
         <React.Fragment>
             <Bar
@@ -24,7 +24,7 @@ const VerticalBar = ({ userMostPost }) => {
                         },
                         title: {
                             display: true,
-                            text: 'Top 5 Accounts with High Ratings',
+                            text: text,
                         },
                     },
                     scales: {

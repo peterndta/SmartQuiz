@@ -18,9 +18,35 @@ const useAdmin = () => {
             dispatch(logout())
         }
     }
+    const getTopUsers = (signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth)
+            return get({
+                endpoint: '/api/Admins/top-user',
+                signal: signal,
+            })
+        else {
+            dispatch(logout())
+        }
+    }
+    const getTopClasses = (signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth)
+            return get({
+                endpoint: '/api/Admins/top-class',
+                signal: signal,
+            })
+        else {
+            dispatch(logout())
+        }
+    }
 
     return {
         getStatistic,
+        getTopUsers,
+        getTopClasses,
     }
 }
 

@@ -3,10 +3,20 @@ import React, { useEffect, useRef, useState } from 'react'
 import queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
 
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import {
+    Box,
+    Paper,
+    Skeleton,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+} from '@mui/material'
 import Label from '~/components/Label'
 
-import Loading from '../../../Loading'
 import Paging from '../Pagination'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
@@ -50,6 +60,7 @@ const columns = [
 const filterStringGenerator = ({ sortOption, pageNumber }) => {
     let filterString = '?'
     if (pageNumber !== undefined) filterString += `&pageNumber=${pageNumber}`
+    else filterString += '&pageNumber=1'
 
     filterString += `&pageSize=${10}`
 
@@ -73,14 +84,14 @@ export default function StickyHeadTable() {
         const controller = new AbortController()
         const signal = controller.signal
         const params = filterStringGenerator({ sortOption, pageNumber })
-        setIsLoading(false)
-        console.log(params)
+        setIsLoading(true)
         if (pageNumber === undefined) {
             usersAction
                 .getPremiumUsers(params, signal)
                 .then((res) => {
                     const { totalCount } = res.data.meta
                     const datas = res.data.data
+
                     setRowsData(datas)
                     totalUsers.current = totalCount
                     setTimeout(() => {
@@ -104,7 +115,6 @@ export default function StickyHeadTable() {
                     const datas = res.data.data
                     const fullData = [...rowsData, ...datas]
                     setRowsData(fullData)
-                    console.log(res)
                     totalUsers.current = totalCount
                     setTimeout(() => {
                         setIsLoading(false)
@@ -120,16 +130,16 @@ export default function StickyHeadTable() {
                     }, 500)
                 })
         }
+
         return () => {
             controller.abort()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNumber, sortOption])
-    console.log(rowsData)
     return (
         <React.Fragment>
             {isLoading ? (
-                <Loading />
+                <Skeleton sx={{ height: 780 }} animation="wave" variant="rounded" />
             ) : (
                 <Paper
                     elevation={4}
@@ -159,7 +169,7 @@ export default function StickyHeadTable() {
                                     .map((row, index) => {
                                         return (
                                             <TableRow hover tabIndex={-1} key={index}>
-                                                <TableCell align="left">{row.billId}</TableCell>
+                                                <TableCell align="left">{row.payId}</TableCell>
                                                 <TableCell align="left">{row.name}</TableCell>
                                                 <TableCell align="left">{row.email}</TableCell>
                                                 <TableCell align="center">
