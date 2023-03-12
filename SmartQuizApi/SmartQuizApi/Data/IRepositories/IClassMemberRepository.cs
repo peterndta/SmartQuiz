@@ -1,4 +1,5 @@
-﻿using SmartQuizApi.Data.Models;
+﻿using SmartQuizApi.Data.DTOs.AdminDTOs;
+using SmartQuizApi.Data.Models;
 
 namespace SmartQuizApi.Data.IRepositories
 {
@@ -10,5 +11,6 @@ namespace SmartQuizApi.Data.IRepositories
         ClassMember? GetClassMember(string classId, int userId);
         void DeleteClassMember(ClassMember classMember);
         Task<List<ClassMember>> GetClassMembersByUserId(int userId);
+        List<TopClassDTO> GetTopClass();
     }
 }
