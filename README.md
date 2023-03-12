@@ -24,6 +24,7 @@ SmartQuiz is a web application that allows learners to improve their knowledge a
   - Microsoft SQL Server - Database Engine/Server.
   - ORM - Entity Framework with DB First Approach
 
+## Getting Started
 To run SmartQuiz locally, you will need to have the following tools installed:
 
 - Node.js
