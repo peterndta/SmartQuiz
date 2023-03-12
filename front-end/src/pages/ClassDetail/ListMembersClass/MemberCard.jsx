@@ -10,7 +10,7 @@ const CardLayoutStyle = {
     },
 }
 
-const MemberCard = ({ member, kickHandler, userId }) => {
+const MemberCard = ({ member, kickHandler, canDelete }) => {
     return (
         <Grid item>
             <CardLayout style={CardLayoutStyle}>
@@ -53,7 +53,7 @@ const MemberCard = ({ member, kickHandler, userId }) => {
                                 </Typography>
                             </Box>
                         </Box>
-                        {!member.isClassOwner && userId !== member.id && (
+                        {!member.isClassOwner && canDelete && (
                             <Box
                                 onClick={() => kickHandler(member.id)}
                                 borderRadius={2}
