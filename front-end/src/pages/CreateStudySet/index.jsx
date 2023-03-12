@@ -348,6 +348,7 @@ const CreateStudySet = () => {
     useEffect(() => {
         if (classLevel.value < 3 && subject.label === 'Hóa học') setSubject(initialValue)
         else if (classLevel.value <= 7 && subject.value > 7) setSubject(initialValue)
+        else if (classLevel.value > 7 && subject.value <= 7) setSubject(initialValue)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [classLevel.value])
 
