@@ -19,7 +19,14 @@ const useUser = () => {
         else dispatch(logout())
     }
 
-    return { getUserInfo, updateUserInfo }
+    const getPremiumUsers = (filter, signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth) return get({ endpoint: `/api/Users/premium${filter}`, signal })
+        else dispatch(logout())
+    }
+
+    return { getUserInfo, updateUserInfo, getPremiumUsers }
 }
 
 export default useUser

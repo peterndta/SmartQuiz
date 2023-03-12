@@ -1,10 +1,35 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 import { Description, Group, Paid, School } from '@mui/icons-material'
 import { Box, Grid, Paper, Typography } from '@mui/material'
 import { blueGrey, grey } from '@mui/material/colors'
 
-const StatisticCards = ({ statis }) => {
+import { useSnackbar } from '~/HOC/SnackbarContext'
+import { useAdmin } from '~/actions/admin'
+
+const StatisticCards = () => {
+    const { getStatistic } = useAdmin()
+    const [statis, setStatis] = useState({})
+    const showSnackBar = useSnackbar()
+    useEffect(() => {
+        const controller = new AbortController()
+        const signal = controller.signal
+        getStatistic(signal)
+            .then((response) => {
+                const data = response.data.data
+                setStatis(data)
+            })
+            .catch(() => {
+                showSnackBar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+        return () => {
+            controller.abort()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     return (
         <Fragment>
             <Grid container spacing={3}>
@@ -29,7 +54,7 @@ const StatisticCards = ({ statis }) => {
                                         }}
                                         fontSize="1.6rem"
                                     >
-                                        123
+                                        {statis.totalStudySet}
                                     </Typography>
                                 </Box>
                             </Grid>
@@ -75,7 +100,7 @@ const StatisticCards = ({ statis }) => {
                                         }}
                                         fontSize="1.6rem"
                                     >
-                                        23
+                                        {statis.totalUser}
                                     </Typography>
                                 </Box>
                             </Grid>
@@ -121,7 +146,7 @@ const StatisticCards = ({ statis }) => {
                                         }}
                                         fontSize="1.6rem"
                                     >
-                                        33
+                                        {statis.totalClass}
                                     </Typography>
                                 </Box>
                             </Grid>
@@ -167,7 +192,10 @@ const StatisticCards = ({ statis }) => {
                                         }}
                                         fontSize="1.6rem"
                                     >
-                                        25.000 VND
+                                        {`${(
+                                            statis.totalMonthSubcription * 2000 +
+                                            statis.totalYearSubcription * 60000
+                                        ).toLocaleString()} VND`}
                                     </Typography>
                                 </Box>
                             </Grid>

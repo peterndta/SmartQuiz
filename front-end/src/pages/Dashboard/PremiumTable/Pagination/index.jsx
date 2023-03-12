@@ -8,9 +8,10 @@ import { TablePagination } from '@mui/material'
 const Paging = ({ lengthRow }) => {
     const history = useHistory()
     const { search: query, pathname } = useLocation()
-    const { name, status, pageNum } = queryString.parse(query)
-    const [page, setPage] = useState(pageNum ? pageNum - 1 : 0)
-    const rowsPerPage = 5
+    const { sortOption, pageNumber } = queryString.parse(query)
+    const [page, setPage] = useState(pageNumber ? pageNumber - 1 : 0)
+    // const [page, setPage] = useState(pageNumber ? +pageNumber : 1)
+    const rowsPerPage = 10
 
     const handleChangePage = (__, newPage) => {
         setPage(newPage)
@@ -18,11 +19,10 @@ const Paging = ({ lengthRow }) => {
 
     const filterHandler = () => {
         let route = pathname + '?'
-        if (name && name.trim() !== '') route += '&name=' + name
 
-        if (status !== undefined) route += `&status=${status}`
+        if (page !== 0) route += `&pageNumber=${page + 1}`
 
-        if (page !== 0) route += `&pageNum=${page + 1}`
+        if (sortOption) route += `&sortOption=${sortOption}`
 
         history.push(route)
     }

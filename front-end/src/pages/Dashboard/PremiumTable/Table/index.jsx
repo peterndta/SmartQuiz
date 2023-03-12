@@ -10,7 +10,7 @@ import Loading from '../../../Loading'
 import Paging from '../Pagination'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
-import { PremiumBuyer } from '~/Mock'
+import { useUser } from '~/actions/user'
 
 const columns = [
     { id: 'Mã đơn hàng', label: 'Mã đơn hàng', minWidth: 60, align: 'left' },
@@ -47,79 +47,85 @@ const columns = [
     },
 ]
 
-const filterStringGenerator = ({ name, status }) => {
-    let filterString = `?PageSize=${6}`
+const filterStringGenerator = ({ sortOption, pageNumber }) => {
+    let filterString = '?'
+    if (pageNumber !== undefined) filterString += `&pageNumber=${pageNumber}`
 
-    if (name && name.trim() !== '') filterString += '&name=' + name
+    filterString += `&pageSize=${10}`
 
-    if (status === undefined) filterString += `&status=${true}`
-    else filterString += `&status=${status}`
-
+    if (sortOption !== undefined) filterString += `&sortOption=${sortOption}`
     return filterString
 }
 
 export default function StickyHeadTable() {
     const { search: query } = useLocation()
-    const { name, status, pageNum } = queryString.parse(query)
+
+    const { sortOption = 'Newest', pageNumber } = queryString.parse(query)
     const [isLoading, setIsLoading] = useState(false)
     const [rowsData, setRowsData] = useState([])
-
+    const usersAction = useUser()
     const showSnackBar = useSnackbar()
-    const rowsPerPage = 5
-    const page = pageNum === undefined ? 0 : pageNum - 1
+    const rowsPerPage = 10
+    const page = pageNumber === undefined ? 0 : pageNumber - 1
     const totalUsers = useRef(0)
 
     useEffect(() => {
-        const params = filterStringGenerator({ name, status })
+        const controller = new AbortController()
+        const signal = controller.signal
+        const params = filterStringGenerator({ sortOption, pageNumber })
         setIsLoading(false)
-
-        if (pageNum === undefined) {
-            // usersAction
-            //     .getUsers(params)
-            //     .then((res) => {
-            //         const { totalCount } = res.data.meta
-            //         const datas = res.data.data
-            //         setRowsData(datas)
-            //         totalUsers.current = totalCount
-            //         setTimeout(() => {
-            //             setIsLoading(false)
-            //         }, 500)
-            //     })
-            //     .catch(() => {
-            //         showSnackBar({
-            //             severity: 'error',
-            //             children: 'Something went wrong, please try again later.',
-            //         })
-            //         setTimeout(() => {
-            //             setIsLoading(false)
-            //         }, 500)
-            //     })
+        console.log(params)
+        if (pageNumber === undefined) {
+            usersAction
+                .getPremiumUsers(params, signal)
+                .then((res) => {
+                    const { totalCount } = res.data.meta
+                    const datas = res.data.data
+                    setRowsData(datas)
+                    totalUsers.current = totalCount
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 500)
+                })
+                .catch(() => {
+                    showSnackBar({
+                        severity: 'error',
+                        children: 'Something went wrong, please try again later.',
+                    })
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 500)
+                })
         } else {
-            // usersAction
-            //     .getUsers(params, pageNum)
-            //     .then((res) => {
-            //         const { totalCount } = res.data.meta
-            //         const datas = res.data.data
-            //         const fullData = [...rowsData, ...datas]
-            //         setRowsData(fullData)
-            //         totalUsers.current = totalCount
-            //         setTimeout(() => {
-            //             setIsLoading(false)
-            //         }, 500)
-            //     })
-            //     .catch(() => {
-            //         showSnackBar({
-            //             severity: 'error',
-            //             children: 'Something went wrong, please try again later.',
-            //         })
-            //         setTimeout(() => {
-            //             setIsLoading(false)
-            //         }, 500)
-            //     })
+            usersAction
+                .getPremiumUsers(params, signal)
+                .then((res) => {
+                    const { totalCount } = res.data.meta
+                    const datas = res.data.data
+                    const fullData = [...rowsData, ...datas]
+                    setRowsData(fullData)
+                    console.log(res)
+                    totalUsers.current = totalCount
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 500)
+                })
+                .catch(() => {
+                    showSnackBar({
+                        severity: 'error',
+                        children: 'Something went wrong, please try again later.',
+                    })
+                    setTimeout(() => {
+                        setIsLoading(false)
+                    }, 500)
+                })
+        }
+        return () => {
+            controller.abort()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [name, status, pageNum])
-
+    }, [pageNumber, sortOption])
+    console.log(rowsData)
     return (
         <React.Fragment>
             {isLoading ? (
@@ -132,7 +138,7 @@ export default function StickyHeadTable() {
                         overflow: 'hidden',
                     }}
                 >
-                    <TableContainer sx={{ maxHeight: 440 }}>
+                    <TableContainer sx={{ maxHeight: 700 }}>
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
@@ -148,28 +154,46 @@ export default function StickyHeadTable() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {PremiumBuyer.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(
-                                    (row, index) => {
+                                {rowsData
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row, index) => {
                                         return (
                                             <TableRow hover tabIndex={-1} key={index}>
-                                                <TableCell align="left">{row.id}</TableCell>
+                                                <TableCell align="left">{row.billId}</TableCell>
                                                 <TableCell align="left">{row.name}</TableCell>
                                                 <TableCell align="left">{row.email}</TableCell>
-                                                <TableCell align="center">{row.premium} tháng</TableCell>
+                                                <TableCell align="center">
+                                                    {row.subcription === 1
+                                                        ? row.subcription + ' tháng'
+                                                        : row.subcription + ' tháng'}
+                                                </TableCell>
                                                 <TableCell align="center">
                                                     <Box>
-                                                        <Typography>2.000 VND</Typography>
+                                                        <Typography>
+                                                            {row.subcription === 1 ? '2.000 VND' : '60.000 VND'}
+                                                        </Typography>
                                                         <Label variant="ghost" color="success">
                                                             Đã thanh toán
                                                         </Label>
                                                     </Box>
                                                 </TableCell>
-                                                <TableCell align="center">{row.paydate}</TableCell>
-                                                <TableCell align="center">{row.expdate}</TableCell>
+                                                <TableCell align="center">
+                                                    {new Date(row.effectiveDate).toLocaleDateString('en-GB', {
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric',
+                                                    })}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {new Date(row.expiredDate).toLocaleDateString('en-GB', {
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric',
+                                                    })}
+                                                </TableCell>
                                             </TableRow>
                                         )
-                                    }
-                                )}
+                                    })}
                             </TableBody>
                         </Table>
                     </TableContainer>

@@ -13,7 +13,7 @@ const Dashboard = () => {
                     Dashboard
                 </Typography>
             </Box>
-            <StatisticCards statis={1} />
+            <StatisticCards />
             <Chart statis={1} />
             <PremiumTable />
         </Box>
