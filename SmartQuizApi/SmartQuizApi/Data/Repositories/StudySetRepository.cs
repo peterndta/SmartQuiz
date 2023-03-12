@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml.Table.PivotTable;
+using SmartQuizApi.Data.DTOs.AdminDTOs;
 using SmartQuizApi.Data.IRepositories;
 using SmartQuizApi.Data.Models;
 using SmartQuizApi.Services.Commons;
@@ -93,9 +93,31 @@ namespace SmartQuizApi.Data.Repositories
             return GetAll().Count();
         }
 
+        public List<TopUserDTO> GetTopTotalStudySet()
+        {
+            var result = GetAll().GroupBy(x => x.UserId).OrderByDescending(x => x.Count()).Take(5).Select(x => new
+            {
+                total = x.Count(),
+                userId = x.First().UserId,
+                name = x.Select(x => x.User).First().Name
+            }).ToList();
+            var resultList = new List<TopUserDTO>();
+            result.ForEach(x =>
+            {
+                resultList.Add(new TopUserDTO
+                {
+                    UserId = x.userId,
+                    UserName = x.name,
+                    TotalStudySet = x.total,
+                });
+            });
+            return resultList;
+        }
+
         public void UpdateStudySet(StudySet studySet)
         {
             Update(studySet);
         }
     }
 }
+    

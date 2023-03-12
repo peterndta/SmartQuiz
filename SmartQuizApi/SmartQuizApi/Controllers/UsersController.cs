@@ -155,7 +155,7 @@ namespace SmartQuizApi.Controllers
                     dto.Name = user.Name;
                     //extract bill
                     var bill = user.Bills.Where(b => DateTime.Compare(b.EffectiveDate, DateTime.Now) <= 0 && DateTime.Compare(DateTime.Now, b.ExpirationDate) <= 0).First();
-                    dto.BillId = bill.Id;
+                    dto.PayId = bill.PayId;
                     dto.ExpiredDate = bill.ExpirationDate;
                     dto.EffectiveDate = bill.EffectiveDate;
                     dto.Subcription = bill.Subcription;
