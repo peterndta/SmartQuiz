@@ -45,6 +45,7 @@ const MyInfo = () => {
         const {
             target: { value },
         } = event
+
         setListSubject({
             name: typeof value === 'string' ? value.split(',') : value,
         })
@@ -106,6 +107,24 @@ const MyInfo = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    useEffect(() => {
+        const updatedSubjectsId = subjects.all
+            .filter((sub) => listSubject.name.includes(sub.label))
+            .map((item) => item.value)
+
+        if (classLevel.value < 3 && listSubject.name.includes('Hóa học')) {
+            const updatedSubjects = listSubject.name.filter((sub) => sub !== 'Hóa học')
+            setListSubject({ name: updatedSubjects })
+        } else if (classLevel.value <= 7) {
+            const isReset = updatedSubjectsId.some((id) => id > 7)
+            if (isReset) setListSubject({ name: [] })
+        } else if (classLevel.value > 7) {
+            const isReset = updatedSubjectsId.some((id) => id <= 7)
+            if (isReset) setListSubject({ name: [] })
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [classLevel.value])
+
     return isFirstLoading ? (
         <Loading />
     ) : (
@@ -159,7 +178,9 @@ const MyInfo = () => {
                 </Box>
             </Box>
             <Box mt={3}>
-                <ButtonCompo onClick={updateUserInfoHandler}>Cập nhật thông tin</ButtonCompo>
+                <ButtonCompo onClick={updateUserInfoHandler} disable={listSubject.name.length === 0}>
+                    Cập nhật thông tin
+                </ButtonCompo>
             </Box>
         </Box>
     )
