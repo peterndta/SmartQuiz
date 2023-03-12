@@ -4,7 +4,7 @@
     {
         public string Name { get; set; }
         public string Email { get; set; }
-        public int BillId { get; set; }
+        public string PayId { get; set; }
 
         public int Subcription { get; set; }
 
