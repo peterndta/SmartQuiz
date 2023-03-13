@@ -3,11 +3,12 @@ import { useState } from 'react'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Box, Paper, Tab, Typography } from '@mui/material'
 
+import TableClass from './TableClass'
 import TableContent from './TableContent'
 
 import { AppStyles } from '~/constants/styles'
 
-const PopularTable = ({ studySet }) => {
+const PopularTable = ({ topClass, topStudySet }) => {
     const [index, setIndex] = useState('0')
 
     const changeIndexHandler = (_, value) => {
@@ -64,7 +65,7 @@ const PopularTable = ({ studySet }) => {
                                 backgroundColor: AppStyles.colors['#FAFBFF'],
                             }}
                         >
-                            <TableContent studySet={studySet} />
+                            <TableClass classes={topClass} />
                         </Paper>
                     </TabPanel>
                     <TabPanel value={'1'} sx={{ p: 0 }}>
@@ -76,7 +77,7 @@ const PopularTable = ({ studySet }) => {
                                 backgroundColor: AppStyles.colors['#FAFBFF'],
                             }}
                         >
-                            <TableContent studySet={studySet} />
+                            <TableContent studySet={topStudySet} />
                         </Paper>
                     </TabPanel>
                 </TabContext>

@@ -1,4 +1,3 @@
-import { Groups2, Star } from '@mui/icons-material'
 import { Avatar, Box, Divider, Grid, Typography } from '@mui/material'
 
 import Medal1 from '~/assets/images/Metal-1.png'
@@ -6,10 +5,10 @@ import Medal2 from '~/assets/images/Metal-2.png'
 import Medal3 from '~/assets/images/Metal-3.png'
 import { AppStyles } from '~/constants/styles'
 
-const TableContent = ({ studySet }) => {
+const TableClass = ({ classes }) => {
     return (
         <Box p={2} pb={4}>
-            {studySet.map((data, index) => (
+            {classes.map((data, index) => (
                 <Grid key={index} pl={2} pt={2} container spacing={3}>
                     <Grid item xs={4} md={4} lg={3} display="flex" alignItems="center" justifyContent="center">
                         {index < 1 ? (
@@ -40,7 +39,7 @@ const TableContent = ({ studySet }) => {
                                     textOverflow: 'ellipsis',
                                 }}
                             >
-                                {data.studySetName}
+                                {data.className}
                             </Typography>
                         </Box>
                         <Box display="flex">
@@ -58,7 +57,7 @@ const TableContent = ({ studySet }) => {
                                     userSelect: 'none',
                                 }}
                             >
-                                {data.grade} |
+                                {data.totalMember} thành viên |
                             </Typography>
                             <Typography
                                 ml={0.5}
@@ -66,7 +65,7 @@ const TableContent = ({ studySet }) => {
                                 color="text.secondary"
                                 sx={{ fontSize: 14, userSelect: 'none' }}
                             >
-                                {data.totalQuestions} câu
+                                {data.totalStudySet} học phần
                             </Typography>
                         </Box>
                         <Box display="flex" mt={2} textAlign={'left'} justifyContent="space-between">
@@ -84,23 +83,9 @@ const TableContent = ({ studySet }) => {
                                     {data.creator}
                                 </Typography>
                             </Box>
-                            <Box display="flex">
-                                <Box display="flex" alignItems="center" justifyContent="center">
-                                    <Groups2 fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
-                                </Box>
-                                <Box ml={2} display="flex" alignItems="center" justifyContent="center">
-                                    <Star fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
-                                    <Typography
-                                        ml={1}
-                                        sx={{ color: AppStyles.colors['#767680'], fontSize: 14, fontWeight: 400 }}
-                                    >
-                                        {data.totalRatings}
-                                    </Typography>
-                                </Box>
-                            </Box>
                         </Box>
                     </Grid>
-                    {index < studySet.length - 1 && (
+                    {index < classes.length - 1 && (
                         <Divider
                             sx={{
                                 width: '95%',
@@ -115,4 +100,4 @@ const TableContent = ({ studySet }) => {
     )
 }
 
-export default TableContent
+export default TableClass
