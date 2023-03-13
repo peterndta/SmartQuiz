@@ -18,6 +18,7 @@ const useAdmin = () => {
             dispatch(logout())
         }
     }
+
     const getTopUsers = (signal) => {
         const isAuth = authMiddleware()
 
@@ -30,6 +31,7 @@ const useAdmin = () => {
             dispatch(logout())
         }
     }
+
     const getTopClasses = (signal) => {
         const isAuth = authMiddleware()
 
@@ -43,10 +45,24 @@ const useAdmin = () => {
         }
     }
 
+    const getTopStudySet = (signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth)
+            return get({
+                endpoint: '/api/Admins/top-study-set',
+                signal: signal,
+            })
+        else {
+            dispatch(logout())
+        }
+    }
+
     return {
         getStatistic,
         getTopUsers,
         getTopClasses,
+        getTopStudySet,
     }
 }
 

@@ -38,7 +38,7 @@ const DraftCard = ({ studySet, deleteDraftItem }) => {
                                     textDecoration: 'none',
                                 }}
                             >
-                                {studySet.title}
+                                {studySet.title ? studySet.title : 'Unknown'}
                             </Typography>
                             <IconButton onClick={(event) => deleteDraftItem(event, studySet.id)}>
                                 <Delete />
@@ -60,7 +60,7 @@ const DraftCard = ({ studySet, deleteDraftItem }) => {
                                 userSelect: 'none',
                             }}
                         >
-                            {studySet.classLevel.label} |
+                            {studySet.classLevel.label ? studySet.classLevel.label : 'Unknown'} |
                         </Typography>
                         <Typography
                             ml={0.5}

@@ -285,7 +285,7 @@ const Header = () => {
                                         <Typography ml={1}>Tạo lớp học</Typography>
                                     </MenuItem>
                                     <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={() => history.push('/settings')}>
-                                        <Typography ml={1}>Cài Đặt</Typography>
+                                        <Typography ml={1}>Cài đặt</Typography>
                                     </MenuItem>
                                     <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={handleClickLogout}>
                                         <Typography ml={1}>Đăng xuất</Typography>
