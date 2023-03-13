@@ -8,6 +8,7 @@ import PopularTable from './PopularTable'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
 import { Mock_Data } from '~/Mock'
+import { useAdmin } from '~/actions/admin'
 import { useClass } from '~/actions/class'
 import { useStudySet } from '~/actions/study-set'
 import { useAppSelector } from '~/hooks/redux-hooks'
@@ -19,8 +20,11 @@ const Home = () => {
     const [recentStudySets, setRecentStudySet] = useState([])
     const [recommendStudySets, setRecommendedStudySets] = useState([])
     const [joinedClass, setJoinedClass] = useState([])
+    const [topClasses, setTopClasses] = useState([])
+    const [topStudySets, setTopStudySets] = useState([])
     const { getRecentStudySets, getRecommendStudySets } = useStudySet()
     const { getClassHasJoined } = useClass()
+    const { getTopClasses, getTopStudySet } = useAdmin()
     const showSnackBar = useSnackbar()
 
     useEffect(() => {
@@ -30,17 +34,27 @@ const Home = () => {
         const secondSignal = secondController.signal
         const thirdController = new AbortController()
         const thirdSignal = thirdController.signal
+        const fourthController = new AbortController()
+        const fourthSignal = fourthController.signal
+        const fifthController = new AbortController()
+        const fifthSignal = fifthController.signal
 
         const getRecent = getRecentStudySets(userId, 6, firstSignal)
         const getRecommended = getRecommendStudySets(userId, 3, secondSignal)
         const getJoinedClass = getClassHasJoined(userId, thirdSignal)
+        const getTopClass = getTopClasses(fourthSignal)
+        const getTopStudy = getTopStudySet(fifthSignal)
 
-        Promise.all([getRecent, getRecommended, getJoinedClass])
+        Promise.all([getRecent, getRecommended, getJoinedClass, getTopClass, getTopStudy])
             .then((res) => {
                 const recent = res[0].data.data
                 const recommend = res[1].data.data
                 const classes = res[2].data.data
+                const topClass = res[3].data.data
+                const topStudySet = res[4].data.data
 
+                setTopClasses(topClass)
+                setTopStudySets(topStudySet)
                 setJoinedClass(classes)
                 setRecentStudySet(recent)
                 setRecommendedStudySets(recommend)
@@ -99,7 +113,7 @@ const Home = () => {
                 {isLoading ? (
                     <Skeleton sx={{ height: 730, width: 521 }} animation="wave" variant="rounded" />
                 ) : (
-                    <PopularTable studySet={Mock_Data.recent} isLoading={isLoading} />
+                    <PopularTable isLoading={isLoading} topClass={topClasses} topStudySet={topStudySets} />
                 )}
             </Grid>
         </Grid>
