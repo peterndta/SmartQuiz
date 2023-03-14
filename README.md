@@ -4,7 +4,7 @@
 
 SmartQuiz is a web application that allows learners to improve their knowledge and memory through a multiple-choice learning system. With convenient features to create custom question sets and share them with others, learners can connect with peers and learn together. The application also integrates effective learning methods to help students learn more efficiently.
 
-## Features
+##✨ Features
 
 - Create and share your own question sets with other learners
 - Connect with other learners and join study groups
@@ -13,7 +13,7 @@ SmartQuiz is a web application that allows learners to improve their knowledge a
 - Customizable settings for learners to adjust to their learning style
 - Clean and modern user interface for ease of use
 
-## Technology
+##⚙️ Technology
 
 - Frontend
   - React - A JavaScript library for building user interfaces
@@ -24,7 +24,7 @@ SmartQuiz is a web application that allows learners to improve their knowledge a
   - Microsoft SQL Server - Database Engine/Server.
   - ORM - Entity Framework with DB First Approach
 
-## Getting Started
+##🚀 Getting Started
 
 To run SmartQuiz locally, you will need to have the following tools installed:
 
@@ -34,8 +34,9 @@ To run SmartQuiz locally, you will need to have the following tools installed:
 - Microsoft SQL Server 2019 (or any other DBMS)
 
 After cloning the repository, setup Database and connection to run locally:
-- Import Data-tier Application `MSSQL2019_SmartQuiz.bacpac` __or__  run `SmartQuiz.sql` script, both provided in DBSQL folder, noted that all data is mock. 
-- Config Server, Database, uid, pwd at: 
+
+- Import Data-tier Application `MSSQL2019_SmartQuiz.bacpac` **or** run `SmartQuiz.sql` script, both provided in DBSQL folder, noted that all data is mock.
+- Config Server, Database, uid, pwd at:
   - `./SmartQuizApi/SmartQuizApi/appsettings.json`
   - `./SmartQuizApi/SmartQuizApi/Data/Models/DbA95102SmartquizContext.cs`
 - Change Redirect to `http://localhost:3000` to be able to login locally:
@@ -48,7 +49,7 @@ When finish Database setup, navigate to the project's root directory and run the
 3. Start the backend in SmartQuizApi folder by running `dotnet run`.
 4. Access the application by navigating to `http://localhost:3000` to see the application running.
 
-## Deployment
+##📦 Deployment
 
 SmartQuiz is deployed using Google Cloud and Railway for the backend, and Vercel for the frontend. The deployment process is automated and scalable, ensuring that the application is always available and performant. Access Vercel Frontend: `https://smart-quiz.vercel.app/`
 
@@ -56,6 +57,49 @@ SmartQuiz is deployed using Google Cloud and Railway for the backend, and Vercel
 <img src="./docs/images/google-cloud.png" width="200" height="100" />&nbsp;<img src="./docs/images/railway.png" width="200" height="100" />&nbsp; <img src="./docs/images/vercel.png" width="200" height="100" />&nbsp; 
 </div>
 
+##👀 Preview
+
+### Admin Dashboard
+<img width="320" src="./docs/images/Admin_Page.png" alt="admin dashboard">
+
+### Login
+<img width="320" src="./docs/images/login.png" alt="home">
+
+### Home
+<img width="320" src="./docs/images/home.png" alt="home">
+
+### Class
+<img height="150" src="./docs/images/my_class.png" alt="my class"> 
+<img height="150" src="./docs/images/class_details.png" alt="class details">
+<img height="150" src="./docs/images/class_members.png" alt="class member">
+<img height="150" src="./docs/images/create_class.png" alt="create class">
+<img height="150" src="./docs/images/update_class.png" alt="update class">
+
+### StudySet
+<img height="150" src="./docs/images/my_studyset.png" alt="my studyset"> 
+<img height="150" src="./docs/images/studyset_details.png" alt="class details">
+<img height="150" src="./docs/images/update.png" alt="update class">
+<img height="150" src="./docs/images/create.png" alt="create class">
+<img height="150" src="./docs/images/create_popup.png" alt="create popup">
+<img height="150" src="./docs/images/search.png" alt="search studyset">
+<img height="150" src="./docs/images/draft.png" alt="search studyset">
+
+### Upgrade Account
+<img height="150" src="./docs/images/upgrade_account.png" alt="create class">
+<img height="150" src="./docs/images/payment.png" alt="create popup">
+
+### Testing feature
+<img height="150" src="./docs/images/test.png" alt="create class">
+<img height="150" src="./docs/images/test_result_1.png" alt="create popup">
+<img height="150" src="./docs/images/test_result_2.png" alt="create popup">
+
+### Learning feature
+#### Standard
+![standard-learn](./docs/images/ezgif-4-af94ac42c3.gif)
+#### Premium
+![premium-learn](./docs/images/premium-learn.gif)
+
+---
 ## Contributing
 
 If you are interested in contributing to SmartQuiz, please feel free to submit a pull request or create an issue. We welcome all contributions and are happy to work with you to improve the application.

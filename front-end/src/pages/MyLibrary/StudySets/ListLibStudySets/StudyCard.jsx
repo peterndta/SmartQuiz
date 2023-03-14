@@ -3,7 +3,6 @@ import { Avatar, Box, CardContent, Grid, Typography } from '@mui/material'
 import CardLayout from '~/components/CardLayout'
 import MoreMenu from '~/components/MoreMenu'
 
-import logo from '~/assets/images/User 5.png'
 import { AppStyles } from '~/constants/styles'
 
 const StudyCard = ({ studySet, studySets, setClickIndex, clickIndex, index, deleteStudySetHandler, detailHandler }) => {
@@ -86,7 +85,7 @@ const StudyCard = ({ studySet, studySets, setClickIndex, clickIndex, index, dele
                         </Typography>
                     </Box>
                     <Box display="flex" mt={3} textAlign={'left'}>
-                        <Avatar sx={{ height: 20, width: 20 }} src={logo} alt="logo" />
+                        <Avatar sx={{ height: 20, width: 20 }} src={studySet.imageUrl} alt="logo" />
                         <Typography
                             ml={1}
                             sx={{

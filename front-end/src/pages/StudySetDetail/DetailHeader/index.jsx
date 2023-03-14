@@ -14,7 +14,6 @@ import LearnModal from './LearnModal'
 import RateModal from './RateModal'
 import TestModal from './TestModal'
 
-import logo from '~/assets/images/User 5.png'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
@@ -100,7 +99,7 @@ const DetailHeader = ({ info, id, questions, userId, deleteStudySetHandler }) =>
             />
             <Box display="flex" mt={4} justifyContent="space-between">
                 <Box display="flex" alignItems="center">
-                    <Avatar sx={{ height: 40, width: 40 }} src={logo} alt="logo" />
+                    <Avatar sx={{ height: 40, width: 40 }} src={info.imageUrl} alt="logo" />
                     <Typography
                         sx={{
                             ml: 2,
