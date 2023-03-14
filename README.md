@@ -69,29 +69,20 @@ SmartQuiz is deployed using Google Cloud and Railway for the backend, and Vercel
 <img width="320" src="./docs/images/Home.png" alt="home">
 
 ### Class
-<img height="150" src="./docs/images/My_class.png" alt="my class"> 
-<img height="150" src="./docs/images/Class_details.png" alt="class details">
-<img height="150" src="./docs/images/Class_members.png" alt="class member">
-<img height="150" src="./docs/images/Create_class.png" alt="create class">
+<img height="150" src="./docs/images/My_class.png" alt="my class"> <img height="150" src="./docs/images/Class_details.png" alt="class details">
+<img height="150" src="./docs/images/Class_members.png" alt="class member"> <img height="150" src="./docs/images/Create_class.png" alt="create class">
 <img height="150" src="./docs/images/Update_class.png" alt="update class">
 
 ### StudySet
-<img height="150" src="./docs/images/My_studyset.png" alt="my studyset"> 
-<img height="150" src="./docs/images/Studyset_details.png" alt="class details">
-<img height="150" src="./docs/images/Update.png" alt="update class">
-<img height="150" src="./docs/images/Create.png" alt="create class">
-<img height="150" src="./docs/images/Create_popup.png" alt="create popup">
-<img height="150" src="./docs/images/Search.png" alt="search studyset">
-<img height="150" src="./docs/images/Draft.png" alt="search studyset">
+<img height="150" src="./docs/images/My_studyset.png" alt="my studyset"> <img height="150" src="./docs/images/Studyset_details.png" alt="class details"> <img height="150" src="./docs/images/Update.png" alt="update class">
+<img height="150" src="./docs/images/Create.png" alt="create class"> <img height="150" src="./docs/images/Create_popup.png" alt="create popup">
+<img height="150" src="./docs/images/Search.png" alt="search studyset"> <img height="150" src="./docs/images/Draft.png" alt="search studyset">
 
 ### Upgrade Account
-<img height="150" src="./docs/images/Upgrade_account.png" alt="create class">
-<img height="150" src="./docs/images/Payment.png" alt="create popup">
+<img height="150" src="./docs/images/Upgrade_account.png" alt="create class"> <img height="150" src="./docs/images/Payment.png" alt="create popup">
 
 ### Testing feature
-<img height="150" src="./docs/images/Test.png" alt="create class">
-<img height="150" src="./docs/images/Test_result_1.png" alt="create popup">
-<img height="150" src="./docs/images/Test_result_2.png" alt="create popup">
+<img height="150" src="./docs/images/Test.png" alt="create class"> <img height="150" src="./docs/images/Test_result_1.png" alt="create popup"> <img height="150" src="./docs/images/Test_result_2.png" alt="create popup">
 
 ### Learning feature
 #### Standard
