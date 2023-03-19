@@ -21,7 +21,7 @@ const authSlice = createSlice({
             state.role = action.payload.role
             state.image = action.payload.image
             state.exp = action.payload.exp
-            state.userId = action.payload.userId
+            state.userId = +action.payload.userId
             state.token = action.payload.token
             const premium = action.payload.premium === 'False' ? false : true
             state.vip = premium
