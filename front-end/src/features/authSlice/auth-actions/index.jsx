@@ -22,7 +22,7 @@ const useAuthAction = () => {
                 if (role === 'admin') {
                     history.push('/admin')
                 } else {
-                    history.push('/study-sets')
+                    history.push('/')
                 }
             } else {
                 throw new Error('Something went wrong')
