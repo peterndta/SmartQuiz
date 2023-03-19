@@ -180,7 +180,7 @@ export default function StickyHeadTable() {
                                                 <TableCell align="center">
                                                     <Box>
                                                         <Typography>
-                                                            {row.subcription === 1 ? '2.000 VND' : '60.000 VND'}
+                                                            {row.subcription === 1 ? '30.000 VND' : '60.000 VND'}
                                                         </Typography>
                                                         <Label variant="ghost" color="success">
                                                             Đã thanh toán
