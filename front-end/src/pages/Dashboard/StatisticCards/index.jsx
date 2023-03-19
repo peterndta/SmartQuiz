@@ -205,7 +205,7 @@ const StatisticCards = () => {
                                             fontSize="1.6rem"
                                         >
                                             {`${(
-                                                statis.totalMonthSubcription * 2000 +
+                                                statis.totalMonthSubcription * 30000 +
                                                 statis.totalYearSubcription * 60000
                                             ).toLocaleString()} VND`}
                                         </Typography>
