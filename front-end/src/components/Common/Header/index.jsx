@@ -21,7 +21,6 @@ import { grey, yellow } from '@mui/material/colors'
 import CreateClassModal from '~/components/CreateClassModal'
 
 import logo from '../../../assets/images/Logo.png'
-import Notification from '../../Noti'
 import Search from '../../Search'
 
 import Crown from '~/assets/images/Crown.png'
@@ -206,7 +205,6 @@ const Header = () => {
                             </Button>
                         )}
                         <Search searchHeight="auto" searchWidth={260} inputWidth={190} />
-                        <Notification />
                         {email ? (
                             <React.Fragment>
                                 <Tooltip title="">
