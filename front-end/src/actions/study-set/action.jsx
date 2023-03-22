@@ -48,6 +48,15 @@ const useStudySet = () => {
         }
     }
 
+    const saveTestResult = (test) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth) return post({ endpoint: '/api/users/test-result', body: test })
+        else {
+            dispatch(logout())
+        }
+    }
+
     const updateStudySet = (studySet) => {
         const isAuth = authMiddleware()
 
@@ -109,6 +118,7 @@ const useStudySet = () => {
         getStudySetExam,
         getRecentStudySets,
         getRecommendStudySets,
+        saveTestResult,
     }
 }
 

@@ -21,7 +21,7 @@ namespace SmartQuizApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("/studyset")]
+        [HttpPost]
         public async Task<IActionResult> SetStudySetRating([FromBody] StudySetRatingDTO dto)
         {
             try
@@ -32,10 +32,19 @@ namespace SmartQuizApi.Controllers
                 {
                     return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "", "Some id is invalid"));
                 }
+
+                if (_repositoryManager.StudySetRating.GetStudySetRating(dto.StudySetId, dto.UserId) != null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "", "Already rating"));
+                }
                 var studySetRating = _mapper.Map<StudySetRating>(dto);
                 _repositoryManager.StudySetRating.SetRating(studySetRating);
                 await _repositoryManager.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Create successfully"));
+                var averageRating = _repositoryManager.StudySetRating.GetRating(dto.StudySetId);               
+                return StatusCode(StatusCodes.Status200OK, new Response(200, new
+                {
+                    averageRating = averageRating,
+                }, "Create successfully"));
             }
             catch (Exception ex)
             {

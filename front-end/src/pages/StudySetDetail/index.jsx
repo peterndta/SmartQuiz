@@ -10,6 +10,7 @@ import Loading from '../Loading'
 import DetailHeader from './DetailHeader'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
+import { useRating } from '~/actions/rating'
 import { useStudySet } from '~/actions/study-set'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
@@ -17,10 +18,13 @@ const StudySetDetail = () => {
     const { id } = useParams()
     const history = useHistory()
     const { getStudySet, deleteStudySet } = useStudySet()
+    const { ratePoint } = useRating()
     const showSnackbar = useSnackbar()
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
     const { userId } = useAppSelector((state) => state.auth)
+    const [ratingPoint, setRatingPoint] = useState(0)
+    const [isRating, setIsRating] = useState(false)
 
     useEffect(() => {
         const controller = new AbortController()
@@ -30,9 +34,9 @@ const StudySetDetail = () => {
         getStudySet(id, userIdd, signal)
             .then((response) => {
                 const data = response.data.data
-
                 setStudySetDetail(data)
                 setIsFirstRender(false)
+                setRatingPoint(data.rating)
             })
             .catch(() => {
                 showSnackbar({
@@ -57,6 +61,24 @@ const StudySetDetail = () => {
         })
     }
 
+    const ratingHandler = (rate) => {
+        const info = { userId, studySetId: id, rating: rate }
+        ratePoint(info)
+            .then(() => {
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Đánh giá phần thành công.',
+                })
+                setIsRating(true)
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, please try again later.',
+                })
+            })
+    }
+
     return (
         <Grid container columnSpacing={6} maxWidth={1080} sx={{ m: '0 auto', mt: 5, mb: 9 }}>
             {isFirstRender ? (
@@ -69,6 +91,11 @@ const StudySetDetail = () => {
                         questions={studySetDetail.questions}
                         userId={studySetDetail.userId}
                         deleteStudySetHandler={deleteStudySetHandler}
+                        isAlreadyRating={studySetDetail.isAlreadyRating}
+                        isRating={isRating}
+                        ratingHandler={ratingHandler}
+                        totalRatings={studySetDetail.totalRatings}
+                        rating={ratingPoint}
                     />
                     <Box mt={3}>
                         <QuestionList questions={studySetDetail?.questions} />

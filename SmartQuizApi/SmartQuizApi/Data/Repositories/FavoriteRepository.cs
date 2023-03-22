@@ -13,5 +13,10 @@ namespace SmartQuizApi.Data.Repositories
         {
             Create(favorite);
         }
+
+        public void DeleteFavorite(ICollection<Favorite> favorites)
+        {
+            BulkDelete(favorites);
+        }
     }
 }

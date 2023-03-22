@@ -11,11 +11,13 @@ public partial class TestResult
 
     public string StudySetId { get; set; } = null!;
 
-    public double Mark { get; set; }
-
     public DateTime StartTime { get; set; }
 
     public DateTime EndTime { get; set; }
+
+    public int TotalQuestion { get; set; }
+
+    public int TotalCorrect { get; set; }
 
     public virtual StudySet StudySet { get; set; } = null!;
 

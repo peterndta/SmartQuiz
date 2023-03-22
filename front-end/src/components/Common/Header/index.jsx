@@ -21,7 +21,6 @@ import { grey, yellow } from '@mui/material/colors'
 import CreateClassModal from '~/components/CreateClassModal'
 
 import logo from '../../../assets/images/Logo.png'
-import Notification from '../../Noti'
 import Search from '../../Search'
 
 import Crown from '~/assets/images/Crown.png'
@@ -206,7 +205,6 @@ const Header = () => {
                             </Button>
                         )}
                         <Search searchHeight="auto" searchWidth={260} inputWidth={190} />
-                        <Notification />
                         {email ? (
                             <React.Fragment>
                                 <Tooltip title="">
@@ -283,6 +281,15 @@ const Header = () => {
 
                                     <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={handleOpenClass}>
                                         <Typography ml={1}>Tạo lớp học</Typography>
+                                    </MenuItem>
+                                    <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={() => history.push('/payments')}>
+                                        <Typography ml={1}>Lịch sử thanh toán</Typography>
+                                    </MenuItem>
+                                    <MenuItem
+                                        sx={{ display: 'flex', pr: 5 }}
+                                        onClick={() => history.push('/test-result')}
+                                    >
+                                        <Typography ml={1}>Lịch sử kiểm tra</Typography>
                                     </MenuItem>
                                     <MenuItem sx={{ display: 'flex', pr: 5 }} onClick={() => history.push('/settings')}>
                                         <Typography ml={1}>Cài đặt</Typography>

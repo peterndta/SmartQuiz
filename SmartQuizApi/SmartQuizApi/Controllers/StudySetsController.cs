@@ -88,8 +88,12 @@ namespace SmartQuizApi.Controllers
 
                 if (userId == null)
                 {
+                    studySetDTO.IsAlreadyRating = null;
+                    studySetDTO.IsBookmarked = null;
                     return StatusCode(StatusCodes.Status200OK, new Response(200, studySetDTO));
                 }
+                studySetDTO.IsAlreadyRating = _repositoryManager.StudySetRating.GetStudySetRating(id, userId.Value) != null;
+                studySetDTO.IsBookmarked = _repositoryManager.BookMark.GetBookMark(userId.Value, id) != null;
 
                 var history = _repositoryManager.History.GetHistory(userId.Value, id);
                 if (history != null)
@@ -322,6 +326,42 @@ namespace SmartQuizApi.Controllers
 
                 result = (PaginatedList<GetStudySetsListDTO>)GetInfoForStudyList(result);
                 return StatusCode(StatusCodes.Status200OK, new Response(200, result, "", result.Meta));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpGet("bookmark/{userId}")]
+        public async Task<IActionResult> GetBookmarks(int userId)
+        {
+            try
+            {
+                var user = _repositoryManager.User.GetUserInclude(userId);
+                if (user == null)
+                {
+                    return StatusCode(StatusCodes.Status200OK, new Response(200, "User id does not exist"));
+                }
+                var listStudySetId = new List<string>();
+                var studySetsListDTO = new List<GetStudySetsListDTO>();
+                foreach (var item in user.Bookmarks)
+                {
+                    listStudySetId.Add(item.StudySetId);
+                }
+
+                if (listStudySetId.Count == 0)
+                {
+                    return StatusCode(StatusCodes.Status200OK, new Response(200, new List<GetStudySetsListDTO>(), ""));
+                }
+
+                var studySetsList = await _repositoryManager.StudySet.GetListStudySetsAsync(listStudySetId);
+                studySetsListDTO = _mapper.Map<List<GetStudySetsListDTO>>(studySetsList);
+
+                studySetsListDTO = GetInfoForStudyList(studySetsListDTO);
+                
+                
+                return StatusCode(StatusCodes.Status200OK, new Response(200, studySetsListDTO, ""));
             }
             catch (Exception ex)
             {

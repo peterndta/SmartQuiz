@@ -57,6 +57,9 @@ namespace SmartQuizApi.Config
             CreateMap<StudySetRatingDTO, StudySetRating>();
             CreateMap<User, PremiumUserDTO>();
             CreateMap<Bill, PremiumUserDTO>();
+            CreateMap<Bill, GetBillDTO>();
+            CreateMap<CreateTestResult, TestResult>();
+            CreateMap<TestResult, GetTestResult>().ForMember(des => des.StudySetName, opt => opt.MapFrom(src => src.StudySet.Name));
         }
     }
 }
