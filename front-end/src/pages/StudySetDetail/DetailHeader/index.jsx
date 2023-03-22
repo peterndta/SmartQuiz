@@ -17,7 +17,18 @@ import TestModal from './TestModal'
 import { AppStyles } from '~/constants/styles'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
-const DetailHeader = ({ info, id, questions, userId, deleteStudySetHandler }) => {
+const DetailHeader = ({
+    info,
+    id,
+    questions,
+    userId,
+    deleteStudySetHandler,
+    isAlreadyRating,
+    isRating,
+    ratingHandler,
+    rating,
+    totalRatings,
+}) => {
     const { userId: idUser } = useAppSelector((state) => state.auth)
     const [openLearn, setOpenLearn] = useState(false)
     const [openTest, setOpenTest] = useState(false)
@@ -66,7 +77,14 @@ const DetailHeader = ({ info, id, questions, userId, deleteStudySetHandler }) =>
             {openAdd && (
                 <AddModal open={openAdd} handleClose={handleCloseAdd} handleOpenAddClass={handleOpenAddClass} />
             )}
-            <RateModal open={openRate} handleClose={handleCloseRate} id={id} numberOfQuestion={info.questions.length} />
+            {openRate && (
+                <RateModal
+                    open={openRate}
+                    handleClose={handleCloseRate}
+                    numberOfQuestion={info.questions.length}
+                    ratingHandler={ratingHandler}
+                />
+            )}
             {openAddClass && <CreateClassModal open={openAddClass} handleClose={handleCloseAddClass} />}
             <Typography sx={{ fontWeight: 500, fontSize: 32, color: AppStyles.colors['#333333'] }}>
                 {info.name}
@@ -79,6 +97,7 @@ const DetailHeader = ({ info, id, questions, userId, deleteStudySetHandler }) =>
                     },
                 }}
                 onClick={handleOpenRate}
+                disabled={isAlreadyRating || isRating}
             >
                 <Star fontSize="small" sx={{ color: AppStyles.colors['#FFAF00'] }} />
                 <Typography
@@ -90,7 +109,7 @@ const DetailHeader = ({ info, id, questions, userId, deleteStudySetHandler }) =>
                         fontWeight: 500,
                     }}
                 >
-                    4.5 (17 đánh giá)
+                    {totalRatings > 0 ? `${rating} (${totalRatings} đánh giá)` : 'Hãy cho điểm đánh giá đầu tiên'}
                 </Typography>
             </Button>
 

@@ -5,7 +5,7 @@ import ButtonCompo from '~/components/ButtonCompo'
 
 import { AppStyles } from '~/constants/styles'
 
-const RateModal = ({ open, handleClose, id }) => {
+const RateModal = ({ open, handleClose, ratingHandler }) => {
     const [value, setValue] = useState(0)
 
     const EndButton = {
@@ -44,7 +44,7 @@ const RateModal = ({ open, handleClose, id }) => {
                 </Typography>
                 <Rating
                     value={value}
-                    onChange={(event, newValue) => {
+                    onChange={(_, newValue) => {
                         setValue(newValue)
                     }}
                     size="large"
@@ -55,7 +55,7 @@ const RateModal = ({ open, handleClose, id }) => {
                         },
                     }}
                 />
-                <ButtonCompo variant="contained" style={EndButton} onClick={() => {}}>
+                <ButtonCompo variant="contained" style={EndButton} onClick={() => ratingHandler(value)}>
                     Gửi đánh giá
                 </ButtonCompo>
             </Box>

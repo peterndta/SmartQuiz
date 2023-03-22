@@ -5,7 +5,7 @@ import { post } from '~/utils/ApiCaller'
 
 const useRating = () => {
     const dispatch = useAppDispatch()
-    const rating = (info) => {
+    const ratePoint = (info) => {
         const isAuth = authMiddleware()
 
         if (isAuth) return post({ endpoint: '/api/rating', body: info })
@@ -13,7 +13,7 @@ const useRating = () => {
             dispatch(logout())
         }
     }
-    return { rating }
+    return { ratePoint }
 }
 
 export default useRating

@@ -26,7 +26,21 @@ const useUser = () => {
         else dispatch(logout())
     }
 
-    return { getUserInfo, updateUserInfo, getPremiumUsers }
+    const getUserPayments = (userId, filter, signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth) return get({ endpoint: `/api/Users/payment-history/${userId}${filter}`, signal })
+        else dispatch(logout())
+    }
+
+    const getUserTestResult = (userId, signal) => {
+        const isAuth = authMiddleware()
+
+        if (isAuth) return get({ endpoint: `/api/Users/test-result/${userId}`, signal })
+        else dispatch(logout())
+    }
+
+    return { getUserInfo, updateUserInfo, getPremiumUsers, getUserPayments, getUserTestResult }
 }
 
 export default useUser
