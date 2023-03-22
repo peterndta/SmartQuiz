@@ -13,6 +13,7 @@ const useRating = () => {
             dispatch(logout())
         }
     }
+
     return { ratePoint }
 }
 

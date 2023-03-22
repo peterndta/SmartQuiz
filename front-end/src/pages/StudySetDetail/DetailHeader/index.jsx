@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { useHistory } from 'react-router-dom'
 
-import { Add, BookmarkAdd, CheckBox, Delete, Description, Edit, Star } from '@mui/icons-material'
+import { Add, BookmarkAdd, BookmarkAdded, CheckBox, Delete, Description, Edit, Star } from '@mui/icons-material'
 import { Avatar, Box, Button, Divider, IconButton, Tooltip, Typography } from '@mui/material'
 import ButtonCompo from '~/components/ButtonCompo'
 import AlertConfirm from '~/components/ConfirmDialog'
@@ -28,6 +28,9 @@ const DetailHeader = ({
     ratingHandler,
     rating,
     totalRatings,
+    isBookmarked,
+    bookmarkHandler,
+    unBookmarkHandler,
 }) => {
     const { userId: idUser } = useAppSelector((state) => state.auth)
     const [openLearn, setOpenLearn] = useState(false)
@@ -136,11 +139,19 @@ const DetailHeader = ({
                             <Add fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Lưu" placement="bottom">
-                        <IconButton size="large" sx={{ border: '1px solid #767680', mr: 2 }}>
-                            <BookmarkAdd fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
-                        </IconButton>
-                    </Tooltip>
+                    {idUser !== userId && isBookmarked ? (
+                        <Tooltip title="Bỏ Lưu" placement="bottom" onClick={unBookmarkHandler}>
+                            <IconButton size="large" sx={{ border: '1px solid #767680', mr: 2 }}>
+                                <BookmarkAdded fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
+                            </IconButton>
+                        </Tooltip>
+                    ) : (
+                        <Tooltip title="Lưu" placement="bottom" onClick={bookmarkHandler}>
+                            <IconButton size="large" sx={{ border: '1px solid #767680', mr: 2 }}>
+                                <BookmarkAdd fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                     {idUser === userId && (
                         <React.Fragment>
                             <Tooltip title="Sửa" placement="bottom">
