@@ -30,6 +30,7 @@ namespace SmartQuizApi.Data.Repositories
         {
             var result = GetAll().GroupBy(x => x.StudySetId).OrderByDescending(x => x.Select(x => x.Rating).Average()).Take(5).Select(x => new
             {
+                id = x.Key,
                 averageRating = Math.Ceiling(x.Select(x => x.Rating).Average() * 2) / 2,
                 studySetName = x.Select(x => x.StudySet).First().Name,
                 userName = x.Select(x => x.StudySet).Select(x => x.User).First().Name,
@@ -43,6 +44,7 @@ namespace SmartQuizApi.Data.Repositories
             {
                 resultList.Add(new TopStudySetDTO
                 {
+                    Id = x.id,
                     TotalRatings = x.averageRating,
                     StudySetName = x.studySetName,
                     Creator = x.userName,

@@ -21,7 +21,7 @@ namespace SmartQuizApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("/rating")]
+        [HttpPost("/studyset")]
         public async Task<IActionResult> SetStudySetRating([FromBody] StudySetRatingDTO dto)
         {
             try

@@ -2,6 +2,7 @@
 {
     public class TopStudySetDTO
     {
+        public string Id { get; set; }
         public string StudySetName { get; set; }
         public string Subject { get; set; }
         public string Grade { get; set; }
