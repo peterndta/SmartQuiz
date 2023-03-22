@@ -4,8 +4,8 @@ import { Grid, Paper } from '@mui/material'
 
 import VerticalBar from './VerticalBar'
 
-const Chart = ({ topUser, topClasses, isLoadingMostUser, isLoadingMostClasses }) => {
-    const [userMostPost, setUserMostPost] = useState({
+const Chart = ({ topUser, topClasses }) => {
+    const [userMostPost, _] = useState({
         labels: topUser.map((data) => data.userName),
         datasets: [
             {
@@ -32,7 +32,7 @@ const Chart = ({ topUser, topClasses, isLoadingMostUser, isLoadingMostClasses })
             },
         ],
     })
-    const [classMostMember, setClassMostMember] = useState({
+    const [classMostMember, __] = useState({
         labels: topClasses.map((data) => data.className),
         datasets: [
             {

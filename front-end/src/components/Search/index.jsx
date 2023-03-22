@@ -9,7 +9,7 @@ import { styled } from '@mui/material/styles'
 
 import { AppStyles } from '~/constants/styles'
 
-let searchHeightValue, searchWidthValue, iconPaddingLeftValue, inputWidthValue, inputHeightValue
+let searchHeightValue, searchWidthValue, inputWidthValue, inputHeightValue
 
 const SearchCompo = styled('div')(({ theme }) => ({
     display: 'flex',

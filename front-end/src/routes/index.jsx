@@ -58,6 +58,20 @@ const privateRoutes = [
         role: 'user',
     },
     {
+        component: lazy(() => import('~/pages/Payments')),
+        path: '/payments',
+        name: 'my-payments',
+        layout: 'common',
+        role: 'user',
+    },
+    {
+        component: lazy(() => import('~/pages/UserTestResults')),
+        path: '/test-result',
+        name: 'test-result',
+        layout: 'common',
+        role: 'user',
+    },
+    {
         component: lazy(() => import('~/pages/UpgradeAccount')),
         path: '/upgrade',
         name: 'upgrade',
