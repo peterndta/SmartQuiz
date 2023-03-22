@@ -4,6 +4,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Avatar, Box, Tab, Typography } from '@mui/material'
 import FullWidthHeaderWhite from '~/components/FullWidthHeaderWhite'
 
+import Bookmarks from './Bookmarks'
 import Draft from './Draft'
 import MyClass from './MyClass'
 import StudySets from './StudySets'
@@ -87,7 +88,7 @@ const MyLibrary = () => {
                                     color: AppStyles.colors['#333333'],
                                 }}
                             />
-                            {/* <Tab
+                            <Tab
                                 label="Đã lưu"
                                 value={'2'}
                                 sx={{
@@ -97,7 +98,7 @@ const MyLibrary = () => {
                                     fontWeight: 500,
                                     color: AppStyles.colors['#333333'],
                                 }}
-                            /> */}
+                            />
                             <Tab
                                 label="Bản nháp"
                                 value={'3'}
@@ -116,9 +117,9 @@ const MyLibrary = () => {
                         <TabPanel value={'1'} sx={{ p: 0 }}>
                             <StudySets getMyStudySets={getMyStudySets} />
                         </TabPanel>
-                        {/* <TabPanel value={'2'} sx={{ p: 0 }}>
-                            <StudySets getMyStudySets={getMyStudySets} />
-                        </TabPanel> */}
+                        <TabPanel value={'2'} sx={{ p: 0 }}>
+                            <Bookmarks />
+                        </TabPanel>
                         <TabPanel value={'3'} sx={{ p: 0 }}>
                             <Draft />
                         </TabPanel>
