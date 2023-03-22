@@ -8,7 +8,10 @@ import ButtonCompo from '~/components/ButtonCompo'
 import CardLayout from '~/components/CardLayout'
 import ProgressTesting from '~/components/ProgressTesting'
 
+import { useSnackbar } from '~/HOC/SnackbarContext'
+import { useStudySet } from '~/actions/study-set'
 import { AppStyles } from '~/constants/styles'
+import { useAppSelector } from '~/hooks/redux-hooks'
 import { formatTime } from '~/utils/Math'
 
 const CardLayoutStyle = {
@@ -42,9 +45,12 @@ const ButtonStyle2 = {
 
 const minuteGenerator = (time) => Date.now() + time * 60 * 1000
 
-const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time, correctAns, isSubmit }) => {
-    const [isPaused, setIsPaused] = useState(false)
+const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time, correctAns, isSubmit, startTime }) => {
+    const { saveTestResult } = useStudySet()
+    const showSnackBar = useSnackbar()
+    const { userId } = useAppSelector((state) => state.auth)
     const countdownRef = useRef(null)
+    const [isPaused, setIsPaused] = useState(false)
     const [timePassed, setTimePassed] = useState({ hours: 0, minutes: 0, seconds: 0 })
     const [open, setOpen] = useState(false)
     const history = useHistory()
@@ -78,6 +84,24 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time, correc
         countdownRef.current && countdownRef.current.pause()
         handleSubmit()
         setOpen(true)
+    }
+
+    const saveResult = (endTime) => {
+        const test = {
+            studySetId: id,
+            userId,
+            startTime,
+            endTime,
+            totalQuestion: questionLength,
+            totalCorrect: correctAns,
+        }
+        saveTestResult(test).then(() => {
+            showSnackBar({
+                severity: 'success',
+                children: 'Lưu kết quả thành công.',
+            })
+            history.push(`/study-sets/${id}`)
+        })
     }
 
     const leftTime = Math.floor((minuteGenerator(time) - countDown.current) / 1000)
@@ -174,6 +198,8 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time, correc
                     maxQuestion={questionLength}
                     percentage={percentage}
                     timeLeft={timePassed}
+                    startTime={startTime}
+                    saveResult={saveResult}
                 />
             )}
         </React.Fragment>
