@@ -89,9 +89,11 @@ namespace SmartQuizApi.Controllers
                 if (userId == null)
                 {
                     studySetDTO.IsAlreadyRating = null;
+                    studySetDTO.IsBookmarked = null;
                     return StatusCode(StatusCodes.Status200OK, new Response(200, studySetDTO));
                 }
                 studySetDTO.IsAlreadyRating = _repositoryManager.StudySetRating.GetStudySetRating(id, userId.Value) != null;
+                studySetDTO.IsBookmarked = _repositoryManager.BookMark.GetBookMark(userId.Value, id) != null;
 
                 var history = _repositoryManager.History.GetHistory(userId.Value, id);
                 if (history != null)
