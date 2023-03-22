@@ -88,8 +88,10 @@ namespace SmartQuizApi.Controllers
 
                 if (userId == null)
                 {
+                    studySetDTO.IsAlreadyRating = null;
                     return StatusCode(StatusCodes.Status200OK, new Response(200, studySetDTO));
                 }
+                studySetDTO.IsAlreadyRating = _repositoryManager.StudySetRating.GetStudySetRating(id, userId.Value) != null;
 
                 var history = _repositoryManager.History.GetHistory(userId.Value, id);
                 if (history != null)
