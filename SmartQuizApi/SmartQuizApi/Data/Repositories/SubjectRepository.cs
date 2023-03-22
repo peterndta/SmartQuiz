@@ -30,6 +30,11 @@ namespace SmartQuizApi.Data.Repositories
             return GetByCondition(x => x.Id== id).FirstOrDefault();
         }
 
+        public Subject? GetSubjectByName(string name)
+        {
+            return GetByCondition(x => x.Name.Equals(name)).FirstOrDefault();
+        }
+
         public Task<List<Subject>> GetSubjectsAsync(List<int> listId)
         {
             return GetByCondition(x => listId.Contains(x.Id)).ToListAsync();

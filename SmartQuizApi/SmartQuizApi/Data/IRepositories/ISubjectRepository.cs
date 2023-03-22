@@ -10,5 +10,6 @@ namespace SmartQuizApi.Data.IRepositories
         Task<List<Subject>> GetAllSubjectsAsync(); 
         Subject? GetSubjectById(int id);
         Task<List<Subject>> GetSubjectsAsync(List<int> listId);
+        Subject? GetSubjectByName(string name);
     }
 }
