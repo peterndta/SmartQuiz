@@ -16,8 +16,11 @@ namespace SmartQuizApi.Data.Repositories
 
         public void DeleteBookMark(int userId, string studySetId)
         {
-            Bookmark bookMark = new Bookmark { StudySetId = studySetId, UserId = userId };
-            Delete(bookMark);
+            var bookMark = GetByCondition(x => x.StudySetId.Equals(studySetId) && x.UserId == userId).FirstOrDefault();
+            if (bookMark != null)
+            {
+                Delete(bookMark);
+            }
         }
 
         public Bookmark? GetBookMark(int userId, string studySetId)

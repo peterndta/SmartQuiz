@@ -334,7 +334,7 @@ namespace SmartQuizApi.Controllers
         }
 
         [HttpGet("bookmark/{userId}")]
-        public async Task<IActionResult> GetBookmarks(int userId, [FromQuery] PaginationParams @params, [FromQuery] string sorttype)
+        public async Task<IActionResult> GetBookmarks(int userId)
         {
             try
             {
@@ -357,20 +357,11 @@ namespace SmartQuizApi.Controllers
 
                 var studySetsList = await _repositoryManager.StudySet.GetListStudySetsAsync(listStudySetId);
                 studySetsListDTO = _mapper.Map<List<GetStudySetsListDTO>>(studySetsList);
-                switch (sorttype)
-                {
-                    case "Newest":
-                        studySetsListDTO = studySetsListDTO.OrderByDescending(x => x.CreateAt).ToList();
-                        break;
-                    case "Oldest":
-                        studySetsListDTO = studySetsListDTO.OrderBy(x => x.CreateAt).ToList();
-                        break;
-                }
-                var result = PaginatedList<GetStudySetsListDTO>.Create(studySetsListDTO, @params.pageNumber, @params.pageSize);
-                result = (PaginatedList<GetStudySetsListDTO>)GetInfoForStudyList(result);
+
+                studySetsListDTO = GetInfoForStudyList(studySetsListDTO);
                 
                 
-                return StatusCode(StatusCodes.Status200OK, new Response(200, result, "", result.Meta));
+                return StatusCode(StatusCodes.Status200OK, new Response(200, studySetsListDTO, ""));
             }
             catch (Exception ex)
             {
