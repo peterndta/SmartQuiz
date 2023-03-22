@@ -32,6 +32,8 @@ namespace SmartQuizApi.Data.DTOs.StudySetDTOs
 
         public bool? IsAlreadyRating { get; set; }
 
+        public bool? IsBookmarked { get; set; }
+
         public List<GetQuestionDTO>? Questions { get; set; }
     }
 }

@@ -39,8 +39,12 @@ namespace SmartQuizApi.Controllers
                 }
                 var studySetRating = _mapper.Map<StudySetRating>(dto);
                 _repositoryManager.StudySetRating.SetRating(studySetRating);
+                var averageRating = _repositoryManager.StudySetRating.GetRating(dto.StudySetId);
                 await _repositoryManager.SaveChangesAsync();
-                return StatusCode(StatusCodes.Status200OK, new Response(200, "", "Create successfully"));
+                return StatusCode(StatusCodes.Status200OK, new Response(200, new
+                {
+                    averageRating = averageRating,
+                }, "Create successfully"));
             }
             catch (Exception ex)
             {
