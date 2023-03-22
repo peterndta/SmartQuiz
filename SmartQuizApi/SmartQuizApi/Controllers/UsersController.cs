@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartQuizApi.Data.DTOs.BiilDTOs;
 using SmartQuizApi.Data.DTOs.SubjectDTOs;
 using SmartQuizApi.Data.DTOs.UserDTO;
 using SmartQuizApi.Data.IRepositories;
@@ -100,7 +101,7 @@ namespace SmartQuizApi.Controllers
         {
             try
             {
-                var user = _repositoryManager.User.GetUserById(createUser.Id);
+                var user = _repositoryManager.User.GetUserInclude(createUser.Id);
                 if (user == null)
                 {
                     return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "User id do not exist"));
@@ -108,6 +109,7 @@ namespace SmartQuizApi.Controllers
 
                 _mapper.Map(createUser, user);
                 _repositoryManager.User.UpdateUser(user);
+                _repositoryManager.Favorite.DeleteFavorite(user.Favorites);
                 var listSubjectsOfGradeId = _repositoryManager.SubjectsOfGrade.GetListSubjectsOfGradeId(user.GradeId, createUser.ListSubjectsId);
                 listSubjectsOfGradeId.ForEach(x =>
                 {
@@ -166,9 +168,95 @@ namespace SmartQuizApi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
-
             }
+        }
 
+        [HttpGet]
+        [Route("payment-history/{userId}")]
+        public IActionResult GetPaymentHistory(int userId, [FromQuery] PaginationParams para, [FromQuery] string sortOption)
+        {
+            try
+            {               
+                var user = _repositoryManager.User.GetUserInclude(userId);
+                if (user == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "User id do not exist"));
+                }
+
+                var billDTOList = _mapper.Map<List<GetBillDTO>>(user.Bills);
+                switch (sortOption)
+                {
+                    case "Oldest":
+                        billDTOList = billDTOList.OrderBy(u => u.PaymentDate).ToList();
+                        break;
+                    case "Newest":
+                        billDTOList = billDTOList.OrderByDescending(u => u.PaymentDate).ToList();
+                        break;
+                }
+
+                var result = PaginatedList<GetBillDTO>.Create(billDTOList, para.pageNumber, para.pageSize);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, new
+                {
+                    UserId = userId,
+                    UserName = user.Name,
+                    PaymentHistory = result
+                }, "", result.Meta));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpPost]
+        [Route("test-result")]
+        public async Task<IActionResult> CreateTestResult(CreateTestResult dto)
+        {
+            try
+            {
+                var user = _repositoryManager.User.GetUserById(dto.UserId);
+                if (user == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "User id do not exist"));
+                }
+
+                var studySet = _repositoryManager.StudySet.GetStudySetById(dto.StudySetId);
+                if (studySet == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "Study set id do not exist"));
+                }
+
+                var testResult = _mapper.Map<TestResult>(dto);
+                _repositoryManager.TestResult.CreateTestResult(testResult);
+                await _repositoryManager.SaveChangesAsync();
+
+                return StatusCode(StatusCodes.Status200OK, new Response(200, testResult.Id, ""));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
+        [HttpGet]
+        [Route("test-result/{userId}")]
+        public IActionResult GetTestResult(int userId)
+        {
+            try
+            {
+                var user = _repositoryManager.User.GetUserInclude(userId);
+                if (user == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new Response(400, "User id do not exist"));
+                }
+
+                var result = _mapper.Map<List<GetTestResult>>(user.TestResults).OrderByDescending(x => x.StartTime);
+                return StatusCode(StatusCodes.Status200OK, new Response(200, result, ""));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
         }
     }
 }

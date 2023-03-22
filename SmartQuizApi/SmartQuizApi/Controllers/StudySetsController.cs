@@ -329,6 +329,51 @@ namespace SmartQuizApi.Controllers
             }
         }
 
+        [HttpGet("bookmark/{userId}")]
+        public async Task<IActionResult> GetBookmarks(int userId, [FromQuery] PaginationParams @params, [FromQuery] string sorttype)
+        {
+            try
+            {
+                var user = _repositoryManager.User.GetUserInclude(userId);
+                if (user == null)
+                {
+                    return StatusCode(StatusCodes.Status200OK, new Response(200, "User id does not exist"));
+                }
+                var listStudySetId = new List<string>();
+                var studySetsListDTO = new List<GetStudySetsListDTO>();
+                foreach (var item in user.Bookmarks)
+                {
+                    listStudySetId.Add(item.StudySetId);
+                }
+
+                if (listStudySetId.Count == 0)
+                {
+                    return StatusCode(StatusCodes.Status200OK, new Response(200, new List<GetStudySetsListDTO>(), ""));
+                }
+
+                var studySetsList = await _repositoryManager.StudySet.GetListStudySetsAsync(listStudySetId);
+                studySetsListDTO = _mapper.Map<List<GetStudySetsListDTO>>(studySetsList);
+                switch (sorttype)
+                {
+                    case "Newest":
+                        studySetsListDTO = studySetsListDTO.OrderByDescending(x => x.CreateAt).ToList();
+                        break;
+                    case "Oldest":
+                        studySetsListDTO = studySetsListDTO.OrderBy(x => x.CreateAt).ToList();
+                        break;
+                }
+                var result = PaginatedList<GetStudySetsListDTO>.Create(studySetsListDTO, @params.pageNumber, @params.pageSize);
+                result = (PaginatedList<GetStudySetsListDTO>)GetInfoForStudyList(result);
+                
+                
+                return StatusCode(StatusCodes.Status200OK, new Response(200, result, "", result.Meta));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(500, ex.Message));
+            }
+        }
+
         private List<GetStudySetsListDTO> GetInfoForStudyList(List<GetStudySetsListDTO> list)
         {
             list.ForEach(x =>

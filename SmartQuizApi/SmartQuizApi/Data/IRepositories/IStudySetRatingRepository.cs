@@ -9,5 +9,6 @@ namespace SmartQuizApi.Data.IRepositories
         double GetRating(string studySetId);
         int GetTotalRating(string studySetId);
         List<TopStudySetDTO> GetTopRating();
+        StudySetRating? GetStudySetRating(string studySetId, int userId);
     }
 }

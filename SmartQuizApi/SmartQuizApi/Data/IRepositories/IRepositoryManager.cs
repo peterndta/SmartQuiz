@@ -14,9 +14,9 @@
         IBillRepository Bill { get; }
         IFavoriteRepository Favorite { get; }
         IClassRepository Class { get; }
-        IClassMemberRepository ClassMember { get; }
-        
+        IClassMemberRepository ClassMember { get; }       
         IStudySetRatingRepository StudySetRating { get; }
+        ITestResultRepository TestResult { get; }
 
         IStudySetClassRepository StudySetClass { get; }
         Task SaveChangesAsync();

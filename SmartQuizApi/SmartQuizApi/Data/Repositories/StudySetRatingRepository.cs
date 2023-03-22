@@ -21,6 +21,11 @@ namespace SmartQuizApi.Data.Repositories
             return 0;
         }
 
+        public StudySetRating? GetStudySetRating(string studySetId, int userId)
+        {
+            return GetByCondition(x => x.StudySetId.Equals(studySetId) && x.UserId == userId).FirstOrDefault();
+        }
+
         public List<TopStudySetDTO> GetTopRating()
         {
             var result = GetAll().GroupBy(x => x.StudySetId).OrderByDescending(x => x.Select(x => x.Rating).Average()).Take(5).Select(x => new
