@@ -1,6 +1,6 @@
 import { CircularProgressbar } from 'react-circular-progressbar'
 
-import { AccessTimeFilled, Dangerous } from '@mui/icons-material'
+import { AccessTimeFilled, CheckCircle, Dangerous } from '@mui/icons-material'
 import { Backdrop, Box, Fade, Modal, Typography } from '@mui/material'
 
 import ButtonCompo from '../ButtonCompo'
@@ -20,7 +20,7 @@ const modalStyle = {
     borderRadius: 3,
 }
 
-const ProgressTesting = ({ open, handleClose, percentage, rightQuestion, maxQuestion, timeLeft }) => {
+const ProgressTesting = ({ open, handleClose, percentage, rightQuestion, maxQuestion, timeLeft, saveResult }) => {
     const hour = timeLeft.hours > 0 ? `0${timeLeft.hours}:` : ''
     const minute = timeLeft.minutes < 10 ? `0${timeLeft.minutes}` : timeLeft.minutes
     const second = timeLeft.seconds < 10 ? `0${timeLeft.seconds}` : timeLeft.seconds
@@ -90,12 +90,22 @@ const ProgressTesting = ({ open, handleClose, percentage, rightQuestion, maxQues
                         </Box>
                         <Box display="flex" alignItems="center" flexDirection="column">
                             <Dangerous sx={{ fontSize: 40, color: AppStyles.colors['#004DFF'] }} />
-                            <Typography my={2}>Câu sai: </Typography>
+                            <Typography my={2}>Câu sai: {maxQuestion - rightQuestion}</Typography>
                             <ButtonCompo
-                                style={{ minWidth: 200, backgroundColor: AppStyles.colors['#004DFF'] }}
+                                style={{ minWidth: 150, backgroundColor: AppStyles.colors['#004DFF'] }}
                                 onClick={handleClose}
                             >
                                 Xem lại câu đã chọn
+                            </ButtonCompo>
+                        </Box>
+                        <Box display="flex" alignItems="center" flexDirection="column">
+                            <CheckCircle sx={{ fontSize: 40, color: AppStyles.colors['#004DFF'] }} />
+                            <Typography my={2}>Lưu kết quả </Typography>
+                            <ButtonCompo
+                                style={{ minWidth: 150, backgroundColor: AppStyles.colors['#004DFF'] }}
+                                onClick={() => saveResult(new Date())}
+                            >
+                                Lưu
                             </ButtonCompo>
                         </Box>
                     </Box>

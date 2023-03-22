@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useLocation, useParams } from 'react-router-dom'
 
@@ -21,6 +21,7 @@ const TestPageBottom = () => {
     const [checkAnswers, setCheckAnswers] = useState({ isSubmit: false, questions: [], correctCount: 0, wrongCount: 0 })
     const { state } = useLocation()
     const exam = { time: state ? state.time : 30, quantity: state ? state.quantity : 20 }
+    const startTime = useRef(new Date())
 
     const handleSelectQuestion = (question) => {
         if (selectQuestionAnswers.length === 0) {
@@ -125,6 +126,7 @@ const TestPageBottom = () => {
                     time={exam.time}
                     correctAns={checkAnswers.correctCount}
                     isSubmit={checkAnswers.isSubmit}
+                    startTime={startTime.current}
                 />
             </Grid>
         </Grid>
