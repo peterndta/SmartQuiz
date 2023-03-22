@@ -43,5 +43,14 @@ namespace SmartQuizApi.Data.Repositories
                 .Include(u => u.Bills)
                 .Where(u => u.Bills.Where(b => DateTime.Compare(b.EffectiveDate, DateTime.Now) <= 0 && DateTime.Compare(DateTime.Now, b.ExpirationDate) <= 0).Count() > 0).ToList();
         }
+
+        public User? GetUserInclude(int userId)
+        {
+            return GetByCondition(x => x.Id == userId).Include(x => x.Bookmarks)
+                                                    .Include(x => x.Bills)
+                                                    .Include(x => x.Favorites)
+                                                    .Include(x => x.TestResults)
+                                                    .ThenInclude(x => x.StudySet).FirstOrDefault();
+        }
     }
 }
