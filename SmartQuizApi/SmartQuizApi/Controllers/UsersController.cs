@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
 using SmartQuizApi.Data.DTOs.BiilDTOs;
 using SmartQuizApi.Data.DTOs.SubjectDTOs;
 using SmartQuizApi.Data.DTOs.UserDTO;
@@ -8,6 +9,7 @@ using SmartQuizApi.Data.IRepositories;
 using SmartQuizApi.Data.Models;
 using SmartQuizApi.Services.Utils;
 using System.Collections;
+using System.Globalization;
 
 namespace SmartQuizApi.Controllers
 {
@@ -227,10 +229,13 @@ namespace SmartQuizApi.Controllers
                 }
 
                 var testResult = _mapper.Map<TestResult>(dto);
+                var format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz '(Indochina Time)'";
+                testResult.StartTime = DateTime.ParseExact(dto.StartTime, format, CultureInfo.InvariantCulture);
+                testResult.EndTime = DateTime.ParseExact(dto.EndTime, format, CultureInfo.InvariantCulture);
                 _repositoryManager.TestResult.CreateTestResult(testResult);
                 await _repositoryManager.SaveChangesAsync();
 
-                return StatusCode(StatusCodes.Status200OK, new Response(200, testResult.Id, ""));
+                return StatusCode(StatusCodes.Status200OK, new Response(200, testResult.Id, "Create successfully"));
             }
             catch (Exception ex)
             {
