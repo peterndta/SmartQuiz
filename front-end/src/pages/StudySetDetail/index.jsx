@@ -10,6 +10,7 @@ import Loading from '../Loading'
 import DetailHeader from './DetailHeader'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
+import { useBookmark } from '~/actions/bookmark'
 import { useRating } from '~/actions/rating'
 import { useStudySet } from '~/actions/study-set'
 import { useAppSelector } from '~/hooks/redux-hooks'
@@ -19,12 +20,14 @@ const StudySetDetail = () => {
     const history = useHistory()
     const { getStudySet, deleteStudySet } = useStudySet()
     const { ratePoint } = useRating()
+    const { bookmark, unBookmark } = useBookmark()
     const showSnackbar = useSnackbar()
     const [studySetDetail, setStudySetDetail] = useState({})
     const [isFirstRender, setIsFirstRender] = useState(true)
     const { userId } = useAppSelector((state) => state.auth)
     const [ratingPoint, setRatingPoint] = useState(0)
     const [isRating, setIsRating] = useState(false)
+    const [isBookmarked, setIsBookmarked] = useState(false)
 
     useEffect(() => {
         const controller = new AbortController()
@@ -37,6 +40,7 @@ const StudySetDetail = () => {
                 setStudySetDetail(data)
                 setIsFirstRender(false)
                 setRatingPoint(data.rating)
+                setIsBookmarked(data.isBookmarked)
             })
             .catch(() => {
                 showSnackbar({
@@ -59,6 +63,40 @@ const StudySetDetail = () => {
             })
             history.push('/my-library')
         })
+    }
+
+    const bookmarkHandler = () => {
+        bookmark({ userId, studySetId: id })
+            .then(() => {
+                setIsBookmarked(true)
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Lưu học phần thành công.',
+                })
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, try again later.',
+                })
+            })
+    }
+
+    const unBookmarkHandler = () => {
+        unBookmark({ userId, studySetId: id })
+            .then(() => {
+                setIsBookmarked(false)
+                showSnackbar({
+                    severity: 'success',
+                    children: 'Bỏ lưu học phần thành công.',
+                })
+            })
+            .catch(() => {
+                showSnackbar({
+                    severity: 'error',
+                    children: 'Something went wrong, try again later.',
+                })
+            })
     }
 
     const ratingHandler = (rate) => {
@@ -96,6 +134,9 @@ const StudySetDetail = () => {
                         ratingHandler={ratingHandler}
                         totalRatings={studySetDetail.totalRatings}
                         rating={ratingPoint}
+                        isBookmarked={isBookmarked}
+                        bookmarkHandler={bookmarkHandler}
+                        unBookmarkHandler={unBookmarkHandler}
                     />
                     <Box mt={3}>
                         <QuestionList questions={studySetDetail?.questions} />

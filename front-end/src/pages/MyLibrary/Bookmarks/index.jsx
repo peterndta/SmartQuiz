@@ -2,36 +2,30 @@ import { useEffect, useState } from 'react'
 
 import { Box, Grid, Skeleton } from '@mui/material'
 import EmptyStudySets from '~/components/EmptyStudySets'
-import ListClassCard from '~/components/ListClassCard'
+import ListStudySets from '~/components/ListStudySets'
 import SideBanner from '~/components/SideBanner'
 
 import { useSnackbar } from '~/HOC/SnackbarContext'
 import { Mock_Data } from '~/Mock'
-import { useClass } from '~/actions/class'
+import { useBookmark } from '~/actions/bookmark'
 import sets_empty from '~/assets/images/sets_empty.png'
 import { useAppSelector } from '~/hooks/redux-hooks'
 
-const MyClass = () => {
-    const { getMyClass, getClassHasJoined } = useClass()
+const Bookmarks = () => {
     const { userId } = useAppSelector((state) => state.auth)
     const showSnackBar = useSnackbar()
+    const { getMyBookmarks } = useBookmark()
     const [loading, setIsLoading] = useState(true)
-    const [myStudySets, setMyStudySets] = useState([])
+    const [myBookmarks, setMyBookmarks] = useState([])
 
     useEffect(() => {
-        const firstController = new AbortController()
-        const firstSignal = firstController.signal
-        const secondController = new AbortController()
-        const secondSignal = secondController.signal
+        const controller = new AbortController()
+        const signal = controller.signal
 
-        const getOwnClass = getMyClass(userId, firstSignal)
-        const getJoinedClass = getClassHasJoined(userId, secondSignal)
-
-        Promise.all([getOwnClass, getJoinedClass])
+        getMyBookmarks(userId, signal)
             .then((res) => {
-                const ownClass = res[0].data.data
-                const joinedClass = res[1].data.data
-                setMyStudySets((prev) => [...prev, ...ownClass, ...joinedClass])
+                const data = res.data.data
+                setMyBookmarks(data)
             })
             .catch(() => {
                 showSnackBar({
@@ -44,8 +38,7 @@ const MyClass = () => {
             })
 
         return () => {
-            firstController.abort()
-            secondController.abort()
+            controller.abort()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -73,7 +66,7 @@ const MyClass = () => {
                 <SideBanner />
             </Grid>
         </Grid>
-    ) : myStudySets.length > 0 ? (
+    ) : myBookmarks.length > 0 ? (
         <Box
             sx={{
                 backgroundColor: '#eef2ff',
@@ -84,7 +77,7 @@ const MyClass = () => {
         >
             <Grid container spacing={3} columnSpacing={5}>
                 <Grid item lg={10} md={10} xs={10}>
-                    <ListClassCard studySets={myStudySets} md={3} />
+                    <ListStudySets studySets={myBookmarks} md={3} />
                 </Grid>
                 <Grid item xs={2} md={2} lg={2}>
                     <SideBanner />
@@ -106,10 +99,10 @@ const MyClass = () => {
             <Grid item xs={10} md={10} lg={10} justifyContent="center" alignItems="center">
                 <EmptyStudySets
                     image={sets_empty}
-                    textAbove="Bạn chưa có lớp nào"
-                    textBelow="Các lớp học bạn tạo sẽ hiển thị ở đây."
-                    content="Tạo lóp học"
-                    path={undefined}
+                    textAbove="Bạn chưa có lưu học phần nào"
+                    textBelow="Các học phần được lưu sẽ hiển thị ở đây."
+                    content="Tìm học phần"
+                    path={'/study-sets'}
                 />
             </Grid>
             <Grid item xs={2} md={2} lg={2}>
@@ -119,4 +112,4 @@ const MyClass = () => {
     )
 }
 
-export default MyClass
+export default Bookmarks
