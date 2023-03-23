@@ -235,7 +235,7 @@ namespace SmartQuizApi.Controllers
                 _repositoryManager.TestResult.CreateTestResult(testResult);
                 await _repositoryManager.SaveChangesAsync();
 
-                return StatusCode(StatusCodes.Status200OK, new Response(200, testResult.Id, ""));
+                return StatusCode(StatusCodes.Status200OK, new Response(200, testResult.Id, "Create successfully"));
             }
             catch (Exception ex)
             {
