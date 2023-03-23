@@ -8,7 +8,7 @@ import CreateClassModal from '../CreateClassModal'
 
 import { AppStyles } from '~/constants/styles'
 
-const EmptyStudySets = ({ textAbove, textBelow, image, disable = false, path = undefined, content = '' }) => {
+const EmptyStudySets = ({ textAbove, textBelow, image, disable = false, path = undefined, content = '', imgStyle }) => {
     const [openAddClass, setOpenAddClass] = useState(false)
 
     const openHandler = () => setOpenAddClass(true)
@@ -27,6 +27,7 @@ const EmptyStudySets = ({ textAbove, textBelow, image, disable = false, path = u
                         sx={{
                             width: 300,
                             height: 150,
+                            ...imgStyle,
                         }}
                     />
                 )}
