@@ -145,7 +145,7 @@ const DetailHeader = ({
                                 <BookmarkAdded fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
                             </IconButton>
                         </Tooltip>
-                    ) : (
+                    ) : idUser === userId ? null : (
                         <Tooltip title="Lưu" placement="bottom" onClick={bookmarkHandler}>
                             <IconButton size="large" sx={{ border: '1px solid #767680', mr: 2 }}>
                                 <BookmarkAdd fontSize="small" sx={{ color: AppStyles.colors['#767680'] }} />
