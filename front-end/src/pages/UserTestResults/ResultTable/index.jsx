@@ -70,17 +70,18 @@ const headCells = [
         disablePadding: false,
         label: 'ID học phần',
     },
-    {
-        id: 'startTime',
-        numeric: true,
-        disablePadding: false,
-        label: 'Thời gian bắt đầu',
-    },
+    // {
+    //     id: 'startTime',
+    //     numeric: true,
+    //     disablePadding: false,
+    //     label: 'Thời gian bắt đầu',
+    // },
     {
         id: 'endTime',
         numeric: true,
         disablePadding: false,
-        label: 'Thời gian kết thúc',
+        // label: 'Thời gian kết thúc',
+        label: 'Ngày thực hiện',
     },
     {
         id: 'totalQuestion',
@@ -282,8 +283,14 @@ export default function ResultTable() {
                                                         {row.studySetName}
                                                     </TableCell>
                                                     <TableCell align="right">{row.studySetId}</TableCell>
-                                                    <TableCell align="right">{row.startTime}</TableCell>
-                                                    <TableCell align="right">{row.endTime}</TableCell>
+                                                    {/* <TableCell align="right">{row.startTime}</TableCell> */}
+                                                    <TableCell align="right">
+                                                        {new Date(row.endTime).toLocaleDateString('en-GB', {
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: 'numeric',
+                                                        })}
+                                                    </TableCell>
                                                     <TableCell align="right">{row.totalQuestion}</TableCell>
                                                     <TableCell align="right">{row.totalCorrect}</TableCell>
                                                     <TableCell align="right">{row.totalIncorrect}</TableCell>
