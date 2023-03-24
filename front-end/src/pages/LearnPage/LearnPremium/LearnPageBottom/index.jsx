@@ -89,7 +89,6 @@ const LearnPageBottom = ({ start }) => {
             })
         } else if (selectedChoices.length !== correctAnswers.length) {
             setCorrectAnswers({ isSubmit: true, ans: [...correctAnswers] })
-            updateStudySetQuestion(getQuestion)
             showSnackbar({
                 severity: 'error',
                 children: 'Bạn đã lựa chọn đáp án sai!',
@@ -107,7 +106,6 @@ const LearnPageBottom = ({ start }) => {
 
             const severity = isCorrect ? 'success' : 'error'
             const children = isCorrect ? 'Chúc mừng bạn đã vượt qua!' : 'Bạn đã lựa chọn đáp án sai!'
-            if (!isCorrect) updateStudySetQuestion(getQuestion)
 
             showSnackbar({ severity, children })
             await delay(2000)
@@ -115,12 +113,6 @@ const LearnPageBottom = ({ start }) => {
             setCorrectAnswers({ isSubmit: false, ans: [] })
             setIndex((prevIndex) => prevIndex + 1)
         }
-    }
-
-    const updateStudySetQuestion = (question) => {
-        const updatedStudySet = JSON.parse(JSON.stringify(studySetDetail))
-        updatedStudySet.questions.push(question)
-        setStudySetDetail(updatedStudySet)
     }
 
     const handleSelectedChoices = (answer) => {

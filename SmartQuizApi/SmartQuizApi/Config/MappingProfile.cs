@@ -58,7 +58,8 @@ namespace SmartQuizApi.Config
             CreateMap<User, PremiumUserDTO>();
             CreateMap<Bill, PremiumUserDTO>();
             CreateMap<Bill, GetBillDTO>();
-            CreateMap<CreateTestResult, TestResult>();
+            CreateMap<CreateTestResult, TestResult>().ForMember(des => des.StartTime, opt => opt.Ignore())
+                                                    .ForMember(des => des.EndTime, opt => opt.Ignore());
             CreateMap<TestResult, GetTestResult>().ForMember(des => des.StudySetName, opt => opt.MapFrom(src => src.StudySet.Name));
         }
     }

@@ -234,7 +234,6 @@ public partial class DbA95102SmartquizContext : DbContext
 
             entity.HasOne(d => d.SubjectsOfGrade).WithMany(p => p.StudySets)
                 .HasForeignKey(d => d.SubjectsOfGradeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StudySets_SubjectsOfGrade");
 
             entity.HasOne(d => d.User).WithMany(p => p.StudySets)
@@ -307,17 +306,16 @@ public partial class DbA95102SmartquizContext : DbContext
 
             entity.HasOne(d => d.Subject).WithMany(p => p.SubjectsOfGrades)
                 .HasForeignKey(d => d.SubjectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SubjectsOfGrade_Subjects");
         });
 
         modelBuilder.Entity<TestResult>(entity =>
         {
             entity.Property(e => e.EndTime)
-                .HasColumnType("date")
+                .HasColumnType("datetime")
                 .HasColumnName("End_time");
             entity.Property(e => e.StartTime)
-                .HasColumnType("date")
+                .HasColumnType("datetime")
                 .HasColumnName("Start_time");
             entity.Property(e => e.StudySetId)
                 .HasMaxLength(50)

@@ -90,11 +90,12 @@ const SubmitCard = ({ questionLength, selectedLength, handleSubmit, time, correc
         const test = {
             studySetId: id,
             userId,
-            startTime,
-            endTime,
+            startTime: startTime.toString(),
+            endTime: endTime.toString(),
             totalQuestion: questionLength,
             totalCorrect: correctAns,
         }
+
         saveTestResult(test).then(() => {
             showSnackBar({
                 severity: 'success',
