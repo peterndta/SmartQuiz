@@ -607,7 +607,7 @@ const PremiumPrice = {
         discount: '120.000',
     },
     montly: {
-        US_Price: 0.08,
+        US_Price: 1.28,
         VN_Price: '30.000',
         discount: '',
     },
