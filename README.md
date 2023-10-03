@@ -4,6 +4,12 @@
 
 SmartQuiz is a web application that allows learners to improve their knowledge and memory through a multiple-choice learning system. With convenient features to create custom question sets and share them with others, learners can connect with peers and learn together. The application also integrates effective learning methods to help students learn more efficiently.
 
+<div align="center" >
+  <a href="">
+    <img width="550" height="380" src="https://scontent.fsgn5-3.fna.fbcdn.net/v/t39.30808-6/332484306_622915269653585_6644730734884882646_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=49d041&_nc_ohc=mRjhVuXYYzIAX9xtzCt&_nc_ht=scontent.fsgn5-3.fna&oh=00_AfBh0MN2VibRhP6aD3qM7vsGJryewohP0439J0zfzpSJ2g&oe=6520453F" style="border-radius: 2%"/>
+  </a>
+</div>
+
 ## ✨ Features
 
 - Create and share your own question sets with other learners
@@ -60,37 +66,49 @@ SmartQuiz is deployed using Google Cloud and Railway for the backend, and Vercel
 ## 👀 Preview
 
 ### Admin Dashboard
+
 <img width="320" src="./docs/images/Admin_Page.png" alt="admin dashboard">
 
 ### Login
+
 <img width="320" src="./docs/images/login.png" alt="home">
 
 ### Home
+
 <img width="320" src="./docs/images/Home.png" alt="home">
 
 ### Class
+
 <img height="150" src="./docs/images/My_class.png" alt="my class"> <img height="150" src="./docs/images/Class_details.png" alt="class details">
 <img height="150" src="./docs/images/Class_members.png" alt="class member"> <img height="150" src="./docs/images/Create_class.png" alt="create class">
 <img height="150" src="./docs/images/Update_class.png" alt="update class">
 
 ### StudySet
-<img height="150" width="200"  src="./docs/images/My_studyset.png" alt="my studyset"> <img height="150" width="200" src="./docs/images/Studyset_details.png" alt="class details"> <img height="150" width="200" src="./docs/images/Update.png" alt="update class"> 
+
+<img height="150" width="200"  src="./docs/images/My_studyset.png" alt="my studyset"> <img height="150" width="200" src="./docs/images/Studyset_details.png" alt="class details"> <img height="150" width="200" src="./docs/images/Update.png" alt="update class">
 <img height="150" src="./docs/images/Create.png" alt="create class"> <img height="150" src="./docs/images/Create_popup.png" alt="create popup">
 <img height="150" width="300" src="./docs/images/Search.png" alt="search studyset"> <img height="150" src="./docs/images/Draft.png" alt="search studyset">
 
 ### Upgrade Account
+
 <img height="150" src="./docs/images/Upgrade_account.png" alt="create class"> <img height="150" src="./docs/images/Payment.png" alt="create popup">
 
 ### Testing feature
+
 <img height="150" src="./docs/images/Test.png" alt="create class"> <img height="150" src="./docs/images/Test_result_1.png" alt="create popup"> <img height="150" src="./docs/images/Test_result_2.png" alt="create popup">
 
 ### Learning feature
+
 #### Standard
+
 ![standard-learn](./docs/images/ezgif-4-af94ac42c3.gif)
+
 #### Premium
+
 ![premium-learn](./docs/images/premium-learn.gif)
 
 ---
+
 ## Contributing
 
 If you are interested in contributing to SmartQuiz, please feel free to submit a pull request or create an issue. We welcome all contributions and are happy to work with you to improve the application.
