@@ -6,7 +6,7 @@ SmartQuiz is a web application that allows learners to improve their knowledge a
 
 <div align="center" >
   <a href="">
-    <img width="550" height="380" src="https://scontent.fsgn5-3.fna.fbcdn.net/v/t39.30808-6/332484306_622915269653585_6644730734884882646_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=49d041&_nc_ohc=mRjhVuXYYzIAX9xtzCt&_nc_ht=scontent.fsgn5-3.fna&oh=00_AfBh0MN2VibRhP6aD3qM7vsGJryewohP0439J0zfzpSJ2g&oe=6520453F" style="border-radius: 2%"/>
+    <img width="550" height="380" src="./docs/images/Logo-app.jpg" style="border-radius: 2%"/>
   </a>
 </div>
 
